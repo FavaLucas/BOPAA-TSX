@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.10.5",
     "axios": "^1.7.7",
     "class-validator": "^0.14.1",
     "next": "14.2.14",

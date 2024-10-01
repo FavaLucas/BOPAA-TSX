@@ -2,6 +2,11 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import { obtenerCotizaciones, obtenerEmpresas, obtenerIndices } from "./Services/ObtenerDatos";
+import PieChart from "./graficos/graficoTorta";
+import CandlestickChart from "./graficos/graficoVelas"
+
+
+
 
 const auxObtenerCotizaciones = async () => {
   const rtaCotizaciones = await obtenerCotizaciones();
@@ -25,6 +30,10 @@ export default function Home() {
     <button onClick={auxObtenerCotizaciones}>Obtener cotizaciones</button>
     <button onClick={auxObtenerIndices}>Obtener indices</button>
     <button onClick={auxObtenerEmpresas}>Obtener empresas</button>
+
+    <PieChart/>
+    <CandlestickChart/>
+
 </>
 
 
