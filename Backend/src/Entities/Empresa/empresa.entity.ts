@@ -18,7 +18,7 @@ export class Empresa {
   private paisEmpresa: string;
 
   @Column()
-  private bolsaEnQueCotiza: number;
+  private bolsaEnQueCotiza: string;
   
   @ManyToOne(() => Indice, (indice) => indice.empresas)
   @JoinColumn({
@@ -35,7 +35,7 @@ export class Empresa {
   })
   public cotizaciones: Cotizacion;
 
-  constructor(idEmpresa: number, nombreEmpresa: string, abreviacion: string, paisEmpresa: string, bolsaEnQueCotiza: number) {
+  constructor(idEmpresa: number, nombreEmpresa: string, abreviacion: string, paisEmpresa: string, bolsaEnQueCotiza: string) {
 
     this.idEmpresa = idEmpresa;
     this.nombreEmpresa = nombreEmpresa;

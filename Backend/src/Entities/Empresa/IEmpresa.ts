@@ -1,4 +1,4 @@
-// import { IsArray, IsInt, IsNumber, IsString  } from "class-validator"
+import { IsArray, IsInt, IsNumber, IsString  } from "class-validator"
 
 // class EmpresaDTO {
 //     @IsInt()
@@ -25,5 +25,5 @@ export interface IEmpresa {
     nombreEmpresa: string;
     abreviacion: string;
     paisEmpresa: string;
-    bolsaEnQueCotiza: number;
+    bolsaEnQueCotiza: string;
 }
