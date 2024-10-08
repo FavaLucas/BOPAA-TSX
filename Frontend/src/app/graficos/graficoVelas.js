@@ -138,7 +138,7 @@ const CandlestickChart = () => {
     };
   }, []);
 
-  return <div id="candlestickChartdiv" style={{ width: "100%", height: "500px" }}></div>;
+  return <div id="candlestickChartdiv" style={{ width: "100%", height: "300px" }}></div>;
 };
 
 export default CandlestickChart;

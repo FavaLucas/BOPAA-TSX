@@ -1,16 +1,30 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CotizacionesController } from './controllers/cotizaciones.controller';
-import { CotizacionesService } from './services/cotizaciones.services';
-import { EmpresasController } from './controllers/empresas.controller';
-import { EmpresasService } from './services/empresas.services';
-import { IndicesController } from './controllers/indices.controller';
-import { IndicesService } from './services/indices.services';
-
+import { IndiceModule } from './Entities/Indice/indices.modules';
+import { EmpresasModule } from './Entities/Empresa/empresas.modules';
+import { CotizacionesModule } from './Entities/Cotizacion/cotizaciones.modules';
 @Module({
-  imports: [],
-  controllers: [AppController, CotizacionesController, EmpresasController, IndicesController],
-  providers: [AppService, CotizacionesService, EmpresasService, IndicesService],
+  imports: [ 
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root123',
+      database: 'bopaa',
+      synchronize: false,
+      entities: ["dist/**/**.entity{.ts,.js}"],
+      logging: 'all',
+    }),
+    IndiceModule,
+    EmpresasModule,
+    CotizacionesModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
+
+
