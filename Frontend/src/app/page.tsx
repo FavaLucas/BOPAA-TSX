@@ -27,6 +27,7 @@ const auxObtenerEmpresas = async () => {
 export default function Home() {
   return (
 <>
+    <h1>Indice TSX - Toronto Stock Exchange </h1>
     <button onClick={auxObtenerCotizaciones}>Obtener cotizaciones</button>
     <button onClick={auxObtenerIndices}>Obtener indices</button>
     <button onClick={auxObtenerEmpresas}>Obtener empresas</button>
