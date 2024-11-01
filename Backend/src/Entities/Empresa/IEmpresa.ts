@@ -21,9 +21,10 @@ import { IsArray, IsInt, IsNumber, IsString  } from "class-validator"
 
 
 export interface IEmpresa {
-    idEmpresa?: number;
-    nombreEmpresa: string;
-    abreviacion: string;
-    paisEmpresa: string;
-    bolsaEnQueCotiza: string;
+    id?: number;
+    codEmpresa: string;
+    empresaNombre: string;
+    cotizationInicial: number;
+    cantidadAcciones: number;
+
 }

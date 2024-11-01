@@ -19,9 +19,10 @@
 // export default CotizacionDTO
 
 export interface ICotizacion {
-    idCotizacion?: number;
-    nombreCotizacion: string;
-    fechaCotizacion: string;
-    horaCotizacion: string;
-    precioDolar: number;
+    id?: number;
+    fecha: string;
+    hora: string;
+    dateUTC: Date;
+    cotizacion: number;
+    idEmpresa: number;
 }

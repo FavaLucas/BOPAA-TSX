@@ -4,20 +4,40 @@ import { Empresa } from "../Empresa/empresa.entity";
 
 @Entity('cotizaciones')
 export class Cotizacion {
-  @PrimaryGeneratedColumn()
-  private idCotizacion: number;
+  @PrimaryGeneratedColumn({
+    type: 'bigint',
+  })
+  private id: number;
+
+  @Column({
+    name: 'fecha',
+    type: 'varchar',
+    precision: 10,
+  })
+  private fecha: string;
+
+  @Column({
+    name: 'hora',
+    type: 'varchar',
+    precision: 5,
+  })
+  private hora: string;
+
+  @Column({
+    type: 'date',
+  })
+  private dateUTC: Date;
+
+  @Column({
+    name: 'cotization',
+    type: 'decimal',
+    precision: 7,
+    scale: 2,
+  })
+  public cotizacion: number;
 
   @Column()
-  private nombreCotizacion: string;
-
-  @Column()
-  private fechaCotizacion: string;
-
-  @Column()
-  private horaCotizacion: string;
-
-  @Column()
-  private precioDolar: number;
+  private idEmpresa: number;
 
   @OneToMany(() => Empresa, (empresa) => empresa.cotizaciones)
   @JoinColumn()
@@ -26,13 +46,14 @@ export class Cotizacion {
 
 
 
-  constructor(idCotizacion: number, nombreCotizacion: string, fechaCotizacion: string, horaCotizacion: string, precioDolar: number) {
+  constructor(id: number, fecha: string, hora: string, dateUTC: Date, cotizacion: number, idEmpresa: number) {
 
-    this.idCotizacion = idCotizacion;
-    this.nombreCotizacion = nombreCotizacion;
-    this.fechaCotizacion = fechaCotizacion;
-    this.horaCotizacion = horaCotizacion;
-    this.precioDolar = precioDolar;
+    this.id = id;
+    this.fecha = fecha;
+    this.hora = hora;
+    this.dateUTC = dateUTC;
+    this.cotizacion = cotizacion;
+    this.idEmpresa = idEmpresa;
   }
 
   // public getIndiceID(): number { return this.indiceID }

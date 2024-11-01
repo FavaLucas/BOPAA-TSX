@@ -5,20 +5,38 @@ import { Cotizacion } from "../Cotizacion/cotizacion.entity";
 
 @Entity('empresas')
 export class Empresa {
-  @PrimaryGeneratedColumn()
-  private idEmpresa: number;
+  @PrimaryGeneratedColumn({
+    type: 'int',
+  })
+  private id: number;
 
-  @Column()
-  private nombreEmpresa: string;
+  @Column({
+    name: 'codEmpresa',
+    length: 100,
+  })
+  private codEmpresa: string;
 
-  @Column()
-  private abreviacion: string;
+  @Column({
+    name: 'empresaNombre',
+    length: 100,
+  })
+  private empresaNombre: string;
 
-  @Column()
-  private paisEmpresa: string;
+  @Column({
+    name: 'cotizationInicial',
+    type: 'decimal',
+    precision: 7,
+    scale: 2,
+  })
+  private cotizationInicial: number;
 
-  @Column()
-  private bolsaEnQueCotiza: string;
+  @Column({
+    name: 'cantidadAcciones',
+    type: 'bigint',
+  })
+  private cantidadAcciones: number;
+
+
   
   @ManyToOne(() => Indice, (indice) => indice.empresas)
   @JoinColumn({
@@ -30,18 +48,46 @@ export class Empresa {
   
   @ManyToOne(() => Cotizacion, (cotizacion) => cotizacion.empresas)
   @JoinColumn({
-    name: 'iDCotizacion',
+    name: 'id',
     foreignKeyConstraintName: 'FK_cotizacionEmpresa',
   })
-  public cotizaciones: Cotizacion;
+  public cotizaciones: Cotizacion[];
 
-  constructor(idEmpresa: number, nombreEmpresa: string, abreviacion: string, paisEmpresa: string, bolsaEnQueCotiza: string) {
+  constructor(id: number, codEmpresa: string, empresaNombre: string, cotizationInicial: number, cantidadAcciones: number) {
 
-    this.idEmpresa = idEmpresa;
-    this.nombreEmpresa = nombreEmpresa;
-    this.abreviacion = abreviacion;
-    this.paisEmpresa = paisEmpresa;
-    this.bolsaEnQueCotiza = bolsaEnQueCotiza;
+    this.id = id;
+    this.codEmpresa = codEmpresa;
+    this.empresaNombre = empresaNombre;
+    this.cotizationInicial = cotizationInicial;
+    this.cantidadAcciones = cantidadAcciones;
+  }
+
+  public getId(): number {
+    return this.id;
+  }
+
+  public getCodempresa(): string {
+    return this.codEmpresa;
+  }
+
+  public setCodempresa(codEmpresa: string) {
+    this.codEmpresa = codEmpresa;
+  }
+
+  public getEmpresaNombre(): string {
+    return this.empresaNombre;
+  }
+
+  public setEmpresaNombre(empresaNombre: string) {
+    this.empresaNombre = empresaNombre;
+  }
+
+  public getCotizacionInicial(): number {
+    return this.cotizationInicial;
+  }
+
+  public getCantidadAcciones(): number {
+    return this.cantidadAcciones;
   }
 
   // public getIndiceID(): number { return this.indiceID }

@@ -14,7 +14,7 @@ import { CotizacionesModule } from './Entities/Cotizacion/cotizaciones.modules';
       username: 'root',
       password: 'root123',
       database: 'bopaa',
-      synchronize: false,
+      synchronize: true,
       entities: ["dist/**/**.entity{.ts,.js}"],
       logging: 'all',
     }),
@@ -28,3 +28,4 @@ import { CotizacionesModule } from './Entities/Cotizacion/cotizaciones.modules';
 export class AppModule {}
 
 
+//modificar clave / valor para que quede con los datos de .env
