@@ -12,14 +12,16 @@ export class CotizacionesService {
   constructor(@InjectRepository(Cotizacion) private readonly cotizacionRepository: Repository<Cotizacion>) { }
 
   public async getCotizacionesByEmpresa(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
+
     console.log("Get AllCotizaciones");
-    const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones`);
+    console.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
+
+    const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
     
+
     return respuestaGempresa.data;
   }
 }
-
-
 
 
 
