@@ -31,18 +31,16 @@ export class Cotizacion {
     precision: 7,
     scale: 2,
   })
-  public cotizacion: number;
-
-  @Column()
-  private idEmpresa: number;
+  public cotization: number;
 
 
-  constructor(fecha: string, hora: string, dateUTC: Date, cotizacion: number, idEmpresa: number) {
+
+  constructor(fecha: string, hora: string, dateUTC: Date, cotization: number) {
     this.fecha = fecha;
     this.hora = hora;
     this.dateUTC = dateUTC;
-    this.cotizacion = cotizacion;
-    this.idEmpresa = idEmpresa;
+    this.cotization = cotization;
+
   }
 
 

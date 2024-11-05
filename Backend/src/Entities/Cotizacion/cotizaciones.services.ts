@@ -12,16 +12,32 @@ export class CotizacionesService {
   constructor(@InjectRepository(Cotizacion) private readonly cotizacionRepository: Repository<Cotizacion>) { }
 
   public async getCotizacionesByEmpresa(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
-
     console.log("Get AllCotizaciones");
     console.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
-
     const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
-    
+    return respuestaGempresa.data;
+  }
+
+  public async getCotizacionesFechaYHora(codEmpresa: string, fecha: string, hora: string): Promise<Cotizacion[]> {
+    console.log("Get otracosa");
+    console.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fecha=${fecha}&hora=${hora}`);
+    const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/cotizacion?fecha=${fecha}&hora=${hora}`);
+
+    const nuevaCotizacion = new Cotizacion(
+      respuestaGempresa.data.fecha,
+      respuestaGempresa.data.hora,
+      respuestaGempresa.data.dateUTC,
+      respuestaGempresa.data.cotization,
+    );
+
+    await this.cotizacionRepository.save(nuevaCotizacion);
+
+
 
     return respuestaGempresa.data;
   }
+
 }
 
-
-
+// http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/cotizaciones/BABA/cotizaciones?fechaDesde=undefined&fechaHasta=undefined
+// http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/cotizaciones/BABA/cotizaciones?fechaDesde=undefined&fechaHasta=undefined

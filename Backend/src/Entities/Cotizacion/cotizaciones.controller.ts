@@ -15,4 +15,15 @@ export class CotizacionesController {
     return this.cotizacionesService.getCotizacionesByEmpresa(codEmpresa, fechaDesde, fechaHasta);
   }
 
+  @Get('/:codEmpresa/cotizacion')
+  public getCotizacionesFechaYHora(
+    @Param('codEmpresa') codEmpresa: string,
+    @Query('fecha') fecha: string,
+    @Query('hora') hora: string): Promise <Cotizacion[]> {
+    console.log("Cotizaciones back");
+    return this.cotizacionesService.getCotizacionesFechaYHora(codEmpresa, fecha, hora);
+  }
 }
+
+
+
