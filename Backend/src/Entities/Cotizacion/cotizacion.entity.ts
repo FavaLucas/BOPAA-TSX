@@ -33,13 +33,22 @@ export class Cotizacion {
   })
   public cotization: number;
 
+  @Column({
+    name: 'codEmp',
+    type: 'varchar',
+    precision: 10,
+  })
+  private codEmp: string;
 
 
-  constructor(fecha: string, hora: string, dateUTC: Date, cotization: number) {
+
+
+  constructor(fecha: string, hora: string, dateUTC: Date, cotization: number, codEmp: string) {
     this.fecha = fecha;
     this.hora = hora;
     this.dateUTC = dateUTC;
     this.cotization = cotization;
+    this.codEmp = codEmp;
 
   }
 

@@ -15,6 +15,20 @@ export class CotizacionesService {
     console.log("Get AllCotizaciones");
     console.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
     const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
+
+    console.log(respuestaGempresa.data)
+    respuestaGempresa.data.forEach(cotizacion1 => {
+      const nuevaCotizacion = new Cotizacion(
+        cotizacion1.fecha,
+        cotizacion1.hora,
+        cotizacion1.dateUTC,
+        cotizacion1.cotization,
+        cotizacion1.codEmp = codEmpresa,
+      );
+  
+      this.cotizacionRepository.save(nuevaCotizacion);
+    });
+
     return respuestaGempresa.data;
   }
 
@@ -28,6 +42,7 @@ export class CotizacionesService {
       respuestaGempresa.data.hora,
       respuestaGempresa.data.dateUTC,
       respuestaGempresa.data.cotization,
+      respuestaGempresa.data.codEmp = codEmpresa
     );
 
     await this.cotizacionRepository.save(nuevaCotizacion);
