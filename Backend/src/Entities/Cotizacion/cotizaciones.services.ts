@@ -11,6 +11,11 @@ export class CotizacionesService {
 
   constructor(@InjectRepository(Cotizacion) private readonly cotizacionRepository: Repository<Cotizacion>) { }
 
+  public async getCotizaciones() {
+      return this.cotizacionRepository.find();
+  }
+
+
   public async getCotizacionesByEmpresaEntreFechas(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
     console.log("Get AllCotizaciones");
     console.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);

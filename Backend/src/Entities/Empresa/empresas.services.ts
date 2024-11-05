@@ -12,6 +12,11 @@ export class EmpresasService {
 
   constructor(@InjectRepository(Empresa) private readonly empresaRepository: Repository<Empresa>) { }
 
+  public async getEmpresas(){
+    
+    return this.empresaRepository.find();
+  } 
+
   public async getEmpresa(codEmpresa: string): Promise<Empresa> {
     console.log("Get AllEmpresas");
     const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/details`)

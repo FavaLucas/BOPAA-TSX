@@ -6,6 +6,12 @@ import { Cotizacion } from "./cotizacion.entity";
 export class CotizacionesController {
   constructor(private cotizacionesService: CotizacionesService) { }
 
+  @Get()
+  public getCotizaciones(): Promise <Cotizacion[]> {
+    console.log("Cotizaciones back");
+    return this.cotizacionesService.getCotizaciones();
+  }
+
   @Get('/:codEmpresa')
   public getCotizacionesByEmpresaEntreFechas(
     @Param('codEmpresa') codEmpresa: string,
