@@ -38,24 +38,22 @@ export class Empresa {
 
 
   
-  @ManyToOne(() => Indice, (indice) => indice.empresas)
-  @JoinColumn({
-    name: 'indiceID',
-    foreignKeyConstraintName: 'FK_indiceEmpresa',
-  })
-  public indices: Indice;
+  // @ManyToOne(() => Indice, (indice) => indice.empresas)
+  // @JoinColumn({
+  //   name: 'indiceID',
+  //   foreignKeyConstraintName: 'FK_indiceEmpresa',
+  // })
+  // public indices: Indice;
 
   
-  @ManyToOne(() => Cotizacion, (cotizacion) => cotizacion.empresas)
-  @JoinColumn({
-    name: 'id',
-    foreignKeyConstraintName: 'FK_cotizacionEmpresa',
-  })
-  public cotizaciones: Cotizacion[];
+  // @ManyToOne(() => Cotizacion, (cotizacion) => cotizacion.empresas)
+  // @JoinColumn({
+  //   name: 'id',
+  //   foreignKeyConstraintName: 'FK_cotizacionEmpresa',
+  // })
+  // public cotizaciones: Cotizacion[];
 
-  constructor(id: number, codEmpresa: string, empresaNombre: string, cotizationInicial: number, cantidadAcciones: number) {
-
-    this.id = id;
+  constructor(codEmpresa: string, empresaNombre: string, cotizationInicial: number, cantidadAcciones: number) {
     this.codEmpresa = codEmpresa;
     this.empresaNombre = empresaNombre;
     this.cotizationInicial = cotizationInicial;

@@ -19,9 +19,9 @@ export class Indice {
   @Column()
   private valorDelIndice: number;
 
-  @OneToMany(() => Empresa, (empresa) => empresa.indices)
-  @JoinColumn()
-  public empresas : Empresa[];
+  // @OneToMany(() => Empresa, (empresa) => empresa.indices)
+  // @JoinColumn()
+  // public empresas : Empresa[];
 
   constructor(indiceID: number, nombreIndice: string, paisIndice: string, empresasDelIndice: Empresa[], valorDelIndice: number) {
 

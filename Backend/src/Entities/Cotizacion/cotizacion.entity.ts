@@ -1,7 +1,4 @@
-import {  Column, JoinColumn, OneToMany, PrimaryGeneratedColumn, Entity } from "typeorm";
-import { Empresa } from "../Empresa/empresa.entity";
-
-
+import {  Column, PrimaryGeneratedColumn, Entity } from "typeorm";
 @Entity('cotizaciones')
 export class Cotizacion {
   @PrimaryGeneratedColumn({
@@ -39,16 +36,8 @@ export class Cotizacion {
   @Column()
   private idEmpresa: number;
 
-  @OneToMany(() => Empresa, (empresa) => empresa.cotizaciones)
-  @JoinColumn()
-  public empresas : Empresa[];
 
-
-
-
-  constructor(id: number, fecha: string, hora: string, dateUTC: Date, cotizacion: number, idEmpresa: number) {
-
-    this.id = id;
+  constructor(fecha: string, hora: string, dateUTC: Date, cotizacion: number, idEmpresa: number) {
     this.fecha = fecha;
     this.hora = hora;
     this.dateUTC = dateUTC;
@@ -56,18 +45,5 @@ export class Cotizacion {
     this.idEmpresa = idEmpresa;
   }
 
-  // public getIndiceID(): number { return this.indiceID }
-  // public setIndiceID(indiceID: number): void { this.indiceID = indiceID }
 
-  // public getNombreIndice(): string { return this.nombreIndice }
-  // public setNombreIndice(nombreIndice: string): void { this.nombreIndice = nombreIndice }
-
-  // public getPaisIndice(): string { return this.paisIndice }
-  // public setPaisIndice(paisIndice: string): void { this.paisIndice = paisIndice }
-
-  // public getEmpresasIndice(): IEmpresa[] { return this.empresasDelIndice }
-  // public setEmpresasIndice(empresasDelIndice: IEmpresa[]): void { this.empresasDelIndice = empresasDelIndice }
-
-  // public getValorDelIndice(): number { return this.valorDelIndice }
-  // public setValorDelIndice(valorDelIndice: number): void { this.valorDelIndice = valorDelIndice }
 }

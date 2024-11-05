@@ -1,22 +1,14 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
 import { EmpresasService } from "src/Entities/Empresa/empresas.services";
 import { Empresa } from "./empresa.entity";
-import { IEmpresa } from "./IEmpresa";
 
 @Controller('/empresas')
 export class EmpresasController {
   constructor(private empresasService: EmpresasService) { }
 
-  @Get()
-  public getAllEmpresas():Promise<Empresa[]> {
+  @Get('/:codEmpresa')
+  public getEmpresa(@Param('codEmpresa') codEmpresa: string):Promise<Empresa> {
     console.log("Empresas back");
-    return this.empresasService.getAllEmpresas();
+    return this.empresasService.getEmpresa(codEmpresa);
   }
-
-  @Get('/mock')
-  public getEmpresasMock():Promise<IEmpresa[]> {
-    console.log("Controller Empresas-Mock");
-    return this.empresasService.getEmpresasMock();
-  }
-
 }
