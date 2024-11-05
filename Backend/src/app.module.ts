@@ -14,7 +14,7 @@ import { CotizacionesModule } from './Entities/Cotizacion/cotizaciones.modules';
       username: 'root',
       password: 'root123',
       database: 'bopaa',
-      synchronize: true,
+      synchronize: false,
       entities: ["dist/**/**.entity{.ts,.js}"],
       logging: 'all',
     }),

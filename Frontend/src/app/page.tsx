@@ -31,9 +31,9 @@ export default function Home() {
     <button onClick={auxObtenerCotizaciones}>Obtener cotizaciones</button>
     <button onClick={auxObtenerIndices}>Obtener indices</button>
     <button onClick={auxObtenerEmpresas}>Obtener empresas</button>
-
+{/* 
     <PieChart/>
-    <CandlestickChart/>
+    <CandlestickChart/> */}
 
 </>
 

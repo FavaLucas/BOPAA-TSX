@@ -7,12 +7,12 @@ export class CotizacionesController {
   constructor(private cotizacionesService: CotizacionesService) { }
 
   @Get('/:codEmpresa')
-  public getCotizacionesByEmpresa(
+  public getCotizacionesByEmpresaEntreFechas(
     @Param('codEmpresa') codEmpresa: string,
     @Query('fechaDesde') fechaDesde: string,
     @Query('fechaHasta') fechaHasta: string): Promise <Cotizacion[]> {
     console.log("Cotizaciones back");
-    return this.cotizacionesService.getCotizacionesByEmpresa(codEmpresa, fechaDesde, fechaHasta);
+    return this.cotizacionesService.getCotizacionesByEmpresaEntreFechas(codEmpresa, fechaDesde, fechaHasta);
   }
 
   @Get('/:codEmpresa/cotizacion')
