@@ -158,9 +158,6 @@ export class CotizacionesService {
 
     this.getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(codEmpresa, stringUltimaFechaEnMiDB, stringUltimaFechaDeGempresa)
   }
-
-
-
 }
 
 

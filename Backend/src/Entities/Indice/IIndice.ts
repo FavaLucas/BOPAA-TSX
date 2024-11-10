@@ -1,29 +1,28 @@
-// import { IsArray, IsInt, IsNumber, IsString  } from "class-validator"
-import { IEmpresa } from "../Empresa/IEmpresa";
-
-// class IndiceDTO {
-//     @IsInt()
-//     indiceID: number;
-
-//     @IsString()
-//     nombreIndice: string;
-
-//     @IsString()
-//     paisIndice: string;
-
-//     @IsArray()
-//     empresasDelIndice: string[];
-
-//     @IsNumber()
-//     valorDelIndice: number;
-// }
-// export default IndiceDTO
+import { IsArray, IsInt, IsNumber, IsString } from "class-validator"
 
 
-export interface IIndice {
-    indiceID?: number;
+export interface iIndiceDB {
+    IsNumber()
+    id?: number;
+    IsString()
+    codigoIndice: string;
+    IsString()
     nombreIndice: string;
-    paisIndice: string;
-    empresasDelIndice: IEmpresa[];
-    valorDelIndice: number;
+    IsString()
+    fecha: string;
+    IsNumber()
+    hora: string;
+    IsNumber()
+    valorIndice: number;
+}
+
+export interface iIndiceGempresa {
+    IsString()
+    fecha: string;
+    IsString()
+    hora: string;
+    IsString()
+    codigoIndice: string;
+    IsNumber()
+    valorIndice: number;
 }

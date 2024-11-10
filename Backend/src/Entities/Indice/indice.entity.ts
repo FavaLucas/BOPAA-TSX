@@ -1,49 +1,51 @@
 import { Entity, Column, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Empresa } from "../Empresa/empresa.entity";
+// id - codigoIndice(TSX) - nombreIndice - fecha - hora - valorIndice
 
 @Entity('indices')
 export class Indice {
-  @PrimaryGeneratedColumn()
-  private indiceID: number;
+  @PrimaryGeneratedColumn({
+    type: 'int'
+  })
+  private id: number;
 
-  @Column()
+  @Column({
+    name: 'codigoIndice',
+    length: 10,
+  })
+  private codigoIndice: string;
+
+  @Column({
+    name: 'nombre',
+    length: 100,
+  })
   private nombreIndice: string;
 
-  @Column()
-  private paisIndice: string;
+  @Column({
+    name: 'fecha',
+    type: 'varchar',
+    precision: 10,
+  })
+  private fecha: string;
 
-  @Column("json")
-  // private empresasDelIndice: Empresa[];
-  private empresasDelIndice: Empresa[];
+  @Column({
+    name: 'hora',
+    type: 'varchar',
+    precision: 5,
+  })
+  public hora: string;
 
-  @Column()
-  private valorDelIndice: number;
+  @Column({
+    name: 'valorIndice',
+    type: 'bigint',
+  })
+  public valorIndice: number;
 
-  // @OneToMany(() => Empresa, (empresa) => empresa.indices)
-  // @JoinColumn()
-  // public empresas : Empresa[];
-
-  constructor(indiceID: number, nombreIndice: string, paisIndice: string, empresasDelIndice: Empresa[], valorDelIndice: number) {
-
-    this.indiceID = indiceID;
+  constructor(id: number, codigoIndice: string, nombreIndice: string, fecha: string, hora: string, valorIndice: number) {
+    this.id = id;
+    this.codigoIndice = codigoIndice;
     this.nombreIndice = nombreIndice;
-    this.paisIndice = paisIndice;
-    this.empresasDelIndice = empresasDelIndice;
-    this.valorDelIndice = valorDelIndice;
-  }
-
-  // public getIndiceID(): number { return this.indiceID }
-  // public setIndiceID(indiceID: number): void { this.indiceID = indiceID }
-
-  // public getNombreIndice(): string { return this.nombreIndice }
-  // public setNombreIndice(nombreIndice: string): void { this.nombreIndice = nombreIndice }
-
-  // public getPaisIndice(): string { return this.paisIndice }
-  // public setPaisIndice(paisIndice: string): void { this.paisIndice = paisIndice }
-
-  // public getEmpresasIndice(): IEmpresa[] { return this.empresasDelIndice }
-  // public setEmpresasIndice(empresasDelIndice: IEmpresa[]): void { this.empresasDelIndice = empresasDelIndice }
-
-  // public getValorDelIndice(): number { return this.valorDelIndice }
-  // public setValorDelIndice(valorDelIndice: number): void { this.valorDelIndice = valorDelIndice }
-}
+    this.fecha = fecha;
+    this.hora = hora;
+    this.valorIndice = valorIndice;
+  };
+};
