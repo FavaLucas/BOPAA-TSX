@@ -6,10 +6,11 @@ import { Empresa } from "./empresa.entity";
 export class EmpresasController {
   constructor(private empresasService: EmpresasService) { }
 
+
   @Get()
-  public getAllEmpresas(): Promise<Empresa[]> {
+  public buscarMisCodEmpresas(): Promise<Empresa[]> {
     console.log("Empresas back");
-    return this.empresasService.getAllEmpresas();
+    return this.empresasService.buscarMisCodEmpresas();
   }
 
   @Get('/:codEmpresa')
@@ -18,7 +19,7 @@ export class EmpresasController {
     return this.empresasService.getEmpresa(codEmpresa);
   }
 
-  @Get('/save/:codEmp')
+  @Get('/guardar/:codEmp')
   async guardarEmpresa(@Param('codEmp') codEmpresa: string): Promise<Empresa> {
     return this.empresasService.guardarEmpresa(codEmpresa);
   }

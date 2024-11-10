@@ -21,10 +21,10 @@ export class Cotizacion {
   })
   public hora: string;
 
-  @Column({
-    type: 'date',
-  })
-  public dateUTC: Date;
+  // @Column({
+  //   type: 'date',
+  // })
+  // public dateUTC: Date;
 
   @Column({
     name: 'cotizacion',
@@ -34,12 +34,12 @@ export class Cotizacion {
   })
   public cotizacion: number;
 
-  @Column({
-    name: 'codEmp',
-    type: 'varchar',
-    precision: 10,
-  })
-  public codEmp: string;
+  // @Column({
+  //   name: 'codEmp',
+  //   type: 'varchar',
+  //   precision: 10,
+  // })
+  // public codEmp: string;
 
   @ManyToOne(() => Empresa, (empresa) => empresa.cotizacionesFK)
   @JoinColumn({
@@ -50,14 +50,16 @@ export class Cotizacion {
 
 
 
-  constructor(fecha: string, hora: string, dateUTC: Date, cotizacion: number, codEmp: string) {
+  constructor(id: number, fecha: string, hora: string,/* dateUTC: Date,*/ cotizacion: number, codEmpresaFK: Empresa) {
+    this.id = id;
     this.fecha = fecha;
     this.hora = hora;
-    this.dateUTC = dateUTC;
+    // this.dateUTC = dateUTC;
     this.cotizacion = cotizacion;
-    this.codEmp = codEmp;
+    this.codEmpresaFK = codEmpresaFK;
+    
 
   }
 
-  
+    
 }

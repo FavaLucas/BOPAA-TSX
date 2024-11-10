@@ -11,21 +11,19 @@ import { baseURL } from 'src/Services/AxiosAGempresa';
 export class EmpresasService {
 
   constructor(@InjectRepository(Empresa) private readonly empresaRepository: Repository<Empresa>) { }
-  // Para obtener todos los datos en el front
-  public async getAllEmpresas() {
-    return this.empresaRepository.find();
+  public async buscarMisCodEmpresas() {
+    const empresas = await this.empresaRepository.find();
+    const codEmpresas = [];
+
+    empresas.forEach(element => {
+      codEmpresas.push(element.codEmpresa); 
+    });
+    return codEmpresas;
   }
 
-
-  //Trabajar aqui
   public async getEmpresa(codEmpresa: string): Promise<Empresa> {
-    console.log("getEmpresa por codEmpresa BACK");
     try {
       const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/details`);
-      // if (respuestaGempresa) {
-      //   this.guardarEmpresa(respuestaGempresa.data.codEmpresa);
-      // }
-
       return respuestaGempresa.data;
     } catch (error) {
       console.error("Error al buscar la empresa");
@@ -65,5 +63,4 @@ export class EmpresasService {
       throw error;
     }
   }
-
 }
