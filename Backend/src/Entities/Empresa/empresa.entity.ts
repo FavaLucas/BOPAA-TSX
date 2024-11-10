@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Indice } from "../Indice/indice.entity";
 import { Cotizacion } from "../Cotizacion/cotizacion.entity";
 
@@ -8,19 +8,19 @@ export class Empresa {
   @PrimaryGeneratedColumn({
     type: 'int',
   })
-  private id: number;
+  public id: number;
 
   @Column({
     name: 'codEmpresa',
     length: 100,
   })
-  private codEmpresa: string;
+  public codEmpresa: string;
 
   @Column({
     name: 'empresaNombre',
     length: 100,
   })
-  private empresaNombre: string;
+  public empresaNombre: string;
 
   @Column({
     name: 'cotizationInicial',
@@ -28,30 +28,17 @@ export class Empresa {
     precision: 7,
     scale: 2,
   })
-  private cotizationInicial: number;
+  public cotizationInicial: number;
 
   @Column({
     name: 'cantidadAcciones',
     type: 'bigint',
   })
-  private cantidadAcciones: number;
+  public cantidadAcciones: number;
 
+  @OneToMany(() => Cotizacion, (cotizacion) => cotizacion.codEmpresaFK)
+  public cotizacionesFK: Cotizacion[];
 
-  
-  // @ManyToOne(() => Indice, (indice) => indice.empresas)
-  // @JoinColumn({
-  //   name: 'indiceID',
-  //   foreignKeyConstraintName: 'FK_indiceEmpresa',
-  // })
-  // public indices: Indice;
-
-  
-  // @ManyToOne(() => Cotizacion, (cotizacion) => cotizacion.empresas)
-  // @JoinColumn({
-  //   name: 'id',
-  //   foreignKeyConstraintName: 'FK_cotizacionEmpresa',
-  // })
-  // public cotizaciones: Cotizacion[];
 
   constructor(codEmpresa: string, empresaNombre: string, cotizationInicial: number, cantidadAcciones: number) {
     this.codEmpresa = codEmpresa;

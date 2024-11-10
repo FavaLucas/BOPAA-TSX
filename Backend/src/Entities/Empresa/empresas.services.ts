@@ -11,26 +11,59 @@ import { baseURL } from 'src/Services/AxiosAGempresa';
 export class EmpresasService {
 
   constructor(@InjectRepository(Empresa) private readonly empresaRepository: Repository<Empresa>) { }
-
-  public async getEmpresas(){
-    
+  // Para obtener todos los datos en el front
+  public async getAllEmpresas() {
     return this.empresaRepository.find();
-  } 
+  }
 
+
+  //Trabajar aqui
   public async getEmpresa(codEmpresa: string): Promise<Empresa> {
-    console.log("Get AllEmpresas");
-    const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/details`)
+    console.log("getEmpresa por codEmpresa BACK");
+    try {
+      const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/details`);
+      // if (respuestaGempresa) {
+      //   this.guardarEmpresa(respuestaGempresa.data.codEmpresa);
+      // }
 
-    const nuevaEmpresa = new Empresa(
-      respuestaGempresa.data.codempresa,
-      respuestaGempresa.data.empresaNombre,
-      respuestaGempresa.data.cotizationInicial,
-      respuestaGempresa.data.cantidadAcciones
-    );
+      return respuestaGempresa.data;
+    } catch (error) {
+      console.error("Error al buscar la empresa");
+    }
+  }
 
-    await this.empresaRepository.save(nuevaEmpresa);
+  public async guardarEmpresa(codEmpresa: string): Promise<Empresa> {
+    try {
+      if (await this.buscarEmpresa(codEmpresa) == null) {
+        const respuesta: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/details`);
+        const nuevaEmpresa = new Empresa(
+          respuesta.data.codempresa,
+          respuesta.data.empresaNombre,
+          respuesta.data.cotizationInicial,
+          respuesta.data.cantidadAcciones
+        );
+        const guardarEmpresa = await this.empresaRepository.save(nuevaEmpresa);
+        return guardarEmpresa;
+      }
+      else {
+        console.log("La empresa ya existe en la DB");
+      }
+    } catch (error) {
+      console.error("Error al guardar la empresa", error);
+      throw error
+    }
+  };
 
-    return respuestaGempresa.data;
+  public async buscarEmpresa(codEmp: string): Promise<Empresa> {
+    try {
+      const empresas: Empresa = await this.empresaRepository.findOne({
+        where: { codEmpresa: codEmp },
+      });
+      return empresas;
+    } catch (error) {
+      console.error("Error al buscar la empresa con codEmp", error);
+      throw error;
+    }
   }
 
 }
