@@ -4,7 +4,7 @@ import { Empresa } from "../Empresa/empresa.entity";
 export class Cotizacion {
   @PrimaryGeneratedColumn({
     type: 'bigint',
-  })
+})
   public id: number;
 
   @Column({
@@ -21,11 +21,6 @@ export class Cotizacion {
   })
   public hora: string;
 
-  // @Column({
-  //   type: 'date',
-  // })
-  // public dateUTC: Date;
-
   @Column({
     name: 'cotizacion',
     type: 'decimal',
@@ -34,13 +29,6 @@ export class Cotizacion {
   })
   public cotizacion: number;
 
-  // @Column({
-  //   name: 'codEmp',
-  //   type: 'varchar',
-  //   precision: 10,
-  // })
-  // public codEmp: string;
-
   @ManyToOne(() => Empresa, (empresa) => empresa.cotizacionesFK)
   @JoinColumn({
     name: 'codEmpresa',
@@ -48,13 +36,10 @@ export class Cotizacion {
   })
   public codEmpresaFK: Empresa;  
 
-
-
-  constructor(id: number, fecha: string, hora: string,/* dateUTC: Date,*/ cotizacion: number, codEmpresaFK: Empresa) {
+  constructor(id: number, fecha: string, hora: string, cotizacion: number, codEmpresaFK: Empresa) {
     this.id = id;
     this.fecha = fecha;
     this.hora = hora;
-    // this.dateUTC = dateUTC;
     this.cotizacion = cotizacion;
     this.codEmpresaFK = codEmpresaFK;
     

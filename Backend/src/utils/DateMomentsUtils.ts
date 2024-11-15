@@ -13,6 +13,16 @@ class DateMomentsUtils {
     '15:00',
   ];
 
+  static horarioDeBolsaUTC = [
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+  ];
+
   //CREAR METODOS
   static formatearFecha(fecha: IFecha): string {
     return `${fecha.fecha}T${fecha.hora}`;
@@ -32,6 +42,26 @@ class DateMomentsUtils {
       hora: fechaString.substring(11, 16)
     };
   };
+
+  static generarHoraGMTdesdeDate(fecha: Date): IFecha {
+    const fechaStr = momentTZ(fecha).tz(DateMomentsUtils.TZ).format();
+    console.log(fecha + "fecha tipo date");
+    console.log(fechaStr + "fecha tipo string");
+    return {
+      fecha: fechaStr.substring(0, 10),
+      hora: fechaStr.substring(11, 16),
+    };
+  }
+
+  static getUltimaFechaCotizacionString(): string {
+    const date = new Date()
+    date.setMinutes(0)
+    const fecha = date.toISOString()
+    const horaTz = momentTZ.tz(`${fecha}`,);
+    const fechaStr = horaTz.format();
+    const stringRetorno = `${fechaStr.substring(0, 10)}T${fechaStr.substring(11, 16)}`
+    return stringRetorno;
+  }
 
   static transformarFechaAGMT(fecha: string, hora: string): IFecha {
     const fechaUTC = new Date(`${fecha}T${hora}:00.000Z`);

@@ -24,7 +24,7 @@ export interface IEmpresa {
     id?: number;
     codEmpresa: string;
     empresaNombre: string;
-    cotizationInicial: number;
+    cotizacionInicial: number;
     cantidadAcciones: number;
 
 }

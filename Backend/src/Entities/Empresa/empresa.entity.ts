@@ -1,7 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Indice } from "../Indice/indice.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Cotizacion } from "../Cotizacion/cotizacion.entity";
-
 
 @Entity('empresas')
 export class Empresa {
@@ -13,6 +11,7 @@ export class Empresa {
   @Column({
     name: 'codEmpresa',
     length: 100,
+    unique: true,
   })
   public codEmpresa: string;
 
@@ -23,12 +22,12 @@ export class Empresa {
   public empresaNombre: string;
 
   @Column({
-    name: 'cotizationInicial',
+    name: 'cotizacionInicial',
     type: 'decimal',
     precision: 7,
     scale: 2,
   })
-  public cotizationInicial: number;
+  public cotizacionInicial: number;
 
   @Column({
     name: 'cantidadAcciones',
@@ -40,53 +39,10 @@ export class Empresa {
   public cotizacionesFK: Cotizacion[];
 
 
-  constructor(codEmpresa: string, empresaNombre: string, cotizationInicial: number, cantidadAcciones: number) {
+  constructor(codEmpresa: string, empresaNombre: string, cotizacionInicial: number, cantidadAcciones: number) {
     this.codEmpresa = codEmpresa;
     this.empresaNombre = empresaNombre;
-    this.cotizationInicial = cotizationInicial;
+    this.cotizacionInicial = cotizacionInicial;
     this.cantidadAcciones = cantidadAcciones;
   }
-
-  public getId(): number {
-    return this.id;
-  }
-
-  public getCodempresa(): string {
-    return this.codEmpresa;
-  }
-
-  public setCodempresa(codEmpresa: string) {
-    this.codEmpresa = codEmpresa;
-  }
-
-  public getEmpresaNombre(): string {
-    return this.empresaNombre;
-  }
-
-  public setEmpresaNombre(empresaNombre: string) {
-    this.empresaNombre = empresaNombre;
-  }
-
-  public getCotizacionInicial(): number {
-    return this.cotizationInicial;
-  }
-
-  public getCantidadAcciones(): number {
-    return this.cantidadAcciones;
-  }
-
-  // public getIndiceID(): number { return this.indiceID }
-  // public setIndiceID(indiceID: number): void { this.indiceID = indiceID }
-
-  // public getNombreIndice(): string { return this.nombreIndice }
-  // public setNombreIndice(nombreIndice: string): void { this.nombreIndice = nombreIndice }
-
-  // public getPaisIndice(): string { return this.paisIndice }
-  // public setPaisIndice(paisIndice: string): void { this.paisIndice = paisIndice }
-
-  // public getEmpresasIndice(): IEmpresa[] { return this.empresasDelIndice }
-  // public setEmpresasIndice(empresasDelIndice: IEmpresa[]): void { this.empresasDelIndice = empresasDelIndice }
-
-  // public getValorDelIndice(): number { return this.valorDelIndice }
-  // public setValorDelIndice(valorDelIndice: number): void { this.valorDelIndice = valorDelIndice }
 }

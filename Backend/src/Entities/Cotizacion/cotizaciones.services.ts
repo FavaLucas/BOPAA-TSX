@@ -1,40 +1,43 @@
-import { Injectable, } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cotizacion } from './cotizacion.entity';
 import { Equal, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AxiosResponse } from 'axios';
-import clienteAxios from 'axios';
+import clienteAxios, { AxiosResponse } from 'axios';
 import { baseURL } from 'src/Services/AxiosAGempresa';
 import DateMomentsUtils from 'src/utils/DateMomentsUtils';
 import { IFecha } from 'src/Models/fecha.model';
 import { Empresa } from '../Empresa/empresa.entity';
 
-
 @Injectable()
 export class CotizacionesService {
-
-  constructor(@InjectRepository(Cotizacion) private readonly cotizacionRepository: Repository<Cotizacion>,
+  constructor(
+    @InjectRepository(Cotizacion) private readonly cotizacionRepository: Repository<Cotizacion>,
     @InjectRepository(Empresa) private readonly empresaRepository: Repository<Empresa>,
   ) { }
+  private readonly logger = new Logger(CotizacionesService.name);
 
+  //Trae todas las cotizaciones guardadas en mi DB Local
+  //Postman: http://localhost:8080/cotizaciones/
   public async getCotizaciones() {
+    this.logger.log("CS - Obteniendo todas las cotizaciones");
     return this.cotizacionRepository.find();
   }
 
-  public async getCotizacionesByEmpresaEntreFechas(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
-    console.log("Get AllCotizaciones");
-    console.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
+  //Ingreso con fechaDesde y hasta de tipo: 2024-11-14T00:00
+  //http://localhost:8080/cotizaciones/entreFechas/V?fechaDesde=2024-11-01T00:00&fechaHasta=2021-11-14T20:00
+  public async getCotizacionesEntreFechas(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
+    this.logger.log(`CC - Obteniendo cotizaciones desde Gempresa de la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
 
     const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`);
 
-    console.log(respuestaGempresa.data)
-    respuestaGempresa.data.forEach(cotizacion1 => {
+    this.logger.log(respuestaGempresa.data)
+    respuestaGempresa.data.forEach(cotizacion => {
       const nuevaCotizacion = new Cotizacion(
-        cotizacion1.id,
-        cotizacion1.fecha,
-        cotizacion1.hora,
-        cotizacion1.cotization,
-        cotizacion1.codEmpresaFK
+        cotizacion.id,
+        cotizacion.fecha,
+        cotizacion.hora,
+        cotizacion.cotization,
+        cotizacion.codEmpresaFK
       );
       this.cotizacionRepository.save(nuevaCotizacion);
     });
@@ -42,8 +45,31 @@ export class CotizacionesService {
     return respuestaGempresa.data;
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   public async getCotizacionesFechaYHora(codEmpresa: string, fecha: string, hora: string): Promise<Cotizacion[]> {
-    console.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fecha=${fecha}&hora=${hora}`);
+    this.logger.log(`${baseURL}/cotizaciones/${codEmpresa}/cotizaciones?fecha=${fecha}&hora=${hora}`);
     const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/cotizacion?fecha=${fecha}&hora=${hora}`);
 
     const nuevaCotizacion = new Cotizacion(
@@ -60,6 +86,7 @@ export class CotizacionesService {
   }
 
 
+
   ////////////////////////////////////////////////////////////
 
   public async ultimaFechaRegistradaEnGempresa(): Promise<IFecha> {
@@ -69,7 +96,7 @@ export class CotizacionesService {
 
   public async ultimaFechaDeCotizacionEnMiDB(codEmpresa: string): Promise<IFecha> {
     try {
-      console.log('codEmp:', codEmpresa);
+      this.logger.log('codEmp:', codEmpresa);
       const empresa = await this.empresaRepository.findOne({
         where: { codEmpresa: codEmpresa }
       });
@@ -93,7 +120,7 @@ export class CotizacionesService {
         return fecha;
       }
     } catch (error) {
-      console.error("Error al buscar la ultima cotizacion: ", error);
+      this.logger.error("Error al buscar la ultima cotizacion: ", error);
       return null;
     };
   };
@@ -105,7 +132,7 @@ export class CotizacionesService {
       });
       return cotizaciones;
     } catch (error) {
-      console.error("Error buscando cotizacion", error);
+      this.logger.error("Error buscando cotizacion", error);
       throw error;
     };
   }
@@ -118,10 +145,10 @@ export class CotizacionesService {
         const guardarCotizacion = await this.cotizacionRepository.save(cotizacion);
         return guardarCotizacion;
       } else {
-        console.log("Ya existe esta cotizacion en la DB");
+        this.logger.log("Ya existe esta cotizacion en la DB");
       }
     } catch (error) {
-      console.error("Error guardando la cotizacion", error);
+      this.logger.error("Error guardando la cotizacion", error);
       throw error;
     }
   }
@@ -160,13 +187,3 @@ export class CotizacionesService {
   }
 }
 
-
-
-
-
-
-
-
-
-// http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/cotizaciones/BABA/cotizaciones?fechaDesde=undefined&fechaHasta=undefined
-// http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/cotizaciones/BABA/cotizaciones?fechaDesde=undefined&fechaHasta=undefined
