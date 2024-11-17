@@ -65,37 +65,16 @@ export class EmpresasService {
   public async buscarEmpresaEnDBLocal(codEmp: string): Promise<Empresa | string | null> {
     try {
       const empresadeDBLocal: Empresa = await this.empresaRepository.findOne({where: { codEmpresa: codEmp },});
-
       if (empresadeDBLocal) {
-        this.logger.log("EmpresaService - Empresa encontrada en DB Local - 2222");
+        this.logger.log("ES - Empresa encontrada en DB Local");
         return empresadeDBLocal;
       } else {
-        this.logger.log("EmpresaService -  - Obteniendo codEmpresas[] de mi DB Localxx");
-        return null;
+        this.logger.log("ES  - La empresa no existe en la DB Local") ;
       }
     } catch (error) {
-      this.logger.error("EmpresaService - Error al buscar la empresa con codEmp en la DB Local:", error.message);
+      this.logger.error("ES - Error:", error.message);
       throw error;
     }
   }
 }
 
-
-
-
-
-
-
-
-
-// public async buscarEmpresa(codEmp: string): Promise<Empresa> {
-//   try {
-//     const empresas: Empresa = await this.empresaRepository.findOne({
-//       where: { codEmpresa: codEmp },
-//     });
-//     return empresas;
-//   } catch (error) {
-//     console.error("EmpresaService - Error al buscar la empresa con codEmp", error);
-//     throw error;
-//   }
-// }

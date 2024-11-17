@@ -2,38 +2,41 @@ import * as momentTZ from 'moment-timezone';
 import { IFecha } from 'src/Models/fecha.model';
 
 class DateMomentsUtils {
-  static TZ: string = "America/Toronto";
+  static MiHorarioTZ: string = 'America/Toronto';
+  //Toronto = UTC - 5
+  //Toronto 09.00 = 14.00 UTC
   static horarioDeBolsa = [
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
+    '09:00',//14 utc
+    '10:00',//15 utc
+    '11:00',//16 utc
+    '12:00',//17 utc
+    '13:00',//18 utc
+    '14:00',//19 utc
+    '15:00',//20 utc
   ];
 
   static horarioDeBolsaUTC = [
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00',
-    '20:00',
+    '14:00',//14 utc
+    '15:00',//15 utc
+    '16:00',//16 utc
+    '17:00',//17 utc
+    '18:00',//18 utc
+    '19:00',//19 utc
+    '20:00',//20 utc
   ];
+
 
   //CREAR METODOS
   static formatearFecha(fecha: IFecha): string {
     return `${fecha.fecha}T${fecha.hora}`;
   };
 
+  // -getLastDateCotizacion -
   static getUltimaFechaCotizacionGempresa(): IFecha {
     const fecha = new Date();
     fecha.setMinutes(0);
-
     const fechaISO = fecha.toISOString();
-    const horaTZ = momentTZ.tz(`${fecha}`, DateMomentsUtils.TZ);
+    const horaTZ = momentTZ.tz(`${fechaISO}`, DateMomentsUtils.MiHorarioTZ);
 
     const fechaString = horaTZ.format();
 
@@ -44,7 +47,7 @@ class DateMomentsUtils {
   };
 
   static generarHoraGMTdesdeDate(fecha: Date): IFecha {
-    const fechaStr = momentTZ(fecha).tz(DateMomentsUtils.TZ).format();
+    const fechaStr = momentTZ(fecha).tz(DateMomentsUtils.MiHorarioTZ).format();
     console.log(fecha + "fecha tipo date");
     console.log(fechaStr + "fecha tipo string");
     return {
@@ -65,18 +68,25 @@ class DateMomentsUtils {
 
   static transformarFechaAGMT(fecha: string, hora: string): IFecha {
     const fechaUTC = new Date(`${fecha}T${hora}:00.000Z`);
-    const horaTZ = momentTZ.tz(fechaUTC, DateMomentsUtils.TZ);
-    const fechaString = horaTZ.format();
+    const horaTZ = momentTZ.tz(fechaUTC, DateMomentsUtils.MiHorarioTZ);
+    // const fechaString = horaTZ.format();
 
-    const fechaGMT = {
-      fecha: fechaString.substring(0, 10),
-      hora: fechaString.substring(11, 16)
-    }
-    return fechaGMT;
+    // const fechaGMT = {
+    //   fecha: fechaString.substring(0, 10),
+    //   hora: fechaString.substring(11, 16)
+    // }
+
+    const fechaTransformada = {
+      fecha: horaTZ.format("YYYY-MM-DD"),
+      hora: horaTZ.format("HH:mm"),
+    };
+
+    // return fechaGMT;
+    return fechaTransformada;
   };
 }
 export default DateMomentsUtils;
-//ir a la base de datos y preguntar: hay cotizaciones?
-//1-FALSE , aplicar ****getAllCotizaciones con ##fechaDePartida 01/01/24 + ##fecha actual
-//2 TRUE, ##fechaDePartida =  ***getUltimaFechaCotizaciones() + ##fecha actual
+
+
+
 

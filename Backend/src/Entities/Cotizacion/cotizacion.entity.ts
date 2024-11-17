@@ -42,9 +42,5 @@ export class Cotizacion {
     this.hora = hora;
     this.cotizacion = cotizacion;
     this.codEmpresaFK = codEmpresaFK;
-    
-
   }
-
-    
 }

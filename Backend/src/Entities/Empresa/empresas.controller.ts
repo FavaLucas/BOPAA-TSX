@@ -41,27 +41,16 @@ export class EmpresasController {
     try {
       const existe = await this.empresasService.buscarEmpresaEnDBLocal(codEmp);
       if (existe) {
-        this.logger.log("EmpresaController - La empresa existe en la DB local");
+        this.logger.log("EC - La empresa existe en la DB local");
         return existe;
       } else {
-        return "EmpresaController - La empresa no existe en la DB Local";
+        this.logger.log("EC  - La empresa no existe en la DB Local") ;
       }
     } catch (error) {
-      this.logger.error("Error al buscar la empresa:", error.message);
-      return "Error al buscar la empresa en la DB Local";
+      this.logger.error("EC - Error:", error.message);
     }
   }
 }
 
 
 
-
-
-
-
-
-
-// @Get()
-// async buscarEmpresa(@Param('codEmp') codEmp: string): Promise<Empresa> {
-//   return this.buscarEmpresa(codEmp);
-// }
