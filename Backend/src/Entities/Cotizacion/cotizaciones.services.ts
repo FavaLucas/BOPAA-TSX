@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cotizacion } from './cotizacion.entity';
-import { Equal, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import clienteAxios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { baseURL } from 'src/Services/AxiosAGempresa';
 import DateMomentsUtils from 'src/utils/DateMomentsUtils';
 import { IFecha } from 'src/Models/fecha.model';
@@ -14,63 +14,43 @@ export class CotizacionesService {
     @InjectRepository(Cotizacion) private readonly cotizacionRepository: Repository<Cotizacion>,
     @InjectRepository(Empresa) private readonly empresaRepository: Repository<Empresa>,
   ) { }
+
   private readonly logger = new Logger(CotizacionesService.name);
 
-  //Trae todas las cotizaciones guardadas en mi DB Local
-  //Postman: http://localhost:8080/cotizaciones/
-  public async getCotizaciones() {
+  // Obtener todas las cotizaciones guardadas en la base de datos local
+  public async getCotizaciones(): Promise<Cotizacion[]> {
     this.logger.log("CS - Obteniendo todas las cotizaciones");
     return this.cotizacionRepository.find();
   }
 
-  //UTC
-  //Ingreso con fechaDesde y hasta de tipo: 2024-11-14T00:00
-  //http://localhost:8080/cotizaciones/entreFechas/V?fechaDesde=2024-11-01T00:00&fechaHasta=2021-11-14T20:00
+  // Obtener cotizaciones de una empresa entre fechas específicas
   public async getCotizacionesEntreFechas(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
     this.logger.log(`CS - Obteniendo cotizaciones desde Gempresa de la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
 
     const empresa = await this.empresaRepository.findOne({ where: { codEmpresa } });
-
     const fechaDesdeUTC = DateMomentsUtils.transformarFechaAGMT(fechaDesde.split("T")[0], fechaDesde.split("T")[1]);
     const fechaHastaUTC = DateMomentsUtils.transformarFechaAGMT(fechaHasta.split("T")[0], fechaHasta.split("T")[1]);
 
-    if (empresa) {
-      const respuestaGempresa = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesdeUTC.fecha}T${fechaDesdeUTC.hora}&fechaHasta=${fechaHastaUTC.fecha}T${fechaHastaUTC.hora}`);
+    if (!empresa) {
+      this.logger.error("CS - La empresa ingresada no existe en la base de datos local.");
+      return [];
+    }
 
-      // respuestaGempresa.data.forEach(cotizacion => {
-      //   const nuevaCotizacion = new Cotizacion(
-      //     cotizacion.id,
-      //     cotizacion.fecha,
-      //     cotizacion.hora,
-      //     cotizacion.cotization,
-      //     empresa,
-      //   );
-      //   this.cotizacionRepository.save(nuevaCotizacion);
-      // });
+    const respuestaGempresa = await axios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesdeUTC.fecha}T${fechaDesdeUTC.hora}&fechaHasta=${fechaHastaUTC.fecha}T${fechaHastaUTC.hora}`);
+    const cotizaciones = respuestaGempresa.data.map(cotizacion => {
+      const fechaLocal = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
+      return new Cotizacion(cotizacion.id, fechaLocal.fecha, fechaLocal.hora, cotizacion.cotization, empresa);
+    });
 
-      const cotizaciones = respuestaGempresa.data.map(cotizacion => {
-        const fechaLocal = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
-        return new Cotizacion(cotizacion.id, fechaLocal.fecha, fechaLocal.hora, cotizacion.cotization, empresa);
-      });
-
-      await this.cotizacionRepository.save(cotizaciones);
-      return cotizaciones;
-
-      //   this.logger.log("CS - Cotizaciones guardadas en DB Local.");
-      //   return respuestaGempresa.data;
-      // } else {
-      //   this.logger.error("CS - La empresa ingresada no existe en la DB Local, no es posible asignarle cotizaciones.");
-    };
+    await this.cotizacionRepository.save(cotizaciones);
+    return cotizaciones;
   }
 
-  //UTC
-  //Ingreso con codEmpresa + fecha + hora para busacar de Gempresa 1 cotizacion especifica
-  //http://localhost:8080/cotizaciones/fechayhora/V?fecha=2024-01-01&hora=08:00
+  // Obtener cotización específica de una empresa por fecha y hora
   public async getCotizacionesFechaYHora(codEmpresa: string, fecha: string, hora: string): Promise<Cotizacion[]> {
     this.logger.log(`CC - Obteniendo cotización de la empresa ${codEmpresa} el día ${fecha} a la hora ${hora}`);
 
     try {
-      // Buscar la cotización en el repositorio usando codEmpresa, fecha y hora
       const cotizacion = await this.cotizacionRepository.findOne({
         relations: ['codEmpresaFK'],
         where: {
@@ -81,7 +61,7 @@ export class CotizacionesService {
       });
 
       if (cotizacion) {
-        this.logger.log("CS - Cotización con Fecha y Hora encontrada.");
+        this.logger.log("CS - Cotización encontrada.");
         return [cotizacion];
       } else {
         this.logger.warn("CS - No se encontró ninguna cotización para la fecha y hora especificadas.");
@@ -93,22 +73,18 @@ export class CotizacionesService {
     }
   }
 
-
-
-
-  //
-  // 
-  public async guardarTodasLasCotizaciones(codEmpresa: string): Promise<any> {
+  // Actualizar todas las cotizaciones de una empresa
+  public async guardarTodasLasCotizaciones(codEmpresa: string): Promise<void> {
     const ultimaFechaEnMiDB = await this.ultimaFechaDeCotizacionEnMiDB(codEmpresa);
-    this.logger.log(`VER QUE TOMA COMO ULTIMA FECHA EN MI DB: ${JSON.stringify(ultimaFechaEnMiDB)}`);
+    this.logger.log(`Ultima fecha en mi DB: ${JSON.stringify(ultimaFechaEnMiDB)}`);
     const stringUltimaFechaEnMiDB = DateMomentsUtils.formatearFecha(ultimaFechaEnMiDB);
-    this.logger.log(`STRING ULTIMA FECHA EN MI DB: ${JSON.stringify(stringUltimaFechaEnMiDB)}`);
+    this.logger.log(`String ultima fecha en mi DB: ${JSON.stringify(stringUltimaFechaEnMiDB)}`);
 
     const ultimaFechaGempresa = await this.ultimaFechaRegistradaEnGempresa();
-    this.logger.log("VER QUE TOMA COMO ULTIMA FECHA EN GEMPRESA", ultimaFechaGempresa);
+    this.logger.log("Ultima fecha en Gempresa:", ultimaFechaGempresa);
     const stringUltimaFechaDeGempresa = DateMomentsUtils.formatearFecha(ultimaFechaGempresa);
 
-    this.logger.log(`GEMPRESA FECHA STRING: ${stringUltimaFechaDeGempresa}`);
+    this.logger.log(`Gempresa fecha string: ${stringUltimaFechaDeGempresa}`);
 
     try {
       const cotizaciones = await this.getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(
@@ -123,119 +99,103 @@ export class CotizacionesService {
     }
   }
 
-
-
-
-
-  // - findLastCotizacionDb - 
+  // Obtener la última fecha de cotización registrada en la base de datos local
   public async ultimaFechaDeCotizacionEnMiDB(codEmpresa: string): Promise<IFecha> {
     try {
-      this.logger.log('codEmp:', codEmpresa);
-      const empresa = await this.empresaRepository.findOne({ where: { codEmpresa: codEmpresa } });
+      this.logger.log('Buscando última cotización para codEmpresa:', codEmpresa);
+      const empresa = await this.empresaRepository.findOne({ where: { codEmpresa } });
 
-      const ultimaCotizacion: Cotizacion[] = await this.cotizacionRepository.find({
+      const ultimaCotizacion = await this.cotizacionRepository.find({
         relations: ['codEmpresaFK'],
-        where: { codEmpresaFK: { codEmpresa: codEmpresa } },
+        where: { codEmpresaFK: { codEmpresa } },
         order: { id: 'DESC' },
         take: 1,
       });
 
       const fechaCotizacion = ultimaCotizacion[0];
-
       if (!fechaCotizacion || !fechaCotizacion.fecha) {
-        const fecha: IFecha = DateMomentsUtils.transformarFechaAGMT('2024-01-01', '00:00')
-        return fecha;
+        return DateMomentsUtils.transformarFechaAGMT('2024-01-01', '00:00');
       } else {
-        const fecha: IFecha = DateMomentsUtils.transformarFechaAGMT(fechaCotizacion.fecha, fechaCotizacion.hora)
-        return fecha;
-      }
-
-    } catch (error) {
-      this.logger.error("Error al buscar la ultima cotizacion: ", error);
-      return null;
-    };
-  };
-
-
-  //
-  //
-  public async ultimaFechaRegistradaEnGempresa(): Promise<IFecha> {
-    const fecha = DateMomentsUtils.getUltimaFechaCotizacionGempresa();
-    return fecha;
-  }
-
-
-
-
-
-
-  ////////////////////////////////////////////////////////////
-
-
-  public async buscarCotizacionPorID(cotizacionID: number): Promise<Cotizacion> {
-    try {
-      const cotizaciones: Cotizacion = await this.cotizacionRepository.findOne({
-        where: { id: cotizacionID }
-      });
-      return cotizaciones;
-    } catch (error) {
-      this.logger.error("Error buscando cotizacion", error);
-      throw error;
-    };
-  }
-
-
-  public async guardarCotizacionEnDB(cotizacion: Cotizacion) {
-    try {
-      const hayCotizacion = await this.buscarCotizacionPorID(cotizacion.id)
-      if (hayCotizacion == null) {
-        const guardarCotizacion = await this.cotizacionRepository.save(cotizacion);
-        return guardarCotizacion;
-      } else {
-        this.logger.log("Ya existe esta cotizacion en la DB");
+        return DateMomentsUtils.transformarFechaAGMT(fechaCotizacion.fecha, fechaCotizacion.hora);
       }
     } catch (error) {
-      this.logger.error("Error guardando la cotizacion", error);
+      this.logger.error("Error al buscar la última cotización:", error);
       throw error;
     }
   }
 
+  // Obtener la última fecha de cotización registrada en Gempresa
+  public async ultimaFechaRegistradaEnGempresa(): Promise<IFecha> {
+    return DateMomentsUtils.getUltimaFechaCotizacionGempresa();
+  }
 
+  // Guardar una cotización en la base de datos
+  public async guardarCotizacionEnDB(cotizacion: Cotizacion): Promise<Cotizacion> {
+    try {
+      const hayCotizacion = await this.buscarCotizacionPorID(cotizacion.id);
+      if (!hayCotizacion) {
+        return this.cotizacionRepository.save(cotizacion);
+      } else {
+        this.logger.log("La cotización ya existe en la base de datos");
+      }
+    } catch (error) {
+      this.logger.error("Error guardando la cotización:", error);
+      throw error;
+    }
+  }
+
+  // Buscar cotización por ID
+  public async buscarCotizacionPorID(cotizacionID: number): Promise<Cotizacion> {
+    try {
+      return this.cotizacionRepository.findOne({ where: { id: cotizacionID } });
+    } catch (error) {
+      this.logger.error("Error buscando cotización:", error);
+      throw error;
+    }
+  }
+
+  // Obtener cotizaciones de Gempresa con codEmpresa y fechas en GMT
   public async getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(codEmpresa: string, stringUltimaFechaEnMiDB: string, stringUltimaFechaDeGempresa: string): Promise<Cotizacion[]> {
     this.logger.log(`Actualizando cotizaciones de ${codEmpresa} desde ${stringUltimaFechaEnMiDB} hasta ${stringUltimaFechaDeGempresa}`);
-
+  
     const empresa = await this.empresaRepository.findOne({ where: { codEmpresa } });
-
-    const respuesta: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}
-      /cotizaciones?fechaDesde=${stringUltimaFechaEnMiDB}&fechaHasta=${stringUltimaFechaDeGempresa}`);
-
-    // this.logger.log(`Cotizaciones recibidas desde GEMPRESA para ${codEmpresa}: ${JSON.stringify(respuesta.data)}`);
-
-    const cotizacionesFaltantes = respuesta.data.map(async (cotizacion) => {
-      const fechaGMT = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
-
-      this.logger.debug(`Procesando cotización: Fecha GMT=${fechaGMT.fecha}, Hora GMT=${fechaGMT.hora}, Hora Bolsa Permitida=${DateMomentsUtils.horarioDeBolsaUTC.includes(fechaGMT.hora)}`);
-
-      if (DateMomentsUtils.horarioDeBolsaUTC.includes(fechaGMT.hora)) {
+  
+    const respuesta: AxiosResponse<any, any> = await axios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${stringUltimaFechaEnMiDB}&fechaHasta=${stringUltimaFechaDeGempresa}`);
+    this.logger.log(`Respuesta de Gempresa: ${JSON.stringify(respuesta.data)}`);
+  
+    const horarioDeBolsaUTC = DateMomentsUtils.getHorarioDeBolsaUTC();
+    this.logger.debug(`Horario de Bolsa en UTC: ${JSON.stringify(horarioDeBolsaUTC)}`);
+  
+    const cotizacionesFaltantes = await Promise.all(respuesta.data.map(async (cotizacion) => {
+      const fechaUTC = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
+  
+      this.logger.debug(`Procesando cotización: Fecha UTC=${fechaUTC.fecha}, Hora UTC=${fechaUTC.hora}`);
+  
+      // Verificar si la hora está dentro del horario de apertura de la bolsa en UTC
+      if (horarioDeBolsaUTC.includes(fechaUTC.hora)) {
         const nuevaCotizacion = new Cotizacion(
           cotizacion.id,
-          fechaGMT.fecha,
-          fechaGMT.hora,
+          fechaUTC.fecha,
+          fechaUTC.hora,
           cotizacion.cotization,
           empresa
         );
-
+  
         this.logger.debug(`Guardando cotización: ${JSON.stringify(nuevaCotizacion)}`);
         await this.guardarCotizacionEnDB(nuevaCotizacion);
       } else {
-        this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaGMT)}`);
+        this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
       }
-    });
-
-    //await Promise.all(cotizacionesFaltantes);
+    }));
+  
+    await Promise.all(cotizacionesFaltantes);
     this.logger.log(`Procesamiento completado para ${codEmpresa}`);
     return respuesta.data;
   }
+  
+}
+
+
 
 
 /* function generarHoraGMTdesdeDate(stringUltimaFechaDeGempresa: string) {
@@ -402,9 +362,8 @@ export class CotizacionesService {
       throw new Error(`No se pudieron obtener las cotizaciones para la empresa ${codEmpresa}`);
     }
   } */
-  
-  
-  
-  
 
-}
+
+
+
+

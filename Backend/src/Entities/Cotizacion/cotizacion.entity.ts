@@ -1,5 +1,6 @@
 import {  Column, PrimaryGeneratedColumn, Entity, OneToMany, JoinColumn, ManyToOne } from "typeorm";
 import { Empresa } from "../Empresa/empresa.entity";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 @Entity('cotizaciones')
 export class Cotizacion {
   @PrimaryGeneratedColumn({
@@ -7,6 +8,8 @@ export class Cotizacion {
 })
   public id: number;
 
+  @IsString({ message: 'Fecha debe ser una cadena de texto' }) 
+  @IsNotEmpty({ message: 'Fecha es obligatoria' })
   @Column({
     name: 'fecha',
     type: 'varchar',
@@ -14,6 +17,8 @@ export class Cotizacion {
   })
   public fecha: string;
 
+  @IsString({ message: 'Hora debe ser una cadena de texto' }) 
+  @IsNotEmpty({ message: 'Hora es obligatoria' })
   @Column({
     name: 'hora',
     type: 'varchar',
@@ -21,6 +26,8 @@ export class Cotizacion {
   })
   public hora: string;
 
+  @IsNumber({}, { message: 'Cotizacion debe ser un número' }) 
+  @IsNotEmpty({ message: 'Cotizacion es obligatoria' })
   @Column({
     name: 'cotizacion',
     type: 'decimal',
@@ -34,6 +41,7 @@ export class Cotizacion {
     name: 'codEmpresa',
     foreignKeyConstraintName: 'FK_codEmpresa'
   })
+  @IsNotEmpty({ message: 'Empresa es obligatoria' })
   public codEmpresaFK: Empresa;  
 
   constructor(id: number, fecha: string, hora: string, cotizacion: number, codEmpresaFK: Empresa) {
