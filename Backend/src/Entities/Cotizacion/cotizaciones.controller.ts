@@ -52,7 +52,7 @@ export class CotizacionesController {
   @Get('/traerCotizacionesMisEmpresas')
   public async actualizarCotizacionesMisEmpresas(): Promise<void> {
     this.logger.log("CotizacionesController - Actualizando cotizaciones en DB Local");
-
+  
     const arrCodigosEmpresas = await this.empresaService.buscarMisEmpresasDeDB();
     if (arrCodigosEmpresas && arrCodigosEmpresas.length > 0) {
       for (const codEmpresa of arrCodigosEmpresas) {
@@ -66,6 +66,7 @@ export class CotizacionesController {
       this.logger.error("No hay empresas en su DB Local o la búsqueda falló");
     }
   }
+  
 }
 
 

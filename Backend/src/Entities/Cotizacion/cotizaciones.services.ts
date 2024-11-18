@@ -75,16 +75,19 @@ export class CotizacionesService {
 
   // Actualizar todas las cotizaciones de una empresa
   public async guardarTodasLasCotizaciones(codEmpresa: string): Promise<void> {
+    this.logger.log(`Actualizando cotizaciones para ${codEmpresa}`);
+
+    // Obtener la última fecha de cotización en la base de datos
     const ultimaFechaEnMiDB = await this.ultimaFechaDeCotizacionEnMiDB(codEmpresa);
-    this.logger.log(`Ultima fecha en mi DB: ${JSON.stringify(ultimaFechaEnMiDB)}`);
+    this.logger.log(`Última fecha en mi DB: ${JSON.stringify(ultimaFechaEnMiDB)}`);
     const stringUltimaFechaEnMiDB = DateMomentsUtils.formatearFecha(ultimaFechaEnMiDB);
-    this.logger.log(`String ultima fecha en mi DB: ${JSON.stringify(stringUltimaFechaEnMiDB)}`);
+    this.logger.log(`String última fecha en mi DB: ${stringUltimaFechaEnMiDB}`);
 
+    // Obtener la última fecha registrada en Gempresa
     const ultimaFechaGempresa = await this.ultimaFechaRegistradaEnGempresa();
-    this.logger.log("Ultima fecha en Gempresa:", ultimaFechaGempresa);
+    this.logger.log(`Última fecha en Gempresa: ${ultimaFechaGempresa}`);
     const stringUltimaFechaDeGempresa = DateMomentsUtils.formatearFecha(ultimaFechaGempresa);
-
-    this.logger.log(`Gempresa fecha string: ${stringUltimaFechaDeGempresa}`);
+    this.logger.log(`String última fecha en Gempresa: ${stringUltimaFechaDeGempresa}`);
 
     try {
       const cotizaciones = await this.getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(
@@ -98,6 +101,7 @@ export class CotizacionesService {
       this.logger.error(`Error al guardar cotizaciones para ${codEmpresa}: ${error.message}`);
     }
   }
+
 
   // Obtener la última fecha de cotización registrada en la base de datos local
   public async ultimaFechaDeCotizacionEnMiDB(codEmpresa: string): Promise<IFecha> {
@@ -157,21 +161,20 @@ export class CotizacionesService {
   // Obtener cotizaciones de Gempresa con codEmpresa y fechas en GMT
   public async getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(codEmpresa: string, stringUltimaFechaEnMiDB: string, stringUltimaFechaDeGempresa: string): Promise<Cotizacion[]> {
     this.logger.log(`Actualizando cotizaciones de ${codEmpresa} desde ${stringUltimaFechaEnMiDB} hasta ${stringUltimaFechaDeGempresa}`);
-  
+
     const empresa = await this.empresaRepository.findOne({ where: { codEmpresa } });
-  
+
     const respuesta: AxiosResponse<any, any> = await axios.get(`${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${stringUltimaFechaEnMiDB}&fechaHasta=${stringUltimaFechaDeGempresa}`);
     this.logger.log(`Respuesta de Gempresa: ${JSON.stringify(respuesta.data)}`);
-  
+
     const horarioDeBolsaUTC = DateMomentsUtils.getHorarioDeBolsaUTC();
     this.logger.debug(`Horario de Bolsa en UTC: ${JSON.stringify(horarioDeBolsaUTC)}`);
-  
+
     const cotizacionesFaltantes = await Promise.all(respuesta.data.map(async (cotizacion) => {
       const fechaUTC = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
-  
+
       this.logger.debug(`Procesando cotización: Fecha UTC=${fechaUTC.fecha}, Hora UTC=${fechaUTC.hora}`);
-  
-      // Verificar si la hora está dentro del horario de apertura de la bolsa en UTC
+
       if (horarioDeBolsaUTC.includes(fechaUTC.hora)) {
         const nuevaCotizacion = new Cotizacion(
           cotizacion.id,
@@ -180,190 +183,17 @@ export class CotizacionesService {
           cotizacion.cotization,
           empresa
         );
-  
+
         this.logger.debug(`Guardando cotización: ${JSON.stringify(nuevaCotizacion)}`);
         await this.guardarCotizacionEnDB(nuevaCotizacion);
       } else {
         this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
       }
     }));
-  
+
     await Promise.all(cotizacionesFaltantes);
     this.logger.log(`Procesamiento completado para ${codEmpresa}`);
     return respuesta.data;
   }
-  
 }
-
-
-
-
-/* function generarHoraGMTdesdeDate(stringUltimaFechaDeGempresa: string) {
-  throw new Error('Function not implemented.');
-} */
-
-
-/*   public async traerTodasLasCotizaciones(): Promise<Cotizacion[]> {
-    const codEmpresa = "XOM";
-    const fechaDesdeUTC = "2024-11-16";
-    const horaDesdeUTC = "00:00";
-    const fechaHastaUTC = "2024-11-16";
-    const horaHastaUTC = "21:00";
-  
-    const url = `${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${fechaDesdeUTC}T${horaDesdeUTC}&fechaHasta=${fechaHastaUTC}T${horaHastaUTC}`;
-  
-    try {
-      const response = await clienteAxios.get(url);
-      const todasLasCotizaciones: Cotizacion[] = response.data;
-  
-      // Filtrar las cotizaciones que están dentro del horario de bolsa
-      const cotizacionesEnHorario = todasLasCotizaciones.filter((cotizacion) => 
-        DateMomentsUtils.horarioDeBolsa.includes(cotizacion.hora)
-      );
-  
-      this.logger.debug("Cotizaciones filtradas en horario de bolsa:", cotizacionesEnHorario);
-  
-      // Guardar las cotizaciones en la base de datos
-      for (const cotizacion of cotizacionesEnHorario) {
-        try {
-          await this.cotizacionRepository.save(cotizacion);
-          this.logger.debug(`Cotización guardada: ${JSON.stringify(cotizacion)}`);
-        } catch (error) {
-          this.logger.error("Error al guardar la cotización:", error.message);
-        }
-      }
-  
-      return cotizacionesEnHorario;
-    } catch (error) {
-      this.logger.error("Error buscando cotización:", error.message);
-      throw new Error("Error buscando cotización");
-    }
-  } */
-
-
-
-/*   public async guardarAOE2(codEmpresa: string): Promise<void> {
-    try {
-      // Obtener la última fecha en mi DB
-      const ultimaFechaEnMiDB = await this.ultimaFechaDeCotizacionEnMiDB(codEmpresa);
-      if (!ultimaFechaEnMiDB) {
-        this.logger.warn(`No se encontró una última fecha para la empresa ${codEmpresa}.`);
-        return;
-      }
-  
-      const stringUltimaFechaEnMiDB = DateMomentsUtils.formatearFecha(ultimaFechaEnMiDB);
-  
-      // Obtener la última fecha registrada en Gempresa
-      const ultimaFechaGempresa = await this.ultimaFechaRegistradaEnGempresa();
-      if (!ultimaFechaGempresa) {
-        this.logger.warn(`No se pudo obtener la última fecha registrada en Gempresa para la empresa ${codEmpresa}.`);
-        return;
-      }
-  
-      const stringUltimaFechaDeGempresa = DateMomentsUtils.formatearFecha(ultimaFechaGempresa);
-  
-      // Log de información
-      this.logger.log(`Actualizando cotizaciones de ${codEmpresa} desde ${stringUltimaFechaEnMiDB} hasta ${stringUltimaFechaDeGempresa}.`);
-  
-      // Verificar si hay un rango válido para actualizar
-      if (stringUltimaFechaEnMiDB >= stringUltimaFechaDeGempresa) {
-        this.logger.warn(`No hay cotizaciones nuevas para ${codEmpresa}.`);
-        return;
-      }
-  
-      // Obtener las cotizaciones desde Gempresa
-      const cotizaciones = await this.AOE(
-        codEmpresa,
-        stringUltimaFechaEnMiDB,
-        stringUltimaFechaDeGempresa
-      );
-  
-      // Guardar las cotizaciones en la base de datos
-      for (const cotizacion of cotizaciones) {
-        try {
-          await this.guardarCotizacionEnDB(cotizacion);
-        } catch (error) {
-          this.logger.error(`Error guardando cotización con ID ${cotizacion.id}: ${error.message}`);
-        }
-      }
-  
-      this.logger.log(`Cotizaciones guardadas exitosamente para la empresa ${codEmpresa}.`);
-    } catch (error) {
-      this.logger.error(`Error al guardar todas las cotizaciones para ${codEmpresa}: ${error.message}`);
-      throw error;
-    }
-  } */
-
-
-/*   public async AOE(
-    codEmpresa: string,
-    stringUltimaFechaEnMiDB: string,
-    stringUltimaFechaDeGempresa: string
-  ): Promise<Cotizacion[]> {
-    this.logger.log(`Actualizando cotizaciones de ${codEmpresa} desde ${stringUltimaFechaEnMiDB} hasta ${stringUltimaFechaDeGempresa}`);
-  
-    const empresa = await this.empresaRepository.findOne({ where: { codEmpresa } });
-  
-    if (!empresa) {
-      this.logger.error(`La empresa con codEmpresa ${codEmpresa} no existe en la base de datos local.`);
-      return [];
-    }
-  
-    try {
-      // Hacemos la solicitud para obtener las cotizaciones entre las fechas especificadas
-      const respuesta: AxiosResponse<any, any> = await clienteAxios.get(
-        `${baseURL}/empresas/${codEmpresa}/cotizaciones?fechaDesde=${stringUltimaFechaEnMiDB}&fechaHasta=${stringUltimaFechaDeGempresa}`
-      );
-  
-      if (!respuesta.data || respuesta.data.length === 0) {
-        this.logger.log(`No se encontraron cotizaciones en Gempresa para el periodo solicitado.`);
-        return [];
-      }
-  
-      // Procesamos las cotizaciones que recibimos
-      const cotizacionesFaltantes = respuesta.data.map(async (cotizacion) => {
-        // Convertimos la fecha y hora de Gempresa a formato GMT
-        const fechaGMT = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
-  
-        this.logger.debug(
-          `Procesando cotización: Fecha GMT=${fechaGMT.fecha}, Hora GMT=${fechaGMT.hora}, Hora Bolsa Permitida=${DateMomentsUtils.horarioDeBolsa.includes(fechaGMT.hora)}`
-        );
-  
-        // Verificamos si la hora de la cotización está dentro del horario de la bolsa
-        if (DateMomentsUtils.horarioDeBolsa.includes(fechaGMT.hora)) {
-          const nuevaCotizacion = new Cotizacion(
-            cotizacion.id,
-            fechaGMT.fecha,
-            fechaGMT.hora,
-            cotizacion.cotization,
-            empresa
-          );
-  
-          // Guardamos la cotización en la base de datos local
-          try {
-            await this.guardarCotizacionEnDB(nuevaCotizacion);
-            this.logger.debug(`Cotización guardada: ${JSON.stringify(nuevaCotizacion)}`);
-          } catch (error) {
-            this.logger.error(`Error al guardar cotización: ${error.message}`);
-          }
-        } else {
-          this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaGMT)}`);
-        }
-      });
-  
-      // Esperamos a que todas las cotizaciones sean procesadas
-      await Promise.all(cotizacionesFaltantes);
-  
-      this.logger.log(`Procesamiento completado para ${codEmpresa}`);
-      return respuesta.data;
-  
-    } catch (error) {
-      this.logger.error(`Error al obtener las cotizaciones de Gempresa para ${codEmpresa}: ${error.message}`);
-      throw new Error(`No se pudieron obtener las cotizaciones para la empresa ${codEmpresa}`);
-    }
-  } */
-
-
-
-
 
