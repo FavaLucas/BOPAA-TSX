@@ -7,6 +7,8 @@ import { EmpresasModule } from './Entities/Empresa/empresas.modules';
 import { CotizacionesModule } from './Entities/Cotizacion/cotizaciones.modules';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { ConfigModule } from '@nestjs/config';
+import { CotizacionIndiceModule } from './Entities/CotizacionIndice/cotizacionIndice.module';
+
 @Module({
   imports: [ 
     ConfigModule.forRoot({ isGlobal: true }),
@@ -27,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
     IndiceModule,
     EmpresasModule,
     CotizacionesModule,
+    CotizacionIndiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

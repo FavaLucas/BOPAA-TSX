@@ -1,0 +1,40 @@
+
+Get/Indices
+
+http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/indices
+
+[
+  {
+    "_id": "6736102f2a1752a3f4cfa853",
+    "__v": 0
+  },
+  {
+    "_id": "67361f352a1752a3f4cfa859",
+    "code": "TSE",
+    "name": "Tokio Stock Exchange",
+    "__v": 0
+  },
+  {
+    "_id": "67364ce42a1752a3f4cfa864",
+    "code": "N100",
+    "name": "Euronext",
+    "__v": 0
+  },
+  {
+    "_id": "6737f28b2a1752a3f4cfa879",
+    "code": "MOEX",
+    "name": "Moscow Exchange",
+    "__v": 0
+  }
+]
+
+
+Get/Indices/{codIndice}/cotizaciones
+
+http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/indices/N100/cotizaciones?fechaDesde=2024-01-01T00%3A00&fechaHasta=2024-11-18T15%3A00
+
+Param: codIndice - TSE
+Query: fechaDesde - 2024-01-01T00:00
+Query: fechaHasta - 2024-11-18T15:00
+
+No esta retornando datos.

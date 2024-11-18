@@ -1,5 +1,5 @@
 import { Entity, Column, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-// id - codigoIndice(TSX) - nombreIndice - fecha - hora - valorIndice
+import { CotizacionIndice } from "../CotizacionIndice/entities/cotizacionIndice.entity";
 
 @Entity('indices')
 export class Indice {
@@ -15,37 +15,25 @@ export class Indice {
   private codigoIndice: string;
 
   @Column({
-    name: 'nombre',
+    name: 'nombreIndice',
     length: 100,
   })
   private nombreIndice: string;
 
   @Column({
-    name: 'fecha',
-    type: 'varchar',
-    precision: 10,
-  })
-  private fecha: string;
-
-  @Column({
-    name: 'hora',
-    type: 'varchar',
-    precision: 5,
-  })
-  public hora: string;
-
-  @Column({
-    name: 'valorIndice',
+    name: 'valorFinalIndice',
     type: 'bigint',
   })
-  public valorIndice: number;
+  public valorFinalIndice: number;
 
-  constructor(id: number, codigoIndice: string, nombreIndice: string, fecha: string, hora: string, valorIndice: number) {
+  @OneToMany(() => CotizacionIndice, (cotizacion) => cotizacion.codigoIndice)
+  public cotizaciones: CotizacionIndice[];
+
+
+  constructor(id: number, codigoIndice: string, nombreIndice: string, valorFinalIndice: number) {
     this.id = id;
     this.codigoIndice = codigoIndice;
     this.nombreIndice = nombreIndice;
-    this.fecha = fecha;
-    this.hora = hora;
-    this.valorIndice = valorIndice;
-  };
+    this.valorFinalIndice = valorFinalIndice;
+  }
 };
