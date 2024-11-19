@@ -11,6 +11,7 @@ import { Empresa } from '../Empresa/empresa.entity';
   imports: [TypeOrmModule.forFeature([Cotizacion, Empresa])],
   controllers: [CotizacionesController, EmpresasController],
   providers: [CotizacionesService, EmpresasService],
+  exports: [CotizacionesService],
 })
 
 export class CotizacionesModule {}

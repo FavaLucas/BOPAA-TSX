@@ -40,7 +40,7 @@ import { CotizacionesService } from './Entities/Cotizacion/cotizaciones.services
     CotizacionIndiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CronService],
 })
 export class AppModule {}
 
