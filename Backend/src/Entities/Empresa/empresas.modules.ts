@@ -4,10 +4,12 @@ import { Empresa } from './empresa.entity';
 import { EmpresasService } from './empresas.services';
 import { EmpresasController } from './empresas.controller';
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([Empresa])],
   controllers: [EmpresasController],
   providers: [EmpresasService],
+  exports: [EmpresasService],
 })
 
 export class EmpresasModule {}

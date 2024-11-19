@@ -1,4 +1,4 @@
-import { Entity, Column, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { CotizacionIndice } from "../CotizacionIndice/entities/cotizacionIndice.entity";
 
 @Entity('indices')
@@ -12,6 +12,7 @@ export class Indice {
     name: 'codigoIndice',
     length: 10,
   })
+  @Index() 
   private codigoIndice: string;
 
   @Column({
@@ -29,11 +30,10 @@ export class Indice {
   @OneToMany(() => CotizacionIndice, (cotizacion) => cotizacion.codigoIndice)
   public cotizaciones: CotizacionIndice[];
 
-
   constructor(id: number, codigoIndice: string, nombreIndice: string, valorFinalIndice: number) {
     this.id = id;
     this.codigoIndice = codigoIndice;
     this.nombreIndice = nombreIndice;
     this.valorFinalIndice = valorFinalIndice;
   }
-};
+}

@@ -7,6 +7,7 @@ export class CotizacionIndiceService {
   create(createCotizacionIndiceDto: CreateCotizacionIndiceDto) {
     return 'This action adds a new cotizacionIndice';
   }
+  
 
   findAll() {
     return `This action returns all cotizacionIndice`;

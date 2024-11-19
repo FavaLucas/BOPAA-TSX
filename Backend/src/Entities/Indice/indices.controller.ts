@@ -1,24 +1,25 @@
-import { Controller, Get, Post } from "@nestjs/common";
-import { IndicesService } from "src/Entities/Indice/indices.services";
+import { Controller, Get, Query, Logger } from "@nestjs/common";
 import { Indice } from "./indice.entity";
+import { IndicesService } from "./indices.services";
 
-@Controller('/indices')
+@Controller('indices')
 export class IndicesController {
-  constructor(private indicesService: IndicesService) { }
+  constructor(private readonly indicesService: IndicesService) {}
+
+  private readonly logger = new Logger(IndicesController.name);
 
   @Get()
-  public getTodosLosIndicesDeGempresa(): Promise<Indice[]> {
-    console.log("Indices back");
-    return this.indicesService.getTodosLosIndicesDeGempresa();
+  public async getIndices(): Promise<Indice[]> {
+    this.logger.log("IC - Obteniendo todos los índices");
+    return this.indicesService.getIndices();
   }
 
-  @Post()
-  public crearIndice() {
-    return this.crearIndice()
+  @Get('/entreFechas')
+  public async getIndicesEntreFechas(
+    @Query('fechaDesde') fechaDesde: string,
+    @Query('fechaHasta') fechaHasta: string
+  ): Promise<Indice[]> {
+    this.logger.log(`IC - Obteniendo índices desde ${fechaDesde} hasta ${fechaHasta}`);
+    return this.indicesService.getIndicesEntreFechas(fechaDesde, fechaHasta);
   }
-
-//   @Post()
-//   public subirNuevoValorDeIndiceCadaHoraAGempresa(): void {
-//     this.indicesService.subirNuevoValorDeIndiceCadaHoraAGempresa();
-//   }
 }
