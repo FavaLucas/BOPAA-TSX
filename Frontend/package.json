@@ -10,15 +10,18 @@
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.10.5",
+    "@types/chart.js": "^2.9.41",
     "axios": "^1.7.7",
+    "chart.js": "^4.4.6",
     "class-validator": "^0.14.1",
-    "next": "14.2.14",
+    "next": "^15.0.3",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.12",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",

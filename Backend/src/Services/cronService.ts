@@ -36,6 +36,8 @@ export class CronService {
       this.logger.warn("No hay empresas en su DB Local o la búsqueda falló");
     }
   }
+
+  
 }
 
 

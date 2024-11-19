@@ -18,8 +18,9 @@ const CandlestickChart = () => {
     root.setThemes([am5themes_Animated.new(root), myTheme]);
 
     // Generate chart data
-    function generateChartData() {
-      let chartData = [];
+    async function generateChartData() {
+      const chartEmpresasData = await this.obtenerEmpresas();
+      const chartCotizacionesData = await this.obtenerCotizaciones();
       let firstDate = new Date();
       firstDate.setDate(firstDate.getDate() - 2000);
       firstDate.setHours(0, 0, 0, 0);
