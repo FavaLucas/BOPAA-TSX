@@ -1,12 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const GraficoEmpresa = ({ empresa, cotizaciones }) => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Agrupar cotizaciones por mes
   const agrupadoPorMes = {};
 
@@ -40,6 +46,10 @@ const GraficoEmpresa = ({ empresa, cotizaciones }) => {
       },
     ],
   };
+
+  if (!isClient) {
+    return <p>Cargando gráfico...</p>;
+  }
 
   return (
     <div>

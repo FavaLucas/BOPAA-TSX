@@ -1,84 +1,64 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import GraficoEmpresa from '../empresaChart/GraficoEmpresa';
-import { obtenerEmpresas, obtenerCotizaciones } from '../../Services/Api';
-
-interface Empresa {
-  id: number;
-  codEmpresa: string;
-  empresaNombre: string;
-}
-
-interface Cotizacion {
-  id: string;
-  fecha: string;
-  hora: string;
-  cotizacion: number;
-  codEmpresa: string;
-}
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Main = () => {
-  const [empresas, setEmpresas] = useState<Empresa[]>([]);
-  const [cotizaciones, setCotizaciones] = useState<Cotizacion[]>([]);
+  const [empresas, setEmpresas] = useState([]);
+  const [cotizaciones, setCotizaciones] = useState([]);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const obtenerDatos = async () => {
+    setIsClient(true);
+
+    const fetchEmpresas = async () => {
       try {
         console.log('MAIN: Intentando obtener empresas...');
-        const datosEmpresas = await obtenerEmpresas();
-        console.log('MAIN: Empresas obtenidas:', datosEmpresas);
-
-        // Filtrar empresas con claves únicas y que no sean nulas
-        const empresasUnicas = datosEmpresas.reduce((acc: Empresa[], empresa) => {
-          const existe = acc.find(e => e.codEmpresa === empresa.codEmpresa);
-          if (empresa.codEmpresa && !existe) acc.push(empresa);
-          return acc;
-        }, [] as Empresa[]);
-        setEmpresas(empresasUnicas);
-
-        console.log('MAIN: Empresas únicas:', empresasUnicas);
-
-        console.log('MAIN: Intentando obtener cotizaciones...');
-        const datosCotizaciones = await obtenerCotizaciones();
-        console.log('MAIN: Cotizaciones obtenidas:', datosCotizaciones);
-
-        const datosConvertidos = datosCotizaciones.map(cot => ({
-          ...cot,
-          codEmpresa: cot.codEmpresaFK?.codEmpresa || 'unknown',
+        const respuesta = await axios.get('/api/empresas');
+        console.log('API: Respuesta completa de la API - Empresas:', respuesta);
+        console.log('API: Respuesta de la API - Empresas:', respuesta.data);
+        const datosMapeados = respuesta.data.map((empresa: { id: { toString: () => any; }; }) => ({
+          ...empresa,
+          id: empresa.id.toString(),
         }));
-        console.log('MAIN: Datos convertidos:', datosConvertidos);
-
-        setCotizaciones(datosConvertidos);
+        console.log('API: Datos mapeados - Empresas:', datosMapeados);
+        setEmpresas(datosMapeados);
+        console.log('MAIN: Empresas obtenidas:', datosMapeados);
       } catch (error) {
-        console.error('MAIN: Error al obtener datos:', error);
+        console.error('Error al obtener empresas:', error);
       }
     };
 
-    obtenerDatos();
+    const fetchCotizaciones = async () => {
+      try {
+        console.log('MAIN: Intentando obtener cotizaciones...');
+        const respuesta = await axios.get('/api/cotizaciones');
+        console.log('API: Respuesta completa de la API - Cotizaciones:', respuesta);
+        console.log('API: Respuesta de la API - Cotizaciones:', respuesta.data);
+        const datosConvertidos = respuesta.data.map((cotizacion: { id: { toString: () => any; }; }) => ({
+          ...cotizacion,
+          id: cotizacion.id.toString(),
+        }));
+        console.log('API: Datos convertidos - Cotizaciones:', datosConvertidos);
+        setCotizaciones(datosConvertidos);
+        console.log('MAIN: Cotizaciones obtenidas:', datosConvertidos);
+      } catch (error) {
+        console.error('Error al obtener cotizaciones:', error);
+      }
+    };
+
+    fetchEmpresas();
+    fetchCotizaciones();
   }, []);
 
-  console.log('MAIN: Empresas:', empresas);
-  console.log('MAIN: Cotizaciones:', cotizaciones);
+  if (!isClient) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <main>
-      {empresas.length > 0 && cotizaciones.length > 0 ? (
-        empresas.map(empresa => {
-          const cotizacionesEmpresa = cotizaciones.filter(cot => cot.codEmpresa === empresa.codEmpresa);
-          console.log(`MAIN: Cotizaciones para la empresa ${empresa.empresaNombre}:`, cotizacionesEmpresa);
-          return (
-            <GraficoEmpresa
-              key={`${empresa.id}-${empresa.codEmpresa}`} // Clave única combinando id y codEmpresa
-              empresa={empresa} // Pasando la empresa con empresaNombre
-              cotizaciones={cotizacionesEmpresa}
-            />
-          );
-        })
-      ) : (
-        <div>Loading...</div>
-      )}
-    </main>
+    <div>
+      <h2>Empresas y Cotizaciones</h2>
+      <p>Empresas: {JSON.stringify(empresas)}</p>
+      <p>Cotizaciones: {JSON.stringify(cotizaciones)}</p>
+    </div>
   );
 };
 
