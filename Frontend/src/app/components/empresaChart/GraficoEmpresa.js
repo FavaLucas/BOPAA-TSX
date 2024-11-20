@@ -9,8 +9,28 @@ Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Too
 const GraficoEmpresa = ({ empresa, cotizaciones }) => {
   const [isClient, setIsClient] = useState(false);
 
+  const [empresas, setEmpresas] = useState<Empresa>([]);
+  const [cotizaciones, setCotizaciones] = useState<Cotizacion>([]);
+
+  const traerDatos = async () => {
+    const datos = await axios.get('http://localhost:8080/empresas');
+    const data = datos.data;
+    console.log("Empresas: ", data);
+    return data;
+  }
+
+  const traerDatos2 = async () => {
+    const datos = await axios.get('http://localhost:8080/cotizaciones');
+    const data = datos.data;
+    console.log("cotizaciones:", data);
+    return data;
+  }
+
+
   useEffect(() => {
     setIsClient(true);
+    traerDatos();
+    traerDatos2();
   }, []);
 
   // Agrupar cotizaciones por mes

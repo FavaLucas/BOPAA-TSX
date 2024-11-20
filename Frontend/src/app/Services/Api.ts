@@ -4,13 +4,13 @@ const clienteAxios = axios.create({
   baseURL: 'http://localhost:8080',
 });
 
-interface Empresa {
+export interface Empresa {
   id: number;
   codEmpresa: string;
   empresaNombre: string;
 }
 
-interface Cotizacion {
+export interface Cotizacion {
   id: string;
   fecha: string;
   hora: string;
