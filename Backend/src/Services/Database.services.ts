@@ -13,7 +13,6 @@ export class DatabaseService implements OnModuleInit {
   private async createTablesIfNotExists() {
     const queryRunner = this.connection.createQueryRunner();
 
-    // Verificar y crear la tabla 'cotizaciones'
     const tableExistsCotizaciones = await queryRunner.hasTable('cotizaciones');
     if (!tableExistsCotizaciones) {
       await queryRunner.query(`
@@ -28,7 +27,6 @@ export class DatabaseService implements OnModuleInit {
       `);
     }
 
-    // Verificar y crear la tabla 'cotizacionesIndices'
     const tableExistsCotizacionesIndices = await queryRunner.hasTable('cotizacionesIndices');
     if (!tableExistsCotizacionesIndices) {
       await queryRunner.query(`
@@ -43,7 +41,6 @@ export class DatabaseService implements OnModuleInit {
       `);
     }
 
-    // Verificar y crear la tabla 'empresas'
     const tableExistsEmpresas = await queryRunner.hasTable('empresas');
     if (!tableExistsEmpresas) {
       await queryRunner.query(`
@@ -57,7 +54,6 @@ export class DatabaseService implements OnModuleInit {
       `);
     }
 
-    // Verificar y crear la tabla 'indices'
     const tableExistsIndices = await queryRunner.hasTable('indices');
     if (!tableExistsIndices) {
       await queryRunner.query(`
@@ -69,5 +65,6 @@ export class DatabaseService implements OnModuleInit {
         );
       `);
     }
+    await queryRunner.release();
   }
 }
