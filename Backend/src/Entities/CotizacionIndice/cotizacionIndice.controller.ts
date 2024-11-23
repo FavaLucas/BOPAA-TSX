@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { CotizacionIndiceService } from './cotizacionIndice.service';
 import { IndicesService } from '../Indice/indices.services';
+import { CotizacionIndice } from './cotizacionIndice.entity';
 
 @Controller('CotizacionIndice')
 export class CotizacionIndiceController {
@@ -9,8 +10,16 @@ export class CotizacionIndiceController {
     private readonly indiceService: IndicesService,
   ) {}
 
-  @Get('/hola')
-  actualizarCotizacionesMisIndices() {
-    return this.cotizacionIndiceService.actualizarCotizacionesMisIndices();
+  private readonly logger = new Logger(CotizacionIndiceController.name);
+
+  @Get('/actualizarDatosIndice')
+  async actualizarCotizacionesMisIndices() {
+    this.logger.log("CIC - Actualizando cotizaciones");
+    await this.cotizacionIndiceService.actualizarCotizacionesMisIndices();
+    return {message: "Cotizaciones Actualizadas"};
+  }
+
+  @Get('/obtenerCotizaciones') async obtenerCotizaciones(): Promise<CotizacionIndice[]> { 
+    return this.cotizacionIndiceService.obtenerTodasLasCotizaciones(); 
   }
 }

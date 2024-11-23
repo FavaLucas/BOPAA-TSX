@@ -44,22 +44,6 @@ export class IndicesService {
       throw error;
     }
   }
-
-  // public async getIndicesEntreFechas(fechaDesde: string, fechaHasta: string): Promise<Indice[]> {
-  //   this.logger.log(`IS - Obteniendo índices desde ${fechaDesde} hasta ${fechaHasta}`);
-
-  //   const fechaDesdeUTC = DateMomentsUtils.transformarFechaAGMT(fechaDesde.split("T")[0], fechaDesde.split("T")[1]);
-  //   const fechaHastaUTC = DateMomentsUtils.transformarFechaAGMT(fechaHasta.split("T")[0], fechaHasta.split("T")[1]);
-
-  //   const respuestaGempresa: AxiosResponse<any, any> = await axios.get(`${baseURL}/indices?fechaDesde=${fechaDesdeUTC.fecha}T${fechaDesdeUTC.hora}&fechaHasta=${fechaHastaUTC.fecha}T${fechaHastaUTC.hora}`);
-  //   const indices = respuestaGempresa.data.map(indice => {
-  //     const fechaLocal = DateMomentsUtils.transformarFechaAGMT(indice.fecha, indice.hora);
-  //     return new Indice(indice.codigoIndice, indice.nombreIndice, indice.valorFinalIndice);
-  //   });
-
-  //   await this.indicesRepository.save(indices);
-  //   return indices;
-  // }
 }
 
 
