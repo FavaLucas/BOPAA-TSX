@@ -23,3 +23,6 @@ export class CotizacionIndiceController {
     return this.cotizacionIndiceService.obtenerTodasLasCotizaciones(); 
   }
 }
+
+
+ 
