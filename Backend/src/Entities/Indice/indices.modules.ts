@@ -10,6 +10,6 @@ import { IndicesService } from './indices.services';
   imports: [TypeOrmModule.forFeature([Indice, CotizacionIndice])],
   controllers: [IndicesController],
   providers: [IndicesService],
-  exports: [IndicesService]
+  exports: [IndicesService, TypeOrmModule]
 })
 export class IndicesModule {}

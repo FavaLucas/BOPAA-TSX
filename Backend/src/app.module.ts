@@ -7,11 +7,11 @@ import { EmpresasModule } from './Entities/Empresa/empresas.modules';
 import { CotizacionesModule } from './Entities/Cotizacion/cotizaciones.modules';
 import { IndicesModule } from './Entities/Indice/indices.modules';
 import { CronService } from './Services/cronService';
-import { CotizacionIndiceModule } from './Entities/CotizacionIndice/cotizacionIndice.module';
 import { DatabaseService } from './Services/Database.services';
 import { CotizacionesService } from './Entities/Cotizacion/cotizaciones.services';
 import { CotizacionIndiceService } from './Entities/CotizacionIndice/cotizacionIndice.service';
 import { EmpresasService } from './Entities/Empresa/empresas.services';
+import { CotizacionIndiceModule } from './Entities/CotizacionIndice/cotizacionIndice.module';
 
 @Module({
   imports: [
@@ -36,7 +36,7 @@ import { EmpresasService } from './Entities/Empresa/empresas.services';
     CotizacionesModule,
     CotizacionIndiceModule,
   ],
-  providers: [CronService, DatabaseService],
+  providers: [CronService, CotizacionesService, CotizacionIndiceService, EmpresasService, DatabaseService],
 })
 export class AppModule {}
 

@@ -195,5 +195,14 @@ export class CotizacionesService {
     this.logger.log(`Procesamiento completado para ${codEmpresa}`);
     return respuesta.data;
   }
-}
 
+  public async obtenerTodasLasCotizaciones(): Promise<Cotizacion[]> {
+    try {
+      return this.cotizacionRepository.find();
+    }
+    catch (error) {
+      this.logger.error("Error obteniendo todas las cotizaciones:", error);
+      throw error;
+    }
+  }
+}

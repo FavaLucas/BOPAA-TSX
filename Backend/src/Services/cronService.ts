@@ -42,7 +42,7 @@ export class CronService {
     await this.indicesService.getIndicesGempresa();
   }
 
-  @Cron('0 5 * * * *')
+  @Cron('0 4 * * * *')
   async actualizarCotizacionesMisIndices() {
     this.logger.log("Cron - Actualizando cotizaciones de los índices en la DB Local");
 
@@ -59,4 +59,10 @@ export class CronService {
       this.logger.error("CIS - No hay índices en la DB local o la búsqueda falló");
     }
   }
+
+  @Cron('0 5 * * * *')
+  async publicarIndice() {
+    await this.cotizacionIndiceService.calcularYPublicarIndice();
+  }
+
 }
