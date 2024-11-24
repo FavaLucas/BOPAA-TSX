@@ -3,6 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { CotizacionesService } from 'src/Entities/Cotizacion/cotizaciones.services';
 import { EmpresasService } from 'src/Entities/Empresa/empresas.services';
 import { CotizacionIndiceService } from 'src/Entities/CotizacionIndice/cotizacionIndice.service';
+import { IndicesService } from 'src/Entities/Indice/indices.services';
 
 @Injectable()
 export class CronService {
@@ -12,6 +13,7 @@ export class CronService {
     private readonly cotizacionesService: CotizacionesService,
     private readonly empresaService: EmpresasService,
     private readonly cotizacionIndiceService: CotizacionIndiceService,
+    private readonly indicesService: IndicesService,
   ) {
     this.logger.log('Servicio Gen Data Inicializado');
   }
@@ -34,7 +36,13 @@ export class CronService {
     }
   }
 
-  @Cron('0 10 * * * *')
+  @Cron('30 1 * * * *')
+  async getIndicesGempresa() {
+    this.logger.log("Cron - Obteniendo todos los índices");
+    await this.indicesService.getIndicesGempresa();
+  }
+
+  @Cron('0 5 * * * *')
   async actualizarCotizacionesMisIndices() {
     this.logger.log("Cron - Actualizando cotizaciones de los índices en la DB Local");
 
