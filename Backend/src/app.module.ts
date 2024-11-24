@@ -10,14 +10,10 @@ import { ConfigModule } from '@nestjs/config';
 import { IndicesModule } from './Entities/Indice/indices.modules';
 import { CronService } from './Services/cronService';
 import { CotizacionIndiceModule } from './Entities/CotizacionIndice/cotizacionIndice.module';
-import { EmpresasController } from './Entities/Empresa/empresas.controller';
-import { CotizacionesController } from './Entities/Cotizacion/cotizaciones.controller';
-import { EmpresasService } from './Entities/Empresa/empresas.services';
-import { CotizacionesService } from './Entities/Cotizacion/cotizaciones.services';
-
+import { DatabaseService } from './Services/Database.services';
 
 @Module({
-  imports: [ 
+  imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
@@ -40,9 +36,9 @@ import { CotizacionesService } from './Entities/Cotizacion/cotizaciones.services
     CotizacionIndiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CronService],
+  providers: [AppService, CronService, DatabaseService],
 })
 export class AppModule {}
 
 
-//modificar clave / valor para que quede con los datos de .env
+

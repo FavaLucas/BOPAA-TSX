@@ -1,25 +1,26 @@
 import { Entity, Column, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { CotizacionIndice } from "../CotizacionIndice/entities/cotizacionIndice.entity";
+import { CotizacionIndice } from "../CotizacionIndice/cotizacionIndice.entity";
 
 @Entity('indices')
 export class Indice {
   @PrimaryGeneratedColumn({
     type: 'int'
   })
-  private id: number;
+  public id: number;
 
   @Column({
     name: 'codigoIndice',
+    type: "varchar",
     length: 10,
   })
   @Index() 
-  private codigoIndice: string;
+  public codigoIndice: string;
 
   @Column({
     name: 'nombreIndice',
     length: 100,
   })
-  private nombreIndice: string;
+  public nombreIndice: string;
 
   @Column({
     name: 'valorFinalIndice',
@@ -30,8 +31,7 @@ export class Indice {
   @OneToMany(() => CotizacionIndice, (cotizacion) => cotizacion.codigoIndice)
   public cotizaciones: CotizacionIndice[];
 
-  constructor(id: number, codigoIndice: string, nombreIndice: string, valorFinalIndice: number) {
-    this.id = id;
+  constructor(codigoIndice: string, nombreIndice: string, valorFinalIndice: number) {
     this.codigoIndice = codigoIndice;
     this.nombreIndice = nombreIndice;
     this.valorFinalIndice = valorFinalIndice;

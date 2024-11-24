@@ -1,34 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { CotizacionIndiceService } from './cotizacionIndice.service';
-import { CreateCotizacionIndiceDto } from './dto/create-cotizacion-indice.dto';
-import { UpdateCotizacionIndiceDto } from './dto/update-cotizacion-indice.dto';
+import { IndicesService } from '../Indice/indices.services';
+import { CotizacionIndice } from './cotizacionIndice.entity';
 
 @Controller('CotizacionIndice')
 export class CotizacionIndiceController {
-  constructor(private readonly cotizacionIndiceService: CotizacionIndiceService) {}
+  constructor(
+    private readonly cotizacionIndiceService: CotizacionIndiceService,
+    private readonly indiceService: IndicesService,
+  ) {}
 
-  @Post()
-  create(@Body() createCotizacionIndiceDto: CreateCotizacionIndiceDto) {
-    return this.cotizacionIndiceService.create(createCotizacionIndiceDto);
+  private readonly logger = new Logger(CotizacionIndiceController.name);
+
+  @Get('/actualizarDatosIndice')
+  async actualizarCotizacionesMisIndices() {
+    this.logger.log("CIC - Actualizando cotizaciones");
+    await this.cotizacionIndiceService.actualizarCotizacionesMisIndices();
+    return {message: "Cotizaciones Actualizadas"};
   }
 
-  @Get()
-  findAll() {
-    return this.cotizacionIndiceService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cotizacionIndiceService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCotizacionIndiceDto: UpdateCotizacionIndiceDto) {
-    return this.cotizacionIndiceService.update(+id, updateCotizacionIndiceDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cotizacionIndiceService.remove(+id);
+  @Get('/obtenerCotizaciones') async obtenerCotizaciones(): Promise<CotizacionIndice[]> { 
+    return this.cotizacionIndiceService.obtenerTodasLasCotizaciones(); 
   }
 }
+
+
+ 
