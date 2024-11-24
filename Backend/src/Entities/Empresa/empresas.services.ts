@@ -7,7 +7,11 @@ import { baseURL } from 'src/Services/AxiosAGempresa';
 
 @Injectable()
 export class EmpresasService {
-  constructor(@InjectRepository(Empresa) private readonly empresaRepository: Repository<Empresa>) { }
+  constructor(
+    @InjectRepository(Empresa)
+    private readonly empresaRepository: Repository<Empresa>
+  ) { }
+
   private readonly logger = new Logger(EmpresasService.name);
 
   //Retorna un arreglo con todos los codigos de las empresas de mi DB local
@@ -64,12 +68,12 @@ export class EmpresasService {
   //Postman: http://localhost:8080/empresas/buscarEmpresaEnDBLocal/V
   public async buscarEmpresaEnDBLocal(codEmp: string): Promise<Empresa | string | null> {
     try {
-      const empresadeDBLocal: Empresa = await this.empresaRepository.findOne({where: { codEmpresa: codEmp },});
+      const empresadeDBLocal: Empresa = await this.empresaRepository.findOne({ where: { codEmpresa: codEmp }, });
       if (empresadeDBLocal) {
         this.logger.log("ES - Empresa encontrada en DB Local");
         return empresadeDBLocal;
       } else {
-        this.logger.log("ES  - La empresa no existe en la DB Local") ;
+        this.logger.log("ES  - La empresa no existe en la DB Local");
       }
     } catch (error) {
       this.logger.error("ES - Error:", error.message);
