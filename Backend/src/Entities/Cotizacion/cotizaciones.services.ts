@@ -172,24 +172,30 @@ export class CotizacionesService {
 
     const cotizacionesFaltantes = await Promise.all(respuesta.data.map(async (cotizacion) => {
       const fechaUTC = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
-
+      
       this.logger.debug(`Procesando cotización: Fecha UTC=${fechaUTC.fecha}, Hora UTC=${fechaUTC.hora}`);
-
-      if (horarioDeBolsaUTC.includes(fechaUTC.hora)) {
-        const nuevaCotizacion = new Cotizacion(
-          cotizacion.id,
-          fechaUTC.fecha,
-          fechaUTC.hora,
-          cotizacion.cotization,
-          empresa
-        );
-
-        this.logger.debug(`Guardando cotización: ${JSON.stringify(nuevaCotizacion)}`);
-        await this.guardarCotizacionEnDB(nuevaCotizacion);
-      } else {
-        this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
+      
+      const valorCotizacion = Number(cotizacion.cotization); 
+      if (isNaN(valorCotizacion)) {
+          this.logger.error(`Valor de cotización no válido: ${cotizacion.cotization}`);
+          return; 
       }
-    }));
+  
+      if (horarioDeBolsaUTC.includes(fechaUTC.hora)) {
+          const nuevaCotizacion = new Cotizacion(
+              cotizacion.id,
+              fechaUTC.fecha,
+              fechaUTC.hora,
+              valorCotizacion, 
+              empresa
+          );
+  
+          this.logger.debug(`Guardando cotización: ${JSON.stringify(nuevaCotizacion)}`);
+          await this.guardarCotizacionEnDB(nuevaCotizacion);
+      } else {
+          this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
+      }
+  }));
 
     await Promise.all(cotizacionesFaltantes);
     this.logger.log(`Procesamiento completado para ${codEmpresa}`);

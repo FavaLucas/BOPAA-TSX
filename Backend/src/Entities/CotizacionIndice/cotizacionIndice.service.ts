@@ -19,7 +19,6 @@ export class CotizacionIndiceService {
     private readonly cotizacionIndiceRepository: Repository<CotizacionIndice>,
     @InjectRepository(Indice)
     private readonly indiceRepository: Repository<Indice>,
-    @InjectRepository(Cotizacion)
     private readonly cotizacionesService: CotizacionesService,
 
   ) { }
@@ -172,44 +171,56 @@ export class CotizacionIndiceService {
     }
   }
   async calcularIndice(): Promise<number> {
-    const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones(); // Usar el método existente
+    const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones();
+    this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
+
     const cotizacionesPorDiaYHora = {};
-  
+
     cotizaciones.forEach(cotizacion => {
+      const valorCotizacion = Number(cotizacion.cotizacion); // Asegúrate de que sea un número
+      if (isNaN(valorCotizacion)) {
+        this.logger.error(`Cotización no válida: ${JSON.stringify(cotizacion)}`);
+        return; // Ignorar cotizaciones no válidas
+      }
+
       const fechaHora = `${cotizacion.fecha} ${cotizacion.hora}`;
       if (!cotizacionesPorDiaYHora[fechaHora]) {
         cotizacionesPorDiaYHora[fechaHora] = [];
       }
-      cotizacionesPorDiaYHora[fechaHora].push(cotizacion.cotizacion);
+      cotizacionesPorDiaYHora[fechaHora].push(valorCotizacion);
     });
-  
+
     let sumaTotal = 0;
     let cantidadTotal = 0;
-  
+
     Object.keys(cotizacionesPorDiaYHora).forEach(fechaHora => {
       const sumaCotizaciones = cotizacionesPorDiaYHora[fechaHora].reduce((acc, curr) => acc + curr, 0);
       const cantidadCotizaciones = cotizacionesPorDiaYHora[fechaHora].length;
-  
-      const promedioCotizaciones = sumaCotizaciones / cantidadCotizaciones;
-  
-      sumaTotal += promedioCotizaciones;
-      cantidadTotal += 1;
+
+      if (cantidadCotizaciones > 0) {
+        const promedioCotizaciones = sumaCotizaciones / cantidadCotizaciones;
+
+        sumaTotal += promedioCotizaciones;
+        cantidadTotal += 1;
+      }
     });
-  
-    return sumaTotal / cantidadTotal;
+
+    return cantidadTotal > 0 ? sumaTotal / cantidadTotal : 0; 
   }
+
+
   async guardarIndiceEnDB(indice: number, fecha: string, hora: string): Promise<void> {
     const miIndice = await this.indiceRepository.findOne({ where: { codigoIndice: 'TSX' } });
-  
+
     const nuevoIndice = new CotizacionIndice(fecha, hora, indice, miIndice);
-  
+
     await this.cotizacionIndiceRepository.save(nuevoIndice);
   }
   async publicarIndiceEnGempresa(indice: number, fecha: string, hora: string): Promise<void> {
     const data = { valor: indice, fecha, hora };
-  
+    const url = "http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/indices/cotizaciones"
     try {
-      await axios.post(`${baseURL}/indice`, data);
+      await axios.post(url, data);
       this.logger.log('Índice publicado en Gempresa');
     } catch (error) {
       this.logger.error(`Error al publicar el índice en Gempresa: ${error.message}`);
@@ -218,13 +229,14 @@ export class CotizacionIndiceService {
   async calcularYPublicarIndice(): Promise<void> {
     const fecha = new Date().toISOString().split('T')[0];
     const hora = new Date().toISOString().split('T')[1].split('.')[0];
-  
+
     const indice = await this.calcularIndice();
+    if (isNaN(indice)) {
+      throw new Error('El índice calculado es NaN');
+    }
     await this.guardarIndiceEnDB(indice, fecha, hora);
     await this.publicarIndiceEnGempresa(indice, fecha, hora);
   }
-  
-
 }
 
 
