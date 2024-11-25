@@ -13,8 +13,8 @@ export class CotizacionIndiceController {
     private readonly logger = new Logger(CotizacionIndiceController.name);
 
     @Get('/actualizarDatosIndice')
-    async actualizarCotizacionesMisIndices() {
-        this.logger.log("CIC - Actualizando cotizaciones");
+    async actualizarCotizacionesIndicesDesdeGempresa() {
+/*         this.logger.log("CIC - Actualizando cotizaciones"); */
         try {
             await this.cotizacionIndiceService.actualizarCotizacionesMisIndices();
             return { message: "Cotizaciones Actualizadas" };
@@ -27,6 +27,7 @@ export class CotizacionIndiceController {
     @Get('/obtenerCotizaciones')
     async obtenerCotizaciones(): Promise<CotizacionIndice[]> {
         try {
+            this.logger.debug("ObetenerCotizaciones",this.cotizacionIndiceService.obtenerTodasLasCotizaciones())
             return await this.cotizacionIndiceService.obtenerTodasLasCotizaciones();
         } catch (error) {
             this.logger.error(`Error al obtener cotizaciones de índices: ${error.message}`);
@@ -36,8 +37,8 @@ export class CotizacionIndiceController {
 
     @Get('/test')
     async test() {
-        await this.cotizacionIndiceService.calcularIndice();
-        return { message: 'Prueba ejecutada' };
+        const data= await this.cotizacionIndiceService.calcularIndice();
+        return data
     }
 }
 

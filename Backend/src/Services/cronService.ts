@@ -19,7 +19,7 @@ export class CronService {
   }
 
   @Cron('0 1 * * * *')
-  async actualizarCotizacionesMisEmpresas() {
+  async actualizarCotizacionesDesdeGempresa() {
     this.logger.log("Cron - Actualizando cotizaciones en DB Local");
 
     const arrCodigosEmpresas = await this.empresaService.buscarMisEmpresasDeDB();
@@ -36,14 +36,14 @@ export class CronService {
     }
   }
 
-  @Cron('15 1 * * * *')
+  @Cron('0 8 * * * *')
   async actualizarIndicesDesdeGempresa() {
     this.logger.log("Cron - Obteniendo todos los índices");
     await this.indicesService.actualizarIndicesDesdeGempresa();
   }
 
-  @Cron('30 1 * * * *')
-  async actualizarCotizacionesMisIndices() {
+  @Cron('0 10 * * * *')
+  async actualizarCotizacionesIndicesDesdeGempresa() {
     this.logger.log("Cron - Actualizando cotizaciones de los índices en la DB Local");
 
     const arrIndicesEnDBLocal = await this.cotizacionIndiceService.buscarMisCodigosDeIndicesDeDB();
@@ -60,9 +60,8 @@ export class CronService {
     }
   }
 
-  // @Cron('45 1 * * * *')
-  // async calcularYPublicarIndice() {
-  //   await this.cotizacionIndiceService.calcularYPublicarIndice();
-  // }
-
+  @Cron('0 5 * * * *')
+  async calcularPublicarYGuardarMiIndice() {
+    await this.cotizacionIndiceService.calcularIndice();
+  }
 }

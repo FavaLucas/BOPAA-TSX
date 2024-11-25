@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CotizacionIndice } from './cotizacionIndice.entity';
-import { Repository } from 'typeorm';
+import { Index, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Indice } from '../Indice/indice.entity';
 import DateMomentsUtils from 'src/utils/DateMomentsUtils';
@@ -25,25 +25,10 @@ export class CotizacionIndiceService {
 
 
   public async buscarMisCodigosDeIndicesDeDB(): Promise<string[]> {
-    const empresas = await this.indiceRepository.find({ select: ["codigoIndice"] });
-    return empresas.map(empresa => empresa.codigoIndice);
+    const IndiceBursatil = await this.indiceRepository.find({ select: ["codigoIndice"] });
+    return IndiceBursatil.map(Indice => Indice.codigoIndice);
   }
 
-  // public async actualizarCotizacionesMisIndices() {
-  //   this.logger.log("CIS - Actualizando cotizaciones de los índices en la DB local");
-  //   const arrIndicesEnDBLocal = await this.buscarMisCodigosDeIndicesDeDB();
-  //   if (arrIndicesEnDBLocal && arrIndicesEnDBLocal.length > 0) {
-  //     for (const codigoIndice of arrIndicesEnDBLocal) {
-  //       try {
-  //         await this.guardarTodasLasCotizaciones(codigoIndice);
-  //       } catch (error) {
-  //         this.logger.error(`CIS - Error al actualizar cotizaciones para el índice ${codigoIndice}: ${error.message}`);
-  //       }
-  //     }
-  //   } else {
-  //     this.logger.error("CIS - No hay índices en la DB local o la búsqueda falló");
-  //   }
-  // }
 
   public async guardarTodasLasCotizaciones(codigoIndice: string): Promise<void> {
     const ultimaFechaEnMiDB = await this.ultimaFechaDeCotizacionEnMiDB(codigoIndice);
@@ -87,7 +72,6 @@ export class CotizacionIndiceService {
 
   public async getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(codigoIndice: string, stringUltimaFechaEnMiDB: string, stringUltimaFechaDeGempresa: string): Promise<CotizacionIndice[]> {
     const indice = await this.indiceRepository.findOne({ where: { codigoIndice } });
-
     const fechaDesde = new Date(stringUltimaFechaEnMiDB);
     const fechaHasta = new Date(stringUltimaFechaDeGempresa);
 
@@ -96,13 +80,14 @@ export class CotizacionIndiceService {
 
     for (let fecha = new Date(fechaDesde); fecha <= fechaHasta; fecha.setDate(fecha.getDate() + 1)) {
       const fechaInicio = DateMomentsUtils.formatearFecha({ fecha: fecha.toISOString().split('T')[0], hora: '00:00' });
-      const fechaFin = DateMomentsUtils.formatearFecha({ fecha: fecha.toISOString().split('T')[0], hora: '23:59' });
+      const fechaFin = DateMomentsUtils.formatearFecha({ fecha: fecha.toISOString().split('T')[0], hora: '23:00' });
 
-      const url = `${baseURL}/indices/${codigoIndice}/cotizaciones?fechaDesde=${encodeURIComponent(fechaInicio)}&fechaHasta=${encodeURIComponent(fechaFin)}`;
+      const url = `${baseURL}/indices/${indice.codigoIndice}/cotizaciones?fechaDesde=${encodeURIComponent(fechaInicio)}&fechaHasta=${encodeURIComponent(fechaFin)}`;
 
       solicitudes.push(axios.get(url)
         .then(respuesta => {
           cotizacionesFaltantes.push(...respuesta.data);
+          this.logger.debug(url)
         })
         .catch(error => {
           this.logger.error(`CIS - Error obteniendo cotizaciones de ${codigoIndice} en la fecha ${fechaInicio}: ${error.message}`);
@@ -153,20 +138,26 @@ export class CotizacionIndiceService {
       throw error;
     }
   }
-  public async buscarCotizacionPorID(cotizacionIndice: CotizacionIndice): Promise<CotizacionIndice> {
-    try {
-      return this.cotizacionIndiceRepository.findOne({
-        where: {
-          fecha: cotizacionIndice.fecha,
-          hora: cotizacionIndice.hora,
-          codigoIndice: { codigoIndice: cotizacionIndice.codigoIndice.codigoIndice }
+
+  public async actualizarCotizacionesMisIndices() {
+/*     this.logger.log("CIS - Actualizando cotizaciones de los índices en la DB local"); */
+    const arrIndicesEnDBLocal = await this.buscarMisCodigosDeIndicesDeDB(); 
+    if (arrIndicesEnDBLocal && arrIndicesEnDBLocal.length > 0) {
+      for (const codigoIndice of arrIndicesEnDBLocal) {
+        try {
+          await this.guardarTodasLasCotizaciones(codigoIndice);
+        } catch (error) {
+          this.logger.error(`CIS - Error al actualizar cotizaciones para el índice ${codigoIndice}: ${error.message}`);
         }
-      });
-    } catch (error) {
-      this.logger.error("CIS - Error buscando cotización:", error);
-      throw error;
+      }
+      // Llama al método para calcular y guardar el valor promedio del índice
+      /*       await this.calcularValorIndicePromedioPorDia(); */
+    } else {
+      this.logger.error("CIS - No hay índices en la DB local o la búsqueda falló");
     }
   }
+
+
   public async obtenerTodasLasCotizaciones(): Promise<CotizacionIndice[]> {
     try {
       return this.cotizacionIndiceRepository.find();
@@ -177,7 +168,6 @@ export class CotizacionIndiceService {
   }
 
 
-  
   async calcularIndice(): Promise<void> {
     const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones();
     this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
@@ -210,136 +200,31 @@ export class CotizacionIndiceService {
       const promedio = sumaCotizaciones / grupo.valores.length;
 
       // Publicar el promedio con el nombre del índice TSX
-      await this.publicarIndiceEnGempresa(promedio, grupo.fecha, grupo.hora, "TSX");
+      await this.publicarIndiceEnGempresa(grupo.fecha,grupo.hora,"TSX", promedio);
+      const indiceTSX = await this.indiceRepository.findOne({ where: { codigoIndice: 'TSX' } });
+      const cotizacionIndice = new CotizacionIndice(grupo.fecha,grupo.hora,promedio,indiceTSX)
+      await this.cotizacionIndiceRepository.save(cotizacionIndice)
       this.logger.log(`Promedio calculado y publicado para ${fechaHora}: ${promedio}`);
     }
   }
 
-  async guardarIndiceEnDB(indice: number, fecha: string, hora: string): Promise<void> {
-    const miIndice = await this.indiceRepository.findOne({ where: { codigoIndice: 'TSX' } });
-
-    const nuevoIndice = new CotizacionIndice(fecha, hora, indice, miIndice);
-
-    await this.cotizacionIndiceRepository.save(nuevoIndice);
-  }
-
-  // async publicarIndiceEnGempresa(indice: number, fecha: string, hora: string): Promise<void> {
-  //   const data = { valor: indice, fecha, hora };
-  //   const url = "http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/indices/cotizaciones"
-  //   try {
-  //     await axios.post(url, data);
-  //     this.logger.log('Índice publicado en Gempresa');
-  //   } catch (error) {
-  //     this.logger.error(`Error al publicar el índice en Gempresa: ${error.message}`);
-  //   }
-  // }
-
-  // async calcularYPublicarIndice(): Promise<void> {
-  //   const fecha = new Date().toISOString().split('T')[0];
-  //   const hora = new Date().toISOString().split('T')[1].split('.')[0];
-
-  //   const indice = await this.calcularIndice();
-  //   if (isNaN(indice)) {
-  //     throw new Error('El índice calculado es NaN');
-  //   }
-  //   await this.guardarIndiceEnDB(indice, fecha, hora);
-  //   await this.publicarIndiceEnGempresa(indice, fecha, hora);
-  // }
-
-  public async calcularValorIndicePromedioPorDia(): Promise<void> {
-    const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones();
-    this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
-
-    const cotizacionesPorDia = {};
-
-    cotizaciones.forEach(cotizacion => {
-      const fecha = cotizacion.fecha;
-      if (!cotizacionesPorDia[fecha]) {
-        cotizacionesPorDia[fecha] = [];
-      }
-      cotizacionesPorDia[fecha].push(Number(cotizacion.cotizacion)); // Asegúrate de que sea un número
-    });
-
-    Object.keys(cotizacionesPorDia).forEach(fecha => {
-      const promedioCotizaciones = cotizacionesPorDia[fecha].reduce((acc, curr) => acc + curr, 0) / cotizacionesPorDia[fecha].length;
-
-      if (!isNaN(promedioCotizaciones)) {
-        this.actualizarValorIndicePromedio(fecha, promedioCotizaciones);
-      }
-    });
-  }
-
-  private async actualizarValorIndicePromedio(fecha: string, promedioCotizaciones: number): Promise<void> {
-    const indiceTSX = await this.indiceRepository.findOne({ where: { codigoIndice: 'TSX' } });
-
-    if (indiceTSX) {
-      const cotizacionIndice = new CotizacionIndice(fecha, '23:59', promedioCotizaciones, indiceTSX);
-
-      try {
-        const cotizacionExistente = await this.cotizacionIndiceRepository.findOne({
-          where: {
-            fecha: cotizacionIndice.fecha,
-            hora: cotizacionIndice.hora,
-            codigoIndice: { codigoIndice: cotizacionIndice.codigoIndice.codigoIndice }
-          }
-        });
-
-        if (!cotizacionExistente) {
-          await this.cotizacionIndiceRepository.save(cotizacionIndice);
-        }
-      } catch (error) {
-        this.logger.error("CIS - Error actualizando el valor del índice:", error);
-        throw error;
-      }
-    }
-  }
-
-  public async actualizarCotizacionesMisIndices() {
-    this.logger.log("CIS - Actualizando cotizaciones de los índices en la DB local");
-    const arrIndicesEnDBLocal = await this.buscarMisCodigosDeIndicesDeDB(); if (arrIndicesEnDBLocal && arrIndicesEnDBLocal.length > 0) {
-      for (const codigoIndice of arrIndicesEnDBLocal) {
-        try {
-          await this.guardarTodasLasCotizaciones(codigoIndice);
-        } catch (error) {
-          this.logger.error(`CIS - Error al actualizar cotizaciones para el índice ${codigoIndice}: ${error.message}`);
-        }
-      }
-      // Llama al método para calcular y guardar el valor promedio del índice
-      await this.calcularValorIndicePromedioPorDia();
-    } else {
-      this.logger.error("CIS - No hay índices en la DB local o la búsqueda falló");
-    }
-  }
-
-
-  async publicarIndiceEnGempresa(indice: number, fecha: string, hora: string, nombreIndice: string): Promise<void> {
+  async publicarIndiceEnGempresa(fecha: string, hora: string, codigoIndice: string,indice: number): Promise<any> {
     const data = {
-      valor: indice,
       fecha,
       hora,
-      nombreIndice
+      codigoIndice,
+      valorIndice: indice,
     };
     const url = "http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/indices/cotizaciones"
     try {
-      await axios.post(url, data);
-      this.logger.log(`Índice ${nombreIndice} publicado en Gempresa`);
+      this.logger.debug(data)
+      const response= await axios.post(url, data);
+      this.logger.log(`Índice ${codigoIndice} publicado en Gempresa`);
+      return response.data
     } catch (error) {
-      this.logger.error(`Error al publicar el índice ${nombreIndice} en Gempresa: ${error.message}`);
+      this.logger.error(`Error al publicar el índice ${codigoIndice} en Gempresa: ${error.message}`);
     }
   }
-
-  // async calcularYPublicarIndice(): Promise<void> {
-  //   const fecha = new Date().toISOString().split('T')[0];
-  //   const hora = new Date().toISOString().split('T')[1].split('.')[0];
-
-  //   const indice = await this.calcularIndice();
-  //   if (isNaN(indice)) {
-  //     throw new Error('El índice calculado es NaN');
-  //   }
-  //   await this.guardarIndiceEnDB(indice, fecha, hora);
-  //   await this.publicarIndiceEnGempresa(fecha, hora, indice); // Asegúrate de pasar el índice calculado
-  // }
-
 }
 
 

@@ -63,7 +63,7 @@ export class CotizacionesController {
   // Postman: http://localhost:8080/cotizaciones/traerCotizacionesMisEmpresas
   //El metodo no me esta trayendo todas las ultimas cotizaciones.
   @Get('/traerCotizacionesMisEmpresas')
-  public async actualizarCotizacionesMisEmpresas(): Promise<void> {
+  public async actualizarCotizacionesDesdeGempresa(): Promise<void> {
       this.logger.log("CotizacionesController - Actualizando cotizaciones en DB Local");
       try {
           const arrCodigosEmpresas = await this.empresaService.buscarMisEmpresasDeDB();
