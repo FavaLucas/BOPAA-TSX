@@ -33,6 +33,12 @@ export class CotizacionIndiceController {
             throw new HttpException('Error al obtener cotizaciones de índices', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Get('/test')
+async test() {
+    await this.cotizacionIndiceService.actualizarCotizacionesMisIndices();
+    return { message: 'Prueba ejecutada' };
+}
 }
 
 
