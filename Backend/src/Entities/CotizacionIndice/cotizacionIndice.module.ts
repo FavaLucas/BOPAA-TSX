@@ -14,4 +14,4 @@ import { IndicesModule } from '../Indice/indices.modules';
   providers: [CotizacionIndiceService],
   exports: [CotizacionIndiceService, TypeOrmModule],
 })
-export class CotizacionIndiceModule {}
+export class CotizacionIndiceModule { }

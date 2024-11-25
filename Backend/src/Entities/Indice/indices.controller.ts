@@ -3,7 +3,7 @@ import { IndicesService } from "./indices.services";
 
 @Controller('indices')
 export class IndicesController {
-  constructor(private readonly indicesService: IndicesService) {}
+  constructor(private readonly indicesService: IndicesService) { }
 
   private readonly logger = new Logger(IndicesController.name);
 

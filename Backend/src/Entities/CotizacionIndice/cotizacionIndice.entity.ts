@@ -26,8 +26,8 @@ export class CotizacionIndice {
   @Column({
     name: 'valorCotizacionIndice',
     type: 'decimal',
-    precision: 20,
-    scale: 4,
+    precision: 10,
+    scale: 2,
   })
   public valorCotizacionIndice: number;
 

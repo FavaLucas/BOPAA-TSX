@@ -4,7 +4,7 @@ import { InjectConnection } from '@nestjs/typeorm';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit {
-  constructor(@InjectConnection() private readonly connection: Connection) {}
+  constructor(@InjectConnection() private readonly connection: Connection) { }
 
   async onModuleInit() {
     await this.createTablesIfNotExists();

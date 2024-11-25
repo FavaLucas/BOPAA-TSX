@@ -140,8 +140,8 @@ export class CotizacionIndiceService {
   }
 
   public async actualizarCotizacionesMisIndices() {
-/*     this.logger.log("CIS - Actualizando cotizaciones de los índices en la DB local"); */
-    const arrIndicesEnDBLocal = await this.buscarMisCodigosDeIndicesDeDB(); 
+    /*     this.logger.log("CIS - Actualizando cotizaciones de los índices en la DB local"); */
+    const arrIndicesEnDBLocal = await this.buscarMisCodigosDeIndicesDeDB();
     if (arrIndicesEnDBLocal && arrIndicesEnDBLocal.length > 0) {
       for (const codigoIndice of arrIndicesEnDBLocal) {
         try {
@@ -198,17 +198,19 @@ export class CotizacionIndiceService {
       const grupo = cotizacionesPorDiaYHora[fechaHora];
       const sumaCotizaciones = grupo.valores.reduce((acc, curr) => acc + curr, 0);
       const promedio = sumaCotizaciones / grupo.valores.length;
-
+      
+      const valorLimitado = parseFloat((promedio).toFixed(2));
+      
       // Publicar el promedio con el nombre del índice TSX
-      await this.publicarIndiceEnGempresa(grupo.fecha,grupo.hora,"TSX", promedio);
+      await this.publicarIndiceEnGempresa(grupo.fecha, grupo.hora, "TSX", valorLimitado);
       const indiceTSX = await this.indiceRepository.findOne({ where: { codigoIndice: 'TSX' } });
-      const cotizacionIndice = new CotizacionIndice(grupo.fecha,grupo.hora,promedio,indiceTSX)
+      const cotizacionIndice = new CotizacionIndice(grupo.fecha, grupo.hora, valorLimitado, indiceTSX)
       await this.cotizacionIndiceRepository.save(cotizacionIndice)
-      this.logger.log(`Promedio calculado y publicado para ${fechaHora}: ${promedio}`);
+      this.logger.log(`Promedio calculado y publicado para ${fechaHora}: ${valorLimitado}`);
     }
   }
 
-  async publicarIndiceEnGempresa(fecha: string, hora: string, codigoIndice: string,indice: number): Promise<any> {
+  async publicarIndiceEnGempresa(fecha: string, hora: string, codigoIndice: string, indice: number): Promise<any> {
     const data = {
       fecha,
       hora,
@@ -218,7 +220,7 @@ export class CotizacionIndiceService {
     const url = "http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/indices/cotizaciones"
     try {
       this.logger.debug(data)
-      const response= await axios.post(url, data);
+      const response = await axios.post(url, data);
       this.logger.log(`Índice ${codigoIndice} publicado en Gempresa`);
       return response.data
     } catch (error) {

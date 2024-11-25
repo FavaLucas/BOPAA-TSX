@@ -172,30 +172,30 @@ export class CotizacionesService {
 
     const cotizacionesFaltantes = await Promise.all(respuesta.data.map(async (cotizacion) => {
       const fechaUTC = DateMomentsUtils.transformarFechaAGMT(cotizacion.fecha, cotizacion.hora);
-      
+
       this.logger.debug(`Procesando cotización: Fecha UTC=${fechaUTC.fecha}, Hora UTC=${fechaUTC.hora}`);
-      
-      const valorCotizacion = Number(cotizacion.cotization); 
+
+      const valorCotizacion = Number(cotizacion.cotization);
       if (isNaN(valorCotizacion)) {
-          this.logger.error(`Valor de cotización no válido: ${cotizacion.cotization}`);
-          return; 
+        this.logger.error(`Valor de cotización no válido: ${cotizacion.cotization}`);
+        return;
       }
-  
+
       if (horarioDeBolsaUTC.includes(fechaUTC.hora)) {
-          const nuevaCotizacion = new Cotizacion(
-              cotizacion.id,
-              fechaUTC.fecha,
-              fechaUTC.hora,
-              valorCotizacion, 
-              empresa
-          );
-  
-          this.logger.debug(`Guardando cotización: ${JSON.stringify(nuevaCotizacion)}`);
-          await this.guardarCotizacionEnDB(nuevaCotizacion);
+        const nuevaCotizacion = new Cotizacion(
+          cotizacion.id,
+          fechaUTC.fecha,
+          fechaUTC.hora,
+          valorCotizacion,
+          empresa
+        );
+
+        this.logger.debug(`Guardando cotización: ${JSON.stringify(nuevaCotizacion)}`);
+        await this.guardarCotizacionEnDB(nuevaCotizacion);
       } else {
-          this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
+        this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
       }
-  }));
+    }));
 
     await Promise.all(cotizacionesFaltantes);
     this.logger.log(`Procesamiento completado para ${codEmpresa}`);
@@ -212,9 +212,25 @@ export class CotizacionesService {
     }
   }
 
-  
 
 
+  public async getFiltrarCotizaciones(codEmpresa: string): Promise<Cotizacion[]> {
+    try {
+      const cotizacionesEmpresa = await this.cotizacionRepository.find({
+        relations: ['codEmpresaFK'], // Relación a incluir
+        where: {
+          codEmpresaFK: {
+            codEmpresa: codEmpresa, // Aquí 'id' se debe reemplazar por el nombre de la columna de `Empresa` que corresponde a `codEmpresa`
+          },
+        }
+      });
+      console.log("console log service", cotizacionesEmpresa)
+      return Promise.all(cotizacionesEmpresa)
+    } catch (error) {
+      console.error("Error al filtrar cotizaciones por codEmpresa: ", error);
+      throw new Error("No se pudo obtener las cotizaciones");
+    }
+  }
 
 
 

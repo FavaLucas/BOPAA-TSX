@@ -14,4 +14,4 @@ import { Empresa } from '../Empresa/empresa.entity';
   exports: [CotizacionesService, TypeOrmModule, CotizacionesModule],
 })
 
-export class CotizacionesModule {}
+export class CotizacionesModule { }

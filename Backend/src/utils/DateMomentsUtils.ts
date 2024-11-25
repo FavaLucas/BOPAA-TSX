@@ -37,7 +37,7 @@ class DateMomentsUtils {
   static transformarFechaAGMT(fecha: string, hora: string): IFecha {
     // Crear un momento de fecha y hora en UTC
     const fechaUTC = momentTZ.utc(`${fecha} ${hora}`, 'YYYY-MM-DD HH:mm');
-    
+
     const fechaTransformada = {
       fecha: fechaUTC.format("YYYY-MM-DD"),
       hora: fechaUTC.format("HH:mm"),

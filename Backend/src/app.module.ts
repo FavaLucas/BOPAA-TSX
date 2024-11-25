@@ -38,6 +38,6 @@ import { CotizacionIndiceModule } from './Entities/CotizacionIndice/cotizacionIn
   ],
   providers: [CronService, CotizacionesService, CotizacionIndiceService, EmpresasService, DatabaseService],
 })
-export class AppModule {}
+export class AppModule { }
 
 

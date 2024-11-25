@@ -13,7 +13,7 @@ export class Indice {
     type: "varchar",
     length: 10,
   })
-  @Index() 
+  @Index()
   public codigoIndice: string;
 
   @Column({

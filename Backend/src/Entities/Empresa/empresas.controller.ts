@@ -11,13 +11,13 @@ export class EmpresasController {
   //Postman: http://localhost:8080/empresas
   @Get()
   public async buscarMisEmpresasDeDB(): Promise<string[]> {
-      this.logger.log("EC - Buscando empresas en la base de datos");
-      try {
-          return await this.empresasService.buscarMisEmpresasDeDB();
-      } catch (error) {
-          this.logger.error(`Error al buscar empresas en la base de datos: ${error.message}`);
-          throw new HttpException('Error al buscar empresas', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+    this.logger.log("EC - Buscando empresas en la base de datos");
+    try {
+      return await this.empresasService.buscarMisEmpresasDeDB();
+    } catch (error) {
+      this.logger.error(`Error al buscar empresas en la base de datos: ${error.message}`);
+      throw new HttpException('Error al buscar empresas', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   //Trae el detalle de la empresa desde Gempresa segun el codEmpresa que se indica
@@ -49,7 +49,7 @@ export class EmpresasController {
         this.logger.log("EC - La empresa existe en la DB local");
         return existe;
       } else {
-        this.logger.log("EC  - La empresa no existe en la DB Local") ;
+        this.logger.log("EC  - La empresa no existe en la DB Local");
       }
     } catch (error) {
       this.logger.error("EC - Error:", error.message);
