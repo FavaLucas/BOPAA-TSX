@@ -12,8 +12,8 @@ export class IndicesController {
   //Postman: http://localhost:8080/indices/
   //Esto llevarlo a CRON para que automaticamente se busquen todos los indices de GEMPRESA y se guarden en mi DB Local
   @Get()
-  public async getIndicesGempresa(): Promise<void> {
+  public async actualizarIndicesDesdeGempresa(): Promise<void> {
     this.logger.log("IC - Obteniendo todos los índices");
-    return this.indicesService.getIndicesGempresa();
+    return this.indicesService.actualizarIndicesDesdeGempresa();
   }
 }

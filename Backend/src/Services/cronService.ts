@@ -36,13 +36,13 @@ export class CronService {
     }
   }
 
-  @Cron('30 1 * * * *')
-  async getIndicesGempresa() {
+  @Cron('15 1 * * * *')
+  async actualizarIndicesDesdeGempresa() {
     this.logger.log("Cron - Obteniendo todos los índices");
-    await this.indicesService.getIndicesGempresa();
+    await this.indicesService.actualizarIndicesDesdeGempresa();
   }
 
-  @Cron('40 1 * * * *')
+  @Cron('30 1 * * * *')
   async actualizarCotizacionesMisIndices() {
     this.logger.log("Cron - Actualizando cotizaciones de los índices en la DB Local");
 
@@ -62,7 +62,6 @@ export class CronService {
 
   @Cron('45 1 * * * *')
   async calcularYPublicarIndice() {
-    console.log("hola")
     await this.cotizacionIndiceService.calcularYPublicarIndice();
   }
 
