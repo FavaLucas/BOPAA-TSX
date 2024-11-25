@@ -170,6 +170,7 @@ export class CotizacionIndiceService {
       throw error;
     }
   }
+  
   async calcularIndice(): Promise<number> {
     const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones();
     this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
