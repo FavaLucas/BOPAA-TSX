@@ -60,9 +60,9 @@ export class CronService {
     }
   }
 
-  @Cron('45 1 * * * *')
-  async calcularYPublicarIndice() {
-    await this.cotizacionIndiceService.calcularYPublicarIndice();
-  }
+  // @Cron('45 1 * * * *')
+  // async calcularYPublicarIndice() {
+  //   await this.cotizacionIndiceService.calcularYPublicarIndice();
+  // }
 
 }

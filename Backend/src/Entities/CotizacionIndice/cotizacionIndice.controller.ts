@@ -35,10 +35,10 @@ export class CotizacionIndiceController {
     }
 
     @Get('/test')
-async test() {
-    await this.cotizacionIndiceService.actualizarCotizacionesMisIndices();
-    return { message: 'Prueba ejecutada' };
-}
+    async test() {
+        await this.cotizacionIndiceService.calcularIndice();
+        return { message: 'Prueba ejecutada' };
+    }
 }
 
 
