@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Cotizacion, CotizacionIndice, Empresa, Indice } from '@/app/Services/Api';
-import GraficoCotizaciones from '../empresaChart/GraficoCotizaciones'; // Asegúrate de que la ruta sea correcta
+import GraficoCotizaciones from '../empresaChart/GraficoCotizaciones';
+
 
 const Main = () => {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
@@ -9,6 +10,8 @@ const Main = () => {
   const [indice, setIndice] = useState<Indice[]>([]);
   const [cotizacionesIndices, setCotizacionesIndice] = useState<CotizacionIndice[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const [empresaActual, setEmpresaActual] = useState<string>();
+  const [cotizacionEmpresaActual, setCotizacionEmpresaActual] = useState<Cotizacion[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,22 +42,11 @@ const Main = () => {
 
   return (
     <div>
-      <h2>Empresas y Cotizaciones</h2>
-      {empresas.map(empresa => {
-        // Verifica si las cotizaciones están disponibles antes de filtrar
-        const cotizacionesEmpresa = cotizaciones.filter(cot => cot.codEmpresaFK && cot.codEmpresaFK.codEmpresa === empresa.codEmpresa);
-        
-        // Asegúrate de que haya cotizaciones para la empresa antes de renderizar el gráfico
-        if (cotizacionesEmpresa.length === 0) {
-          return null; // O podrías mostrar un mensaje indicando que no hay datos
-        }
-
-        return (
-          <div key={empresa.id}>
-            <GraficoCotizaciones empresa={empresa.empresaNombre} cotizaciones={cotizacionesEmpresa} />
-          </div>
-        );
-      })}
+      {
+        empresas.map((emp, index) => (
+          <GraficoCotizaciones empresa={emp.empresaNombre} cotizaciones={cotizaciones} />
+        ))
+      }
     </div>
   );
 };

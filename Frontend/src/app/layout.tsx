@@ -8,7 +8,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <head>
-        <title>Empresas y Cotizaciones</title>
+        <title>BOPAA</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>

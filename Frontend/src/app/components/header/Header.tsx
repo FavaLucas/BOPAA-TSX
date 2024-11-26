@@ -3,7 +3,7 @@
 const Header = () => {
   return (
     <header>
-      <h1>Empresas y Cotizaciones</h1>
+      <h1>AAAAAAAAAAAA</h1>
     </header>
   );
 };
