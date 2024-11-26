@@ -20,6 +20,22 @@ export interface Cotizacion {
   };
 }
 
+export interface CotizacionIndice {
+  id: number;
+  fecha: string;
+  hora: string;
+  valorCotizacionIndice: number; // Cotización debe ser un número para realizar cálculos
+  codigoIndice: Indice;
+}
+
+export interface Indice {
+  id: number;
+  codigoIndice: string;
+  nombreIndice: string;
+  valorFinalIndice: number; // Cotización debe ser un número para realizar cálculos
+  cotizaciones: CotizacionIndice[];
+}
+
 export const obtenerCotizaciones = async (): Promise<Cotizacion[]> => {
   try {
     const response: AxiosResponse<Cotizacion[]> = await clienteAxios.get('/cotizaciones');
@@ -46,6 +62,18 @@ export const obtenerEmpresas = async (): Promise<Empresa[]> => {
     return response.data;
   } catch (error) {
     console.error('API: Error al obtener empresas:', error);
+    return [];
+  }
+}
+export const cotizacionesIndice = async (): Promise<CotizacionIndice[]> => {
+  try {
+    const response: AxiosResponse<CotizacionIndice[]> = await clienteAxios.get('/cotizacionIndice');
+    console.log('API: Respuesta completa de la API - CotizacionIndice:', response);
+    console.log('API: Respuesta de la API - CotizacionIndice:', response.data);
+    console.log('API: Datos mapeados - CotizacionIndice:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('API: Error al obtener CotizacionIndice:', error);
     return [];
   }
 };

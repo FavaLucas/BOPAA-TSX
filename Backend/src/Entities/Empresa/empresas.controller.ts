@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Logger } from "@nestjs/common";
+import { Controller, Get, Param, Post, Logger, HttpException, HttpStatus } from "@nestjs/common";
 import { EmpresasService } from "src/Entities/Empresa/empresas.services";
 import { Empresa } from "./empresa.entity";
 
@@ -10,10 +10,15 @@ export class EmpresasController {
   //Retorna un arreglo con todos los codigos de las empresas de mi DB local
   //Postman: http://localhost:8080/empresas
   @Get()
-  public buscarMisEmpresasDeDB(): Promise<string[]> {
-    this.logger.log("EC - Obteniendo codEmpresas[] de mi DB Local");
-    return this.empresasService.buscarMisEmpresasDeDB();
-  };
+  public async buscarMisEmpresasDeDB(): Promise<string[]> {
+    this.logger.log("EC - Buscando empresas en la base de datos");
+    try {
+      return await this.empresasService.buscarMisEmpresasDeDB();
+    } catch (error) {
+      this.logger.error(`Error al buscar empresas en la base de datos: ${error.message}`);
+      throw new HttpException('Error al buscar empresas', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   //Trae el detalle de la empresa desde Gempresa segun el codEmpresa que se indica
   //NO VA A GUARDAR los datos en local
@@ -44,12 +49,20 @@ export class EmpresasController {
         this.logger.log("EC - La empresa existe en la DB local");
         return existe;
       } else {
-        this.logger.log("EC  - La empresa no existe en la DB Local") ;
+        this.logger.log("EC  - La empresa no existe en la DB Local");
       }
     } catch (error) {
       this.logger.error("EC - Error:", error.message);
     }
   }
+
+  
+  @Get('/traerDatosDBLocalEmpresas') 
+  async traerDatosDBLocalEmpresas(): Promise<Empresa[]>  {
+      return this.empresasService.traerDatosDBLocalEmpresas();   
+  }
+
+
 }
 
 

@@ -15,7 +15,7 @@ export class IndicesService {
 
   private readonly logger = new Logger(IndicesService.name);
 
-  public async getIndicesGempresa(): Promise<void> {
+  public async actualizarIndicesDesdeGempresa(): Promise<void> {
     const todosLosIndicesDeGempresa: AxiosResponse<any, any> = await axios.get(`${baseURL}/indices`);
     this.logger.log("IS - Indices obtenidos de Gempresa", todosLosIndicesDeGempresa.data);
     const arregloDeIndices = todosLosIndicesDeGempresa.data.filter(aux => aux.code && aux.name).map(async (aux) => {
@@ -28,6 +28,10 @@ export class IndicesService {
       await this.guardarIndiceEnDB(nuevoIndice);
     })
     await Promise.all(arregloDeIndices);
+  }
+
+  public async traerDatosDBLocalIndice(): Promise<Indice[]>{
+    return this.indicesRepository.find()
   }
 
   public async guardarIndiceEnDB(indice: Indice): Promise<Indice> {

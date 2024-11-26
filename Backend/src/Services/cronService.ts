@@ -19,7 +19,7 @@ export class CronService {
   }
 
   @Cron('0 1 * * * *')
-  async actualizarCotizacionesMisEmpresas() {
+  async actualizarCotizacionesDesdeGempresa() {
     this.logger.log("Cron - Actualizando cotizaciones en DB Local");
 
     const arrCodigosEmpresas = await this.empresaService.buscarMisEmpresasDeDB();
@@ -28,22 +28,22 @@ export class CronService {
         try {
           await this.cotizacionesService.guardarTodasLasCotizaciones(codEmpresa);
         } catch (error) {
-          this.logger.error(`Error al actualizar cotizaciones para la empresa ${codEmpresa}: ${error.message}`);
+          this.logger.error(`Cron - Error al actualizar cotizaciones para la empresa ${codEmpresa}: ${error.message}`);
         }
       }
     } else {
-      this.logger.warn("No hay empresas en su DB Local o la búsqueda falló");
+      this.logger.warn("Cron - No hay empresas en su DB Local o la búsqueda falló");
     }
   }
 
-  @Cron('30 1 * * * *')
-  async getIndicesGempresa() {
+  @Cron('0 8 * * * *')
+  async actualizarIndicesDesdeGempresa() {
     this.logger.log("Cron - Obteniendo todos los índices");
-    await this.indicesService.getIndicesGempresa();
+    await this.indicesService.actualizarIndicesDesdeGempresa();
   }
 
-  @Cron('0 4 * * * *')
-  async actualizarCotizacionesMisIndices() {
+  @Cron('0 10 * * * *')
+  async actualizarCotizacionesIndicesDesdeGempresa() {
     this.logger.log("Cron - Actualizando cotizaciones de los índices en la DB Local");
 
     const arrIndicesEnDBLocal = await this.cotizacionIndiceService.buscarMisCodigosDeIndicesDeDB();
@@ -52,17 +52,17 @@ export class CronService {
         try {
           await this.cotizacionIndiceService.guardarTodasLasCotizaciones(codigoIndice);
         } catch (error) {
-          this.logger.error(`CIS - Error al actualizar cotizaciones para el índice ${codigoIndice}: ${error.message}`);
+          this.logger.error(`Cron - Error al actualizar cotizaciones para el índice ${codigoIndice}: ${error.message}`);
         }
       }
     } else {
-      this.logger.error("CIS - No hay índices en la DB local o la búsqueda falló");
+      this.logger.error("Cron - No hay índices en la DB local o la búsqueda falló");
     }
   }
 
   @Cron('0 5 * * * *')
-  async publicarIndice() {
-    await this.cotizacionIndiceService.calcularYPublicarIndice();
-  }
+  async calcularPublicarYGuardarMiIndice() {
+    await this.cotizacionIndiceService.calcularIndice();
 
+  }
 }

@@ -26,8 +26,8 @@ export class CotizacionIndice {
   @Column({
     name: 'valorCotizacionIndice',
     type: 'decimal',
-    precision: 20,
-    scale: 4,
+    precision: 10,
+    scale: 2,
   })
   public valorCotizacionIndice: number;
 
@@ -35,7 +35,7 @@ export class CotizacionIndice {
   @ManyToOne(() => Indice, (indice) => indice.cotizaciones)
   @JoinColumn({
     name: 'codigoIndice',
-    referencedColumnName: 'codigoIndice',
+    referencedColumnName: 'id',
   })
   public codigoIndice: Indice;
 

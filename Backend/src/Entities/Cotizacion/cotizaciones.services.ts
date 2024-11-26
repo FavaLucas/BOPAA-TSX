@@ -23,6 +23,11 @@ export class CotizacionesService {
     return this.cotizacionRepository.find();
   }
 
+  public async traerDatosDBLocalCotizacion(): Promise<Cotizacion[]>{
+    return this.cotizacionRepository.find()
+  }
+
+
   // Obtener cotizaciones de una empresa entre fechas específicas
   public async getCotizacionesEntreFechas(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
     this.logger.log(`CS - Obteniendo cotizaciones desde Gempresa de la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
@@ -175,12 +180,18 @@ export class CotizacionesService {
 
       this.logger.debug(`Procesando cotización: Fecha UTC=${fechaUTC.fecha}, Hora UTC=${fechaUTC.hora}`);
 
+      const valorCotizacion = Number(cotizacion.cotization);
+      if (isNaN(valorCotizacion)) {
+        this.logger.error(`Valor de cotización no válido: ${cotizacion.cotization}`);
+        return;
+      }
+
       if (horarioDeBolsaUTC.includes(fechaUTC.hora)) {
         const nuevaCotizacion = new Cotizacion(
           cotizacion.id,
           fechaUTC.fecha,
           fechaUTC.hora,
-          cotizacion.cotization,
+          valorCotizacion,
           empresa
         );
 
@@ -205,4 +216,28 @@ export class CotizacionesService {
       throw error;
     }
   }
+
+
+
+  public async getFiltrarCotizaciones(codEmpresa: string): Promise<Cotizacion[]> {
+    try {
+      const cotizacionesEmpresa = await this.cotizacionRepository.find({
+        relations: ['codEmpresaFK'], // Relación a incluir
+        where: {
+          codEmpresaFK: {
+            codEmpresa: codEmpresa, // Aquí 'id' se debe reemplazar por el nombre de la columna de `Empresa` que corresponde a `codEmpresa`
+          },
+        }
+      });
+      console.log("console log service", cotizacionesEmpresa)
+      return Promise.all(cotizacionesEmpresa)
+    } catch (error) {
+      console.error("Error al filtrar cotizaciones por codEmpresa: ", error);
+      throw new Error("No se pudo obtener las cotizaciones");
+    }
+  }
+
+
+
+
 }

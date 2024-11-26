@@ -1,0 +1,50 @@
+actualizarCotizacionesMisIndices ---> 
+    buscarMisCodigosDeIndicesDeDB,
+    guardarTodasLasCotizaciones ---->
+        ultimaFechaDeCotizacionEnMiDB---->
+            transformarFechaAGMT
+        formatearFecha,
+        ultimaFechaRegistradaEnGempresa---> 
+            getUltimaFechaCotizacionGempresa
+        formatearFecha
+        getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT ---->
+            formatearFecha
+            formatearFecha
+            guardarCotizacionEnDB
+
+TRAEMOS TODOS LAS COTIZACIONES DE INDICES QUE EXISTEN EN GEMPRESA
+
+
+
+
+
+obtenerCotizaciones----->
+    obtenerTodasLasCotizaciones
+
+TRAE MI TABLA DE COTIZACIONES DE INDICES LOCAL PARA MOSTRAR EN FRONT
+
+
+
+
+test----->
+    calcularIndice---->
+        obtenerTodasLasCotizaciones,
+        publicarIndiceEnGempresa
+
+
+------------------------------------------------------------------------
+
+Cron
+actualizarIndicesDesdeGempresa ---->
+    guardarIndiceEnDB
+
+AUTOMATICAMENTE TRAE LOS INDICES PUBLICADOS EN GEMPRESA Y LOS GUARDA EN DB
+
+
+actualizarCotizacionesMisIndices--->
+
+
+
+
+
+

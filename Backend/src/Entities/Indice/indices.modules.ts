@@ -12,4 +12,4 @@ import { IndicesService } from './indices.services';
   providers: [IndicesService],
   exports: [IndicesService, TypeOrmModule]
 })
-export class IndicesModule {}
+export class IndicesModule { }

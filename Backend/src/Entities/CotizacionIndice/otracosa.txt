@@ -1,0 +1,137 @@
+async calcularIndice(): Promise<void> {
+  const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones();
+  this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
+
+  const cotizacionesPorDiaYHora = {};
+
+  // Agrupar cotizaciones por fecha y hora
+  cotizaciones.forEach(cotizacion => {
+    const valorCotizacion = Number(cotizacion.cotizacion);
+    if (isNaN(valorCotizacion)) {
+      this.logger.error(`Cotización no válida: ${JSON.stringify(cotizacion)}`);
+      return;
+    }
+
+    const fechaHora = `${cotizacion.fecha} ${cotizacion.hora}`;
+    if (!cotizacionesPorDiaYHora[fechaHora]) {
+      cotizacionesPorDiaYHora[fechaHora] = {
+        valores: [],
+        fecha: cotizacion.fecha,
+        hora: cotizacion.hora
+      };
+    }
+    cotizacionesPorDiaYHora[fechaHora].valores.push(valorCotizacion);
+  });
+
+  // Calcular y publicar promedio para cada fecha y hora
+  for (const fechaHora of Object.keys(cotizacionesPorDiaYHora)) {
+    const grupo = cotizacionesPorDiaYHora[fechaHora];
+    const sumaCotizaciones = grupo.valores.reduce((acc, curr) => acc + curr, 0);
+    const promedio = sumaCotizaciones / grupo.valores.length;
+
+    const valorLimitado = parseFloat((promedio).toFixed(2));
+
+    // Verificar si ya existe una cotización para el índice en Gempresa
+    const existeEnGempresa = await this.verificarIndiceEnGempresa(grupo.fecha, grupo.hora, "TSX");
+
+    if (!existeEnGempresa) {
+      // Publicar el promedio con el nombre del índice TSX
+      await this.publicarIndiceEnGempresa(grupo.fecha, grupo.hora, "TSX", valorLimitado);
+      
+      const indiceTSX = await this.indiceRepository.findOne({ where: { codigoIndice: 'TSX' } });
+      const cotizacionIndice = new CotizacionIndice(grupo.fecha, grupo.hora, valorLimitado, indiceTSX);
+
+      await this.cotizacionIndiceRepository.save(cotizacionIndice);
+      this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
+      this.logger.log(`Promedio calculado y publicado para ${fechaHora}: ${valorLimitado}`);
+    } else {
+      this.logger.log(`El índice TSX ya existe para ${grupo.fecha} ${grupo.hora}. No se publicará.`);
+    }
+  }
+}
+
+async verificarIndiceEnGempresa(fecha: string, hora: string, codigoIndice: string): Promise<boolean> {
+  const url = `http://ec2-54-145-211-254.compute-1.amazonaws.com:3000/indices/cotizaciones/${codigoIndice}?fecha=${fecha}&hora=${hora}`;
+  try {
+    const response = await axios.get(url);
+    // Suponiendo que la respuesta es un array y que si existe, tendrá al menos un elemento
+    return response.data.length > 0;
+  } catch (error) {
+    this.logger.error(`Error al verificar el índice ${codigoIndice} en Gempresa: ${error.message}`);
+    return false; // Consideramos que no existe en caso de error
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const respuesta: AxiosResponse<any, any> = await clienteAxios.get(
+        `${baseURL}/indices/${codIndice}/cotizaciones?fechaDesde=${grFecha}&fechaHasta=${lrFecha}`
+      );
+      if (!respuesta.data || !Array.isArray(respuesta.data)) {
+        console.error('La respuesta no contiene un array de cotizaciones');
+        return null;
+      }
+      respuesta.data.forEach(async (item: any) => {
+        const { fecha, hora, valor, code } = item;
+        const newIndice = new IndiceCotizacion(fecha,
+, hora, valor, code);
+        console.log(newIndice);
+        await this.indiceCotizacionRepository.save(newIndice);
+      });
+      
+
+      public async guardarCotizacionEnDB(cotizacionIndice: CotizacionIndice): Promise<CotizacionIndice> {
+    this.logger.log("Intentando guardar la cotización:", cotizacionIndice);
+
+    try {
+        const hayCotizacion = await this.cotizacionIndiceRepository.findOne({
+            where: {
+                fecha: cotizacionIndice.fecha,
+                hora: cotizacionIndice.hora,
+                codigoIndice: { id: cotizacionIndice.codigoIndice.id } // Cambiado a 'id'
+            }
+        });
+
+        if (!hayCotizacion) {
+            return await this.cotizacionIndiceRepository.save(cotizacionIndice);
+        } else {
+            this.logger.warn(`La cotización ya existe para la fecha ${cotizacionIndice.fecha} y hora ${cotizacionIndice.hora}.`);
+            return hayCotizacion;
+        }
+    } catch (error) {
+        this.logger.error("CIS - Error guardando la cotización:", error);
+        throw error;
+    }
+}

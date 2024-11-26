@@ -1,6 +1,3 @@
-import { IsArray, IsInt, IsNumber, IsString } from "class-validator"
-
-
 export interface iIndiceDB {
     IsNumber()
     id?: number;
