@@ -63,5 +63,6 @@ export class CronService {
   @Cron('0 5 * * * *')
   async calcularPublicarYGuardarMiIndice() {
     await this.cotizacionIndiceService.calcularIndice();
+
   }
 }

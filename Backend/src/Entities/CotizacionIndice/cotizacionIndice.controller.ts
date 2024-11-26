@@ -40,6 +40,12 @@ export class CotizacionIndiceController {
         const data = await this.cotizacionIndiceService.calcularIndice();
         return data
     }
+
+    @Get('/traerDatosDBLocalCotizacionIndice') 
+    async traerDatosDBLocalCotizacionIndice(): Promise<CotizacionIndice[]>  {
+        return this.cotizacionIndiceService.traerDatosDBLocalCotizacionIndice();   
+    }
+
 }
 
 

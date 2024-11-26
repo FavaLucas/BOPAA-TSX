@@ -22,6 +22,10 @@ export class EmpresasService {
     return empresas.map(empresa => empresa.codEmpresa);
   };
 
+  public async traerDatosDBLocalEmpresas(): Promise<Empresa[]>{
+    return this.empresaRepository.find()
+  }
+
   //Trae el detalle de la empresa desde Gempresa segun el codEmpresa que se indica
   //NO VA A GUARDAR los datos en local
   //Postman: http://localhost:8080/empresas/XOM

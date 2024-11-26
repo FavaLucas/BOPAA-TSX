@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Cotizacion, Empresa, Indice } from '@/app/Services/Api';
+import { Cotizacion, CotizacionIndice, Empresa, Indice } from '@/app/Services/Api';
 import GraficoCotizaciones from '../empresaChart/GraficoCotizaciones'; // Asegúrate de que la ruta sea correcta
 
 const Main = () => {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [cotizaciones, setCotizaciones] = useState<Cotizacion[]>([]);
   const [indice, setIndice] = useState<Indice[]>([]);
+  const [cotizacionesIndices, setCotizacionesIndice] = useState<CotizacionIndice[]>([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [empresasData, cotizacionesData, indiceData] = await Promise.all([
-          axios.get('http://localhost:8080/empresas'),
-          axios.get('http://localhost:8080/cotizaciones'),
-          axios.get('http://localhost:8080/indices'),
+        const [empresasData, cotizacionesData, indiceData, cotizacionesIndiceData] = await Promise.all([
+          axios.get('http://localhost:8080/traerDatosDBLocalEmpresas'),
+          axios.get('http://localhost:8080/traerDatosDBLocalCotizacion'),
+          axios.get('http://localhost:8080/traerDatosDBLocalIndice'),
+          axios.get('http://localhost:8080/traerDatosDBLocalCotizacionIndice'),
         ]);
 
         setEmpresas(empresasData.data);
         setCotizaciones(cotizacionesData.data);
         setIndice(indiceData.data);
+        setCotizacionesIndice(cotizacionesIndiceData.data)
       } catch (error) {
         console.error('Error al obtener datos:', error);
       }

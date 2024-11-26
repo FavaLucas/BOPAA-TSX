@@ -55,6 +55,14 @@ export class EmpresasController {
       this.logger.error("EC - Error:", error.message);
     }
   }
+
+  
+  @Get('/traerDatosDBLocalEmpresas') 
+  async traerDatosDBLocalEmpresas(): Promise<Empresa[]>  {
+      return this.empresasService.traerDatosDBLocalEmpresas();   
+  }
+
+
 }
 
 

@@ -30,6 +30,10 @@ export class IndicesService {
     await Promise.all(arregloDeIndices);
   }
 
+  public async traerDatosDBLocalIndice(): Promise<Indice[]>{
+    return this.indicesRepository.find()
+  }
+
   public async guardarIndiceEnDB(indice: Indice): Promise<Indice> {
     const indiceExisteEnDBLocal = await this.indicesRepository.findOne(
       {

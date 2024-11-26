@@ -1,5 +1,6 @@
 import { Controller, Get, Query, Logger, Post } from "@nestjs/common";
 import { IndicesService } from "./indices.services";
+import { Indice } from "./indice.entity";
 
 @Controller('indices')
 export class IndicesController {
@@ -15,5 +16,10 @@ export class IndicesController {
   public async actualizarIndicesDesdeGempresa(): Promise<void> {
     this.logger.log("IC - Obteniendo todos los índices");
     return this.indicesService.actualizarIndicesDesdeGempresa();
+  }
+
+  @Get('/traerDatosDBLocalIndice') 
+  async traerDatosDBLocalIndice(): Promise<Indice[]>  {
+      return this.indicesService.traerDatosDBLocalIndice();   
   }
 }

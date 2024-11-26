@@ -35,7 +35,7 @@ export class CotizacionIndice {
   @ManyToOne(() => Indice, (indice) => indice.cotizaciones)
   @JoinColumn({
     name: 'codigoIndice',
-    referencedColumnName: 'codigoIndice',
+    referencedColumnName: 'id',
   })
   public codigoIndice: Indice;
 

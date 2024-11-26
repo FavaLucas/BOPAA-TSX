@@ -90,5 +90,11 @@ export class CotizacionesController {
         console.log(this.cotizacionesService.getFiltrarCotizaciones(codEmpresa))
         return await this.cotizacionesService.getFiltrarCotizaciones(codEmpresa)
     }
+
+
+    @Get('/traerDatosDBLocalCotizacion') 
+    async traerDatosDBLocalCotizacion(): Promise<Cotizacion[]>  {
+        return this.cotizacionesService.traerDatosDBLocalCotizacion();   
+    }
 }
 
