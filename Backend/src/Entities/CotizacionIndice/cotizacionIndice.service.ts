@@ -33,7 +33,6 @@ export class CotizacionIndiceService {
     return IndiceBursatil.map(Indice => Indice.codigoIndice);
   }
 
-
   public async guardarTodasLasCotizaciones(codigoIndice: string): Promise<void> {
     const ultimaFechaEnMiDB = await this.ultimaFechaDeCotizacionEnMiDB(codigoIndice);
     const stringUltimaFechaEnMiDB = DateMomentsUtils.formatearFecha(ultimaFechaEnMiDB);
@@ -197,7 +196,7 @@ export class CotizacionIndiceService {
         await this.cotizacionIndiceRepository.save(cotizacionIndice)
         await this.publicarIndiceEnGempresa(grupo.fecha, grupo.hora, "TSX", valorLimitado);
       } else {
-        this.logger.warn(`El índice TSX ya existe para la fecha ${grupo.fecha} y hora ${grupo.hora}, no se guardará ni publicará de nuevo.`);
+        // this.logger.warn(`El índice TSX ya existe para la fecha ${grupo.fecha} y hora ${grupo.hora}, no se guardará ni publicará de nuevo.`);
       }
     }
   }
@@ -226,7 +225,7 @@ export class CotizacionIndiceService {
       const response = await axios.get(url);
       return response.data.length > 0; 
     } catch (error) { 
-      this.logger.error(`Error al verificar el índice ${codigoIndice} en Gempresa: ${error.message}`);
+      // this.logger.error(`Error al verificar el índice ${codigoIndice} en Gempresa: ${error.message}`);
       return false; 
     }
   }

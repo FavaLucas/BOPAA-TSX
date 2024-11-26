@@ -27,7 +27,6 @@ export class CotizacionesService {
     return this.cotizacionRepository.find()
   }
 
-
   // Obtener cotizaciones de una empresa entre fechas específicas
   public async getCotizacionesEntreFechas(codEmpresa: string, fechaDesde: string, fechaHasta: string): Promise<Cotizacion[]> {
     this.logger.log(`CS - Obteniendo cotizaciones desde Gempresa de la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
