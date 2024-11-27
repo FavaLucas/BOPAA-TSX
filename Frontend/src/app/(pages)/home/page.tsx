@@ -2,13 +2,15 @@
 import React from 'react';
 import './pageHome.css';
 import CotizacionesPage from '../../components/cotizaciones/cotizaciones';
+import { Navbar } from '@/app/components/navbar';
 
 
 const Home = () => {
   return (
     <div>
-    <CotizacionesPage />
-  </div>
+      <Navbar />
+      <CotizacionesPage />
+    </div>
   );
 }
 

@@ -11,11 +11,6 @@ const CotizacionesPage = () => {
   const [cargando, setCargando] = useState<boolean>(false); // Estado de carga
   const [error, setError] = useState<string | null>(null); // Mensaje de error
 
-  /**
-   * Función para cargar los datos de empresas del backend
-   */
-
-  const codEmpresas = ["V", "KO"]
 
   const cargarEmpresas = async () => {
     try {

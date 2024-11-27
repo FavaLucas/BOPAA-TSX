@@ -3,7 +3,7 @@
 const Header = () => {
   return (
     <header>
-      <h1>AAAAAAAAAAAA</h1>
+      <h1>TSX - Toronto Stock Exchange</h1>
     </header>
   );
 };
