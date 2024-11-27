@@ -54,11 +54,11 @@ export const obtenerCotizaciones = async (codEmpresa: string): Promise<iCotizaci
   try {
     // Ruta dinámica utilizando el parámetro codEmpresa
     const response: AxiosResponse<iCotizacion[]> = await clienteAxios.get(`cotizaciones/filtrarCotdemiDB/${codEmpresa}`);
-    
+
     // Convertir la cotización a número
     const datosConvertidos = response.data.map(cot => ({
       ...cot,
-      cotizacion: Number(cot.cotizacion), 
+      cotizacion: Number(cot.cotizacion),
     }));
 
     console.log(`API: Datos convertidos - Cotizaciones para la empresa ${codEmpresa}:`, datosConvertidos);
@@ -68,42 +68,15 @@ export const obtenerCotizaciones = async (codEmpresa: string): Promise<iCotizaci
   }
 };
 
+export const traerCodigosDeEmpresas = async (): Promise<string[]> => {
+  try {
+    const response: AxiosResponse<any, any> = await clienteAxios.get(`empresas`);
+    return response.data;
+  } catch (error) {
+    return manejarError(error, `Error al obtener el arreglo de Empresas`);
+  }
+}
 
-/**
- * Obtiene todas las empresas de la base de datos local.
- */
-// export const obtenerEmpresas = async (): Promise<iEmpresa[]> => {
-//   try {
-//     const response: AxiosResponse<iEmpresa[]> = await clienteAxios.get('empresas/traerDatos/DBLocalEmpresas');
-//     return procesarRespuesta<iEmpresa[]>(response);
-//   } catch (error) {
-//     return manejarError(error, 'Error al obtener empresas.');
-//   }
-// };
-
-// /**
-//  * Obtiene todos los índices de la base de datos local.
-//  */
-// export const obtenerIndice = async (): Promise<iIndice[]> => {
-//   try {
-//     const response: AxiosResponse<iIndice[]> = await clienteAxios.get('indices/traerDatos/DBLocallIndices');
-//     return procesarRespuesta<iIndice[]>(response);
-//   } catch (error) {
-//     return manejarError(error, 'Error al obtener índices.');
-//   }
-// };
-
-// /**
-//  * Obtiene todas las cotizaciones relacionadas con índices de la base de datos local.
-//  */
-// export const obtenerCotizacionesIndice = async (): Promise<iCotizacionIndice[]> => {
-//   try {
-//     const response: AxiosResponse<iCotizacionIndice[]> = await clienteAxios.get('cotizacionIndice/traerDatosDB/LocalCotizacionIndices');
-//     return procesarRespuesta<iCotizacionIndice[]>(response);
-//   } catch (error) {
-//     return manejarError(error, 'Error al obtener cotizaciones de índices.');
-//   }
-// };
 
 /**
  * Obtiene las cotizaciones de una empresa específica por su código.

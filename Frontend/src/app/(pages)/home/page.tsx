@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import './pageHome.css';
-import CotizacionesPage from '../cotizacionesPage/page';
+import CotizacionesPage from '../../components/cotizaciones/cotizaciones';
 
 
 const Home = () => {
