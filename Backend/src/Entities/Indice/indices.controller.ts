@@ -18,7 +18,7 @@ export class IndicesController {
     return this.indicesService.actualizarIndicesDesdeGempresa();
   }
 
-  @Get('/traerDatosDBLocalIndice') 
+  @Get('/traerDatos/DBLocalIndice') 
   async traerDatosDBLocalIndice(): Promise<Indice[]>  {
       return this.indicesService.traerDatosDBLocalIndice();   
   }

@@ -41,7 +41,7 @@ export class CotizacionIndiceController {
         return data
     }
 
-    @Get('/traerDatosDBLocalCotizacionIndice') 
+    @Get('/traerDatosDB/LocalCotizacionIndice') 
     async traerDatosDBLocalCotizacionIndice(): Promise<CotizacionIndice[]>  {
         return this.cotizacionIndiceService.traerDatosDBLocalCotizacionIndice();   
     }

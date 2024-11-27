@@ -1,11 +1,15 @@
 'use client';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-const HomePage = () => {
+const Home = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/home");
+  }, [])
   return (
-    <div>
-      <h1>Bienvenido a Empresas y Cotizacionesasdasdasdasdas</h1>
-    </div>
+    <></>
   );
 };
 
-export default HomePage;
+export default Home;

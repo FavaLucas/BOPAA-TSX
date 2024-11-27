@@ -22,8 +22,9 @@ export class EmpresasService {
     return empresas.map(empresa => empresa.codEmpresa);
   };
 
-  public async traerDatosDBLocalEmpresas(): Promise<Empresa[]>{
-    return this.empresaRepository.find()
+  public async traerDatosDeEmpresasDeDBLocal(): Promise<Empresa[]> {
+    const empresas = await this.empresaRepository.find();
+    return  empresas
   }
 
   //Trae el detalle de la empresa desde Gempresa segun el codEmpresa que se indica

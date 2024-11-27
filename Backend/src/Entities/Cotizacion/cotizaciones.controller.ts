@@ -92,7 +92,7 @@ export class CotizacionesController {
     }
 
 
-    @Get('/traerDatosDBLocalCotizacion') 
+    @Get('/traerDatos/DBLocalCotizaciones') 
     async traerDatosDBLocalCotizacion(): Promise<Cotizacion[]>  {
         return this.cotizacionesService.traerDatosDBLocalCotizacion();   
     }

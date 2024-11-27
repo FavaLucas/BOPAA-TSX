@@ -2,48 +2,30 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
+// Registra las escalas y componentes que necesitas
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-interface GraficoCotizacionesProps {
-  empresa: string;
-  cotizaciones: { fecha: string; cotizacion: number }[];
-}
+const GraficoCotizaciones = ({ datos }: { datos: any[] }) => {
+  // Procesar datos para el gráfico
+  const labels = datos.map((dato) => `${dato.fecha} ${dato.hora}`);
+  const dataValues = datos.map((dato) => dato.cotizacion);
 
-const GraficoCotizaciones: React.FC<GraficoCotizacionesProps> = ({ empresa, cotizaciones }) => {
-  // Agrupar cotizaciones por mes
-  const agrupadoPorMes: Record<string, number[]> = {};
-
-  cotizaciones.forEach(cot => {
-    const [año, mes] = cot.fecha.split('-');
-    const claveMes = `${año}-${mes}`;
-    if (!agrupadoPorMes[claveMes]) {
-      agrupadoPorMes[claveMes] = [];
-    }
-    agrupadoPorMes[claveMes].push(cot.cotizacion);
-  });
-
-  // Calcular el promedio de cotización por mes
-  const promediosMensuales = Object.entries(agrupadoPorMes).map(([mes, valores]) => {
-    const promedio = valores.reduce((suma, valor) => suma + valor, 0) / valores.length;
-    return { mes, promedio };
-  });
-
-  const datos = {
-    labels: promediosMensuales.map(item => item.mes),
+  const data = {
+    labels,
     datasets: [
       {
-        label: `Cotizaciones de ${empresa} por mes`,
-        data: promediosMensuales.map(item => item.promedio),
+        label: 'Cotización',
+        data: dataValues,
         borderColor: 'rgba(75,192,192,1)',
-        fill: false,
+        backgroundColor: 'rgba(75,192,192,0.2)',
+        fill: true,
       },
     ],
   };
 
   return (
-    <div>
-      <h2>{`Cotizaciones de ${empresa}`}</h2>
-      <Line data={datos} />
+    <div style={{ marginTop: '20px' }}>
+      <Line data={data} />
     </div>
   );
 };

@@ -56,14 +56,8 @@ export class EmpresasController {
     }
   }
 
-  
-  @Get('/traerDatosDBLocalEmpresas') 
-  async traerDatosDBLocalEmpresas(): Promise<Empresa[]>  {
-      return this.empresasService.traerDatosDBLocalEmpresas();   
+  @Get('/traerDatos/DBLocalEmpresas')
+  async traerDatosDeEmpresasDeDBLocal(): Promise<Empresa[]> {
+    return await this.empresasService.traerDatosDeEmpresasDeDBLocal()
   }
-
-
 }
-
-
-

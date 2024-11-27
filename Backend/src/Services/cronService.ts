@@ -42,7 +42,7 @@ export class CronService {
     await this.indicesService.actualizarIndicesDesdeGempresa();
   }
 
-  @Cron('0 52 * * * *')
+  @Cron('0 10 * * * *')
   async actualizarCotizacionesIndicesDesdeGempresa() {
     this.logger.log("Cron - Actualizando cotizaciones de los índices en la DB Local");
 
