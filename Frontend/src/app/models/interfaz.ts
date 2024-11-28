@@ -22,8 +22,14 @@ export interface iCotizacionIndice {
   id: number;
   fecha: string;
   hora: string;
-  valorCotizacionIndice: number;
-  codigoIndice: iIndice;
+  valorCotizacionIndice: string;
+  cotizacion: number;
+  codigoIndice: {
+    codigoIndice: string;
+    id: number;
+    nombreIndice: string;
+    valorFinalIndice: string;
+  };
 }
 
 export interface iIndice {

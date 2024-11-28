@@ -1,27 +1,26 @@
-// src/app/components/cotizaciones/cotizaciones.tsx
-
-import { obtenerCotizaciones, traerCodigosDeEmpresas } from '@/app/Services/DataService';
+import { obtenerCotizacionesIndices, traerCodigosDeIndice } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';
-import { iCotizacion } from '@/app/models/interfaz';
-import './cotizaciones.css';
+import { iCotizacionIndice } from '@/app/models/interfaz';
+import './bodyIndices.css';
 import GraficoSelector from '../graficoSelector/graficoSelector';
-import GraficoCotizacionesNuevo from '../empresaChart/graficoCotizacionesNuevos';
+import GraficoCotizaciones from '../graficoCotizaciones/graficoCotizaciones';
 
-const CotizacionesPage = () => {
-  const [empresas, setEmpresas] = useState<string[]>([]);
-  const [codEmpresa, setCodEmpresa] = useState<string>('V');
-  const [cotizaciones, setCotizaciones] = useState<iCotizacion[]>([]);
+const BodyIndices = () => {
+  const [indices, setIndices] = useState<string[]>([]);
+  const [codIndice, setCodIndice] = useState<string>("TSX");
+  const [cotizaciones, setCotizaciones] = useState<iCotizacionIndice[]>([]);
   const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('anual');
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const cargarEmpresas = async () => {
+  const cargarIndices = async () => {
     try {
-      const datos = await traerCodigosDeEmpresas();
-      setEmpresas(datos);
+      const datos = await traerCodigosDeIndice();
+      setIndices(datos);
+
     } catch (error) {
-      console.error('Error al cargar las empresas:', error);
-      setError('No se pudieron cargar las empresas.');
+      console.error('Error al cargar los indices:', error);
+      setError('No se pudieron cargar los indices.');
     }
   };
 
@@ -29,7 +28,7 @@ const CotizacionesPage = () => {
     setCargando(true);
     setError(null);
     try {
-      const datos = await obtenerCotizaciones(codEmpresa);
+      const datos = await obtenerCotizacionesIndices(codIndice);
       setCotizaciones(datos);
     } catch (error) {
       console.error('Error al cargar las cotizaciones:', error);
@@ -40,21 +39,21 @@ const CotizacionesPage = () => {
   };
 
   useEffect(() => {
-    cargarEmpresas();
+    cargarIndices();
   }, []);
 
   useEffect(() => {
-    if (codEmpresa) {
+    if (codIndice) {
       cargarDatos();
     }
-  }, [codEmpresa]);
+  }, [codIndice]);
 
   const obtenerDatosGrafico = () => {
     if (tipoGrafico === 'diario') {
       // Agrupar cotizaciones por día
       const agrupadoPorDia: { [key: string]: number[] } = {};
       cotizaciones.forEach(cot => {
-        const fecha = cot.fecha.split('T')[0]; // Obtener solo la fecha
+        const fecha = cot.fecha.split('T')[0]; 
         if (!agrupadoPorDia[fecha]) {
           agrupadoPorDia[fecha] = [];
         }
@@ -64,7 +63,7 @@ const CotizacionesPage = () => {
       const labels = Object.keys(agrupadoPorDia);
       const dataValues = labels.map(fecha => {
         const sum = agrupadoPorDia[fecha].reduce((acc, val) => acc + val, 0);
-        return sum / agrupadoPorDia[fecha].length; // Promedio diario
+        return sum / agrupadoPorDia[fecha].length; 
       });
 
       return { labels, dataValues };
@@ -112,20 +111,21 @@ const CotizacionesPage = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Cotizaciones de Empresas</h1>
+      <h1>Cotizaciones de Indices xxxxxxxxxxxxx</h1>
 
       {/* Selector de tipo de gráfico */}
       <GraficoSelector tipoGrafico={tipoGrafico} setTipoGrafico={setTipoGrafico} />
 
-      {/* Botones para seleccionar la empresa */}
+      {/* Botones para seleccionar el indice */}
+
       <div style={{ margin: '10px 0' }}>
-        {empresas.map(empresa => (
+        {indices.map(indice => (
           <button
-            key={empresa}
-            onClick={() => setCodEmpresa(empresa)}
-            style={{ margin: '5px', padding: '10px' }}
+          key={indice}
+          onClick={()=> setCodIndice(indice)}
+          style={{ margin: '5px', padding: '10px' }}
           >
-            {empresa}
+            {indice}
           </button>
         ))}
       </div>
@@ -136,7 +136,7 @@ const CotizacionesPage = () => {
 
       {/* Mostrar el gráfico si hay datos */}
       {datosGrafico.dataValues.length > 0 ? (
-        <GraficoCotizacionesNuevo datos={datosGrafico} tipoGrafico={tipoGrafico} />
+        <GraficoCotizaciones datos={datosGrafico} tipoGrafico={tipoGrafico} />
       ) : (
         !cargando && <p>No hay datos para mostrar.</p>
       )}
@@ -144,4 +144,4 @@ const CotizacionesPage = () => {
   );
 };
 
-export default CotizacionesPage;
+export default BodyIndices;

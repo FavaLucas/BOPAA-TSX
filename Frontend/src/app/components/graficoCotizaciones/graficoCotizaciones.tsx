@@ -13,7 +13,7 @@ interface GraficoProps {
   tipoGrafico: 'diario' | 'mensual' | 'anual';
 }
 
-const GraficoCotizacionesNuevo: React.FC<GraficoProps> = ({ datos, tipoGrafico }) => {
+const GraficoCotizaciones: React.FC<GraficoProps> = ({ datos, tipoGrafico }) => {
   const data = {
     labels: datos.labels,
     datasets: [
@@ -36,4 +36,4 @@ const GraficoCotizacionesNuevo: React.FC<GraficoProps> = ({ datos, tipoGrafico }
   );
 };
 
-export default GraficoCotizacionesNuevo;
+export default GraficoCotizaciones;

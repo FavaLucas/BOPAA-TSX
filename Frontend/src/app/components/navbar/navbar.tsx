@@ -1,6 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-export function Navbar() {
+export function Navbar({ botonRedireccion, url } : any) {
+
+  const redireccion = botonRedireccion;
+  useEffect(() => {
+
+  }, [redireccion])
+
+
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -37,7 +44,7 @@ export function Navbar() {
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">INDICE</a>
+        <a className="btn" href={url}>{redireccion}</a>
       </div>
     </div>
   )

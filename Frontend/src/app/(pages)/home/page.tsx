@@ -1,16 +1,19 @@
 'use client';
 import React from 'react';
-import './pageHome.css';
 
-import { Navbar } from '@/app/components/navbar';
-import CotizacionesPage from '@/app/components/cotizaciones/cotizacionesNuevo';
+
+import { Navbar } from '@/app/components/navbar/navbar';
+import Body from '@/app/components/body/body';
+
 
 
 const Home = () => {
+
+
   return (
     <div>
-      <Navbar />
-      <CotizacionesPage />
+      <Navbar botonRedireccion={"Indices Bursatiles"} url={"./indiceBursatil"}/>
+      <Body />
     </div>
   );
 }

@@ -238,6 +238,22 @@ export class CotizacionIndiceService {
     });
     return cotizacionExistente !== null; 
   }
+
+  public async getFiltrarCotizaciones(codIndice: string): Promise<CotizacionIndice[]> {
+    try {
+      const cotizacionesIndice = await this.cotizacionIndiceRepository.find({
+        relations: ['codigoIndice'], 
+        where: {
+          codigoIndice: {codigoIndice: codIndice},
+        }
+      });
+      console.log("Cotizacion Indice", cotizacionesIndice)
+      return Promise.all(cotizacionesIndice)
+    } catch (error) {
+      console.error("Error al filtrar cotizaciones por codIndice: ", error);
+      throw new Error("No se pudo obtener las cotizaciones del Indice");
+    }
+  }
 }
 
 

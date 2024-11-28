@@ -48,6 +48,15 @@ export class IndicesService {
       throw error;
     }
   }
+
+
+  public async buscarCodigosDeIndicesDeDB(): Promise<string[]> {
+    this.logger.log("ES - Obteniendo codEmpresas[] de mi DB Local");
+    const indices = await this.indicesRepository.find({ select: ["codigoIndice"] });
+    return indices.map(indice => indice.codigoIndice);
+  };
+
+  
 }
 
 
