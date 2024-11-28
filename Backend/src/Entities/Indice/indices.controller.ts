@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Logger, Post } from "@nestjs/common";
+import { Controller, Get,  Logger } from "@nestjs/common";
 import { IndicesService } from "./indices.services";
 import { Indice } from "./indice.entity";
 

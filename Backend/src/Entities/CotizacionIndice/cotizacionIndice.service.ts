@@ -1,14 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CotizacionIndice } from './cotizacionIndice.entity';
-import { Index, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Indice } from '../Indice/indice.entity';
 import DateMomentsUtils from 'src/utils/DateMomentsUtils';
 import { IFecha } from 'src/Models/fecha.model';
-import axios from 'axios';
-import clienteAxios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { baseURL } from 'src/Services/AxiosAGempresa';
-import { Cotizacion } from '../Cotizacion/cotizacion.entity';
 import { CotizacionesService } from '../Cotizacion/cotizaciones.services';
 
 @Injectable()

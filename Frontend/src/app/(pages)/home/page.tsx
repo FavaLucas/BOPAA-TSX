@@ -1,8 +1,9 @@
 'use client';
 import React from 'react';
 import './pageHome.css';
-import CotizacionesPage from '../../components/cotizaciones/cotizaciones';
+
 import { Navbar } from '@/app/components/navbar';
+import CotizacionesPage from '@/app/components/cotizaciones/cotizacionesNuevo';
 
 
 const Home = () => {
