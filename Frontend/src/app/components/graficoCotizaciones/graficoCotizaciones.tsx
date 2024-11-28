@@ -1,4 +1,3 @@
-// src/app/components/empresaChart/GraficoCotizaciones.tsx
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
@@ -10,6 +9,9 @@ interface GraficoProps {
     label: string; // Nombre de la empresa
     data: number[]; // Valores de cotización
     labels: string[]; // Etiquetas (fechas o horas)
+    borderColor: string; // Color de la línea
+    backgroundColor: string; // Color del fondo
+    fill: boolean; // Rellenar área debajo de la línea
   }>;
   tipoGrafico: 'diario' | 'mensual' | 'anual';
 }
@@ -20,16 +22,43 @@ const GraficoCotizaciones: React.FC<GraficoProps> = ({ datos, tipoGrafico }) => 
     datasets: datos.map(dataset => ({
       label: dataset.label,
       data: dataset.data,
-      borderColor: 'rgba(75,192,192,1)', // Color de línea (puedes personalizarlo)
-      backgroundColor: 'rgba(75,192,192,0.2)', // Color de fondo (puedes personalizarlo)
-      fill: true,
+      borderColor: dataset.borderColor, // Usar el color de línea personalizado
+      backgroundColor: dataset.backgroundColor, // Usar el color de fondo personalizado
+      fill: dataset.fill,
     })),
+  };
+
+  const options = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: tipoGrafico === 'diario' ? 'Hora' : 'Fecha'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Cotización'
+        }
+      }
+    },
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const, // Asegurar que sea compatible con los valores esperados
+      },
+      title: {
+        display: true,
+        text: 'Evolución de Cotizaciones'
+      }
+    }
   };
 
   return (
     <div style={{ marginTop: '20px' }}>
       <h2>{tipoGrafico.charAt(0).toUpperCase() + tipoGrafico.slice(1)} Cotizaciones</h2>
-      <Line data={data} />
+      <Line data={data} options={options} />
     </div>
   );
 };

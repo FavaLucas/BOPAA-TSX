@@ -9,11 +9,22 @@ const BodyEmpresas = () => {
   const [empresas, setEmpresas] = useState<string[]>([]);
   const [selectedEmpresas, setSelectedEmpresas] = useState<string[]>([]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacion[]>([]);
-  const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('anual');
+  const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('diario');
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
   const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Paleta de colores asignada a cada empresa
+  const colorMap: { [key: string]: string } = {
+    'KO': '#FF5733',
+    'NVDA': '#33FF57',
+    'PEP': '#3357FF',
+    'SHEL': '#FF33A1',
+    'TM': '#FFA533',
+    'V': '#8E44AD',
+    'XOM': '#3498DB'
+  };
 
   const cargarEmpresas = async () => {
     try {
@@ -49,7 +60,7 @@ const BodyEmpresas = () => {
     if (selectedEmpresas.length > 0) {
       cargarDatos();
     }
-  }, [selectedEmpresas]);
+  }, [selectedEmpresas, fechaSeleccionada]);
 
   const obtenerDatosGrafico = () => {
     const agrupadoPorEmpresa: { [key: string]: { labels: string[]; dataValues: number[] } } = {};
@@ -63,9 +74,9 @@ const BodyEmpresas = () => {
         agrupadoPorEmpresa[empresa] = { labels: [], dataValues: [] };
       }
 
-      if (tipoGrafico === 'diario') {
+      if (tipoGrafico === 'diario' && fecha === fechaSeleccionada) {
         const hora = cot.hora.split(':')[0];
-        const clave = `${fecha} ${hora}:00`;
+        const clave = `${hora}:00`;
         if (!agrupadoPorEmpresa[empresa].labels.includes(clave)) {
           agrupadoPorEmpresa[empresa].labels.push(clave);
           agrupadoPorEmpresa[empresa].dataValues.push(cot.cotizacion);
@@ -74,15 +85,16 @@ const BodyEmpresas = () => {
           agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion; // Sumar si ya existe
         }
       } else if (tipoGrafico === 'mensual') {
-        const mes = fecha.slice(0, 7); // "YYYY-MM"
-        if (!agrupadoPorEmpresa[empresa].labels.includes(mes)) {
-          agrupadoPorEmpresa[empresa].labels.push(mes);
-          agrupadoPorEmpresa[empresa].dataValues.push(cot.cotizacion);
-        } else {
-          const index = agrupadoPorEmpresa[ empresa].labels.indexOf(mes);
-          agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion; // Sumar si ya existe
+        if (fecha.startsWith(mesSeleccionado)) {
+          if (!agrupadoPorEmpresa[empresa].labels.includes(fecha)) {
+            agrupadoPorEmpresa[empresa].labels.push(fecha);
+            agrupadoPorEmpresa[empresa].dataValues.push(cot.cotizacion);
+          } else {
+            const index = agrupadoPorEmpresa[empresa].labels.indexOf(fecha);
+            agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion; // Sumar si ya existe
+          }
         }
-      } else {
+      } else if (tipoGrafico === 'anual') {
         const añoMes = fecha.slice(0, 7); // "YYYY-MM"
         if (!agrupadoPorEmpresa[empresa].labels.includes(añoMes)) {
           agrupadoPorEmpresa[empresa].labels.push(añoMes);
@@ -99,6 +111,9 @@ const BodyEmpresas = () => {
       label: empresa,
       data: agrupadoPorEmpresa[empresa].dataValues,
       labels: agrupadoPorEmpresa[empresa].labels,
+      borderColor: colorMap[empresa], // Asignar color de línea
+      backgroundColor: `${colorMap[empresa]}33`, // Color de fondo semi-transparente
+      fill: true
     }));
 
     return datasets;
@@ -140,7 +155,9 @@ const BodyEmpresas = () => {
             style={{
               margin: '5px',
               padding: '10px',
-              backgroundColor: selectedEmpresas.includes(empresa) ? 'lightgreen' : 'lightgray',
+              backgroundColor: selectedEmpresas.includes(empresa) ? colorMap[empresa] : 'lightgray',
+              color: 'white',
+              border: `2px solid ${colorMap[empresa]}`,
             }}
           >
             {empresa}
