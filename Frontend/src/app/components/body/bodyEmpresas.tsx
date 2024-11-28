@@ -5,12 +5,13 @@ import './body.css';
 import GraficoSelector from '../graficoSelector/graficoSelector';
 import GraficoCotizaciones from '../graficoCotizaciones/graficoCotizaciones';
 
-
-const Body = () => {
+const BodyEmpresas = () => {
   const [empresas, setEmpresas] = useState<string[]>([]);
   const [codEmpresa, setCodEmpresa] = useState<string>('V');
   const [cotizaciones, setCotizaciones] = useState<iCotizacion[]>([]);
   const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('anual');
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,9 +51,34 @@ const Body = () => {
 
   const obtenerDatosGrafico = () => {
     if (tipoGrafico === 'diario') {
-      // Agrupar cotizaciones por día
+      // Filtrar cotizaciones por fecha seleccionada
+      const cotizacionesDelDia = cotizaciones.filter(cot => cot.fecha.split('T')[0] === fechaSeleccionada);
+      const agrupadoPorHora: { [key: string]: number[] } = {};
+      cotizacionesDelDia.forEach(cot => {
+        const hora = cot.hora.split(':')[0]; // Obtener solo la hora
+        if (!agrupadoPorHora[hora]) {
+          agrupadoPorHora[hora] = [];
+        }
+        agrupadoPorHora[hora].push(cot.cotizacion);
+      });
+
+      const labels = Object.keys(agrupadoPorHora);
+      const dataValues = labels.map(hora => {
+        const sum = agrupadoPorHora[hora].reduce((acc, val) => acc + val, 0);
+        return sum / agrupadoPorHora[hora].length; // Promedio por hora
+      });
+
+      return { labels, dataValues };
+
+    } else if (tipoGrafico === 'mensual') {
+      // Filtrar cotizaciones por mes seleccionado
+      const cotizacionesDelMes = cotizaciones.filter(cot => {
+        const [añoMes] = cot.fecha.split('T')[0].split('-').slice(0, 2);
+        return `${añoMes}-${cot.fecha.split('T')[0].split('-')[1]}` === mesSeleccionado;
+      });
+
       const agrupadoPorDia: { [key: string]: number[] } = {};
-      cotizaciones.forEach(cot => {
+      cotizacionesDelMes.forEach(cot => {
         const fecha = cot.fecha.split('T')[0]; // Obtener solo la fecha
         if (!agrupadoPorDia[fecha]) {
           agrupadoPorDia[fecha] = [];
@@ -67,8 +93,9 @@ const Body = () => {
       });
 
       return { labels, dataValues };
-    } else if (tipoGrafico === 'mensual') {
-      // Agrupar cotizaciones por mes
+
+    } else {
+      // Anual: Agrupar cotizaciones por mes
       const agrupadoPorMes: { [key: string]: number[] } = {};
       cotizaciones.forEach(cot => {
         const [año, mes] = cot.fecha.split('-');
@@ -86,25 +113,19 @@ const Body = () => {
       });
 
       return { labels, dataValues };
-    } else {
-      // Anual ```tsx
-      const agrupadoPorAnio: { [key: string]: number[] } = {};
-      cotizaciones.forEach(cot => {
-        const [año] = cot.fecha.split('-');
-        if (!agrupadoPorAnio[año]) {
-          agrupadoPorAnio[año] = [];
-        }
-        agrupadoPorAnio[año].push(cot.cotizacion);
-      });
-
-      const labels = Object.keys(agrupadoPorAnio);
-      const dataValues = labels.map(año => {
-        const sum = agrupadoPorAnio[año].reduce((acc, val) => acc + val, 0);
-        return sum / agrupadoPorAnio[año].length; // Promedio anual
-      });
-
-      return { labels, dataValues };
     }
+  };
+
+  const cambiarDia = (incremento: number) => {
+    const nuevaFecha = new Date(fechaSeleccionada);
+    nuevaFecha.setDate(nuevaFecha.getDate() + incremento);
+    setFechaSeleccionada(nuevaFecha.toISOString().split('T')[0]);
+  };
+
+  const cambiarMes = (incremento: number) => {
+    const nuevaFecha = new Date(mesSeleccionado + '-01');
+    nuevaFecha.setMonth(nuevaFecha.getMonth() + incremento);
+    setMesSeleccionado(nuevaFecha.toISOString().split('T')[0].slice(0, 7));
   };
 
   const datosGrafico = obtenerDatosGrafico();
@@ -129,6 +150,24 @@ const Body = () => {
         ))}
       </div>
 
+      {/* Navegación para el gráfico diario */}
+      {tipoGrafico === 'diario' && (
+        <div>
+          <button onClick={() => cambiarDia(-1)}>Día Anterior</button>
+          <button onClick={() => cambiarDia(1)}>Día Siguiente</button>
+          <p>Fecha Seleccionada: {fechaSeleccionada}</p>
+        </div>
+      )}
+
+      {/* Navegación para el gráfico mensual */}
+      {tipoGrafico === 'mensual' && (
+        <div>
+          <button onClick={() => cambiarMes(-1)}>Mes Anterior</button>
+          <button onClick={() => cambiarMes(1)}>Mes Siguiente</button>
+          <p>Mes Seleccionado: {mesSeleccionado}</p>
+        </div>
+      )}
+
       {/* Mostrar errores o estado de carga */}
       {cargando && <p>Cargando datos...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -143,4 +182,4 @@ const Body = () => {
   );
 };
 
-export default Body;
+export default BodyEmpresas;
