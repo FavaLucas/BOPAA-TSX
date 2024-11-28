@@ -2,9 +2,7 @@
 
 const Footer = () => {
   return (
-    <footer>
-      <p>&copy; 2024 Mi Empresa. Todos los derechos reservados.</p>
-    </footer>
+    <footer className="footer"></footer>
   );
 };
 

@@ -2,9 +2,7 @@
 
 const Header = () => {
   return (
-    <header>
-      <h1>TSX - Toronto Stock Exchange</h1>
-    </header>
+    <header className="header"></header>
   );
 };
 

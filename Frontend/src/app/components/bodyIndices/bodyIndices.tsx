@@ -1,9 +1,9 @@
 import { obtenerCotizacionesIndices, traerCodigosDeIndice } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';
 import { iCotizacionIndice } from '@/app/models/interfaz';
-import './bodyIndices.css';
+import '../../../styles/styles.css';
 import GraficoSelector from '../graficoSelector/graficoSelector';
-import GraficoCotizacionesIndices from '../graficoCotizaionesIndices/graficoCotizacionesIndices';
+import GraficoCotizacionesIndices from '../graficoCotizacionesIndices/graficoCotizacionesIndices';
 
 
 const BodyIndices = () => {
@@ -120,7 +120,7 @@ const BodyIndices = () => {
           >
             {indice}
           </button>
-        ))}
+        ))}   
       </div>
 
       {/* Mostrar errores o estado de carga */}
