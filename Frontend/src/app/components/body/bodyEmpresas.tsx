@@ -9,7 +9,7 @@ const BodyEmpresas = () => {
   const [empresas, setEmpresas] = useState<string[]>([]);
   const [selectedEmpresas, setSelectedEmpresas] = useState<string[]>([]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacion[]>([]);
-  const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('diario');
+  const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('mensual');
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
   const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));
   const [cargando, setCargando] = useState<boolean>(false);
@@ -141,7 +141,11 @@ const BodyEmpresas = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Cotizaciones de Empresas</h1>
+      <div style={{ padding: '20px', border: '2px solid #ddd', borderRadius: '8px' }}>
+        <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>Cotizaciones de Empresas</h1>
+        <h2 style={{ textAlign: 'center' }}>Evolución de Cotizaciones</h2>
+      </div>
+
 
       {/* Selector de tipo de gráfico */}
       <GraficoSelector tipoGrafico={tipoGrafico} setTipoGrafico={setTipoGrafico} />

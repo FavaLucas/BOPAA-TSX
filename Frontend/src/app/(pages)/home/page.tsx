@@ -10,7 +10,7 @@ const Home = () => {
 
 
   return (
-    <div className="min-h-screen border bg-gray-100">
+    <div className="min-h-screen border bg-gray-0">
       <Navbar botonRedireccion={"Indices Bursatiles"} url={"./indiceBursatil"} />
       <div className="flex flex-col md:flex-row justify-center items-center gap-12 p-8">
         <div className="w-full md:w-1/2 bg-white p-4 rounded-lg shadow-md">

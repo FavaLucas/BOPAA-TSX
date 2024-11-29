@@ -9,14 +9,14 @@ const BodyIndices = () => {
   const [indices, setIndices] = useState<string[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<string[]>([]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacionIndice[]>([]);
-  const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('anual');
+  const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('mensual');
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
   const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const colors = [
-    '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFA533', 
+    '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFA533',
     '#8E44AD', '#3498DB', '#E74C3C', '#2ECC71', '#F39C12',
     '#9B59B6', '#1ABC9C', '#34495E', '#27AE60', '#E67E22',
     '#2980B9', '#C0392B', '#D35400', '#7D3C98', '#16A085'
@@ -45,7 +45,7 @@ const BodyIndices = () => {
     try {
       const promises = selectedIndices.map(indice => obtenerCotizacionesIndices(indice));
       const resultados = await Promise.all(promises);
-      const todasCotizaciones = resultados.flat(); 
+      const todasCotizaciones = resultados.flat();
       setCotizaciones(todasCotizaciones);
     } catch (error) {
       console.error('Error al cargar las cotizaciones:', error);
@@ -69,8 +69,8 @@ const BodyIndices = () => {
     const agrupadoPorIndice: { [key: string]: { labels: string[]; dataValues: number[] } } = {};
 
     cotizaciones.forEach(cot => {
-      const indice = cot.codigoIndice.codigoIndice; 
-      const fecha = cot.fecha.split('T')[0]; 
+      const indice = cot.codigoIndice.codigoIndice;
+      const fecha = cot.fecha.split('T')[0];
 
       if (!agrupadoPorIndice[indice]) {
         agrupadoPorIndice[indice] = { labels: [], dataValues: [] };
@@ -84,7 +84,7 @@ const BodyIndices = () => {
           agrupadoPorIndice[indice].dataValues.push(cot.cotizacion);
         } else {
           const index = agrupadoPorIndice[indice].labels.indexOf(clave);
-          agrupadoPorIndice[indice].dataValues[index] += cot.cotizacion; 
+          agrupadoPorIndice[indice].dataValues[index] += cot.cotizacion;
         }
       } else if (tipoGrafico === 'mensual') {
         if (fecha.startsWith(mesSeleccionado)) {
@@ -93,17 +93,17 @@ const BodyIndices = () => {
             agrupadoPorIndice[indice].dataValues.push(cot.cotizacion);
           } else {
             const index = agrupadoPorIndice[indice].labels.indexOf(fecha);
-            agrupadoPorIndice[indice].dataValues[index] += cot.cotizacion; 
+            agrupadoPorIndice[indice].dataValues[index] += cot.cotizacion;
           }
         }
       } else if (tipoGrafico === 'anual') {
-        const añoMes = fecha.slice(0, 7); 
+        const añoMes = fecha.slice(0, 7);
         if (!agrupadoPorIndice[indice].labels.includes(añoMes)) {
           agrupadoPorIndice[indice].labels.push(añoMes);
           agrupadoPorIndice[indice].dataValues.push(cot.cotizacion);
         } else {
           const index = agrupadoPorIndice[indice].labels.indexOf(añoMes);
-          agrupadoPorIndice[indice].dataValues[index] += cot.cotizacion; 
+          agrupadoPorIndice[indice].dataValues[index] += cot.cotizacion;
         }
       }
     });
@@ -112,8 +112,8 @@ const BodyIndices = () => {
       label: indice,
       data: agrupadoPorIndice[indice].dataValues,
       labels: agrupadoPorIndice[indice].labels,
-      borderColor: colorMap[indice], 
-      backgroundColor: `${colorMap[indice]}33`, 
+      borderColor: colorMap[indice],
+      backgroundColor: `${colorMap[indice]}33`,
       fill: true
     }));
 
@@ -142,10 +142,15 @@ const BodyIndices = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Cotizaciones de Índices</h1>
+      <div style={{ padding: '20px', border: '2px solid #ddd', borderRadius: '8px' }}>
+        <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>Cotizaciones de Índices</h1>
+        <h2 style={{ textAlign: 'center' }}>Evolución de Índices</h2>
+      </div>
 
+      {/* Selector de tipo de gráfico */}
       <GraficoSelector tipoGrafico={tipoGrafico} setTipoGrafico={setTipoGrafico} />
 
+      {/* Botones para seleccionar las empresas */}
       <div style={{ margin: '10px 0' }}>
         {indices.map(indice => (
           <button
@@ -164,6 +169,8 @@ const BodyIndices = () => {
         ))}
       </div>
 
+
+      {/* Navegación para el gráfico diario */}
       {tipoGrafico === 'diario' && (
         <div>
           <button onClick={() => cambiarDia(-1)}>Día Anterior</button>
@@ -172,6 +179,7 @@ const BodyIndices = () => {
         </div>
       )}
 
+      {/* Navegación para el gráfico mensual */}
       {tipoGrafico === 'mensual' && (
         <div>
           <button onClick={() => cambiarMes(-1)}>Mes Anterior</button>
@@ -180,9 +188,11 @@ const BodyIndices = () => {
         </div>
       )}
 
+      {/* Mostrar errores o estado de carga */}
       {cargando && <p>Cargando datos...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
+      {/* Mostrar el gráfico si hay datos */}
       {datosGrafico.length > 0 ? (
         <GraficoCotizacionesIndices datos={datosGrafico} tipoGrafico={tipoGrafico} />
       ) : (

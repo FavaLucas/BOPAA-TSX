@@ -56,8 +56,8 @@ const GraficoCotizacionesIndices: React.FC<GraficoProps> = ({ datos, tipoGrafico
   };
 
   return (
-    <div className="chart-container">
-      <h2 className="chart-title">{tipoGrafico.charAt(0).toUpperCase() + tipoGrafico.slice(1)} Cotizaciones</h2>
+    <div style={{ marginTop: '20px' }}>
+      <h2>{tipoGrafico.charAt(0).toUpperCase() + tipoGrafico.slice(1)} Cotizaciones</h2>
       <Line data={data} options={options} />
     </div>
   );

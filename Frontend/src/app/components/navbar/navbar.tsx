@@ -9,33 +9,33 @@ export function Navbar({ botonRedireccion, url }: any) {
 
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-gray-600 text-white shadow-lg">
+      {/* Navbar Start */}
       <div className="navbar-start">
-        <div className="dropdown">
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-            <li><a>AMAZON</a></li>
-            <li>
-              <a>Parent</a>
-              <ul className="p-2">
-                <li><a>Cotizacion diaria</a></li>
-                <li><a>Cotizacion mensual</a></li>
-              </ul>
-            </li>
-            <li><a>GOOGLE</a></li>
-          </ul>
-        </div>
-        <a className="btn btn-ghost text-xl"><img src="./images/TSX.svg.png" alt="" className="w-12 h-12" /></a>
+        <a className="btn btn-ghost">
+          <img src="./images/TSX.svg.png" alt="TSX Logo" className="w-12 h-12" />
+        </a>
       </div>
+  
+      {/* Navbar Center */}
       <div className="navbar-center hidden lg:flex">
-        <h1>TORONTO STOCK EXCHANGE</h1>
+        <h1 className="px-5 py-2 rounded-lg text-center font-bold text-xl tracking-wide bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+          TORONTO STOCK EXCHANGE
+        </h1>
       </div>
+  
+      {/* Navbar End */}
       <div className="navbar-end">
-        <a className="btn" href={url}>{redireccion}</a>
+        {/* <a
+          className="btn btn-primary px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition duration-200"
+          href="#"
+        >
+          Login
+        </a> */}
       </div>
     </div>
-  )
+  );
+  
 }
 
 
