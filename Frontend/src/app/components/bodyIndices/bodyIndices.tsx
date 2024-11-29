@@ -4,8 +4,13 @@ import { iCotizacionIndice } from '@/app/models/interfaz';
 import '../../../styles/styles.css';
 import GraficoSelector from '../graficoSelector/graficoSelector';
 import GraficoCotizacionesIndices from '../graficoCotizacionesIndices/graficoCotizacionesIndices';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
+
 
 const BodyIndices = () => {
+  const { t, i18n } = useTranslation();
+
   const [indices, setIndices] = useState<string[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<string[]>([]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacionIndice[]>([]);
@@ -35,7 +40,7 @@ const BodyIndices = () => {
       setColorMap(tempColorMap); // Usar setState para actualizar colorMap
     } catch (error) {
       console.error('Error al cargar los índices:', error);
-      setError('No se pudieron cargar los índices.');
+      setError(t('error'));
     }
   };
 
@@ -49,7 +54,7 @@ const BodyIndices = () => {
       setCotizaciones(todasCotizaciones);
     } catch (error) {
       console.error('Error al cargar las cotizaciones:', error);
-      setError('No se pudieron cargar las cotizaciones.');
+      setError(t('error'));
     } finally {
       setCargando(false);
     }
@@ -63,7 +68,7 @@ const BodyIndices = () => {
     if (selectedIndices.length > 0) {
       cargarDatos();
     }
-  }, [selectedIndices, fechaSeleccionada]);
+  }, [selectedIndices, fechaSeleccionada, mesSeleccionado]);
 
   const obtenerDatosGrafico = () => {
     const agrupadoPorIndice: { [key: string]: { labels: string[]; dataValues: number[] } } = {};
@@ -120,6 +125,8 @@ const BodyIndices = () => {
     return datasets;
   };
 
+
+
   const cambiarDia = (incremento: number) => {
     const nuevaFecha = new Date(fechaSeleccionada);
     nuevaFecha.setDate(nuevaFecha.getDate() + incremento);
@@ -130,6 +137,7 @@ const BodyIndices = () => {
     const nuevaFecha = new Date(mesSeleccionado + '-01');
     nuevaFecha.setMonth(nuevaFecha.getMonth() + incremento);
     setMesSeleccionado(nuevaFecha.toISOString().split('T')[0].slice(0, 7));
+    cargarDatos();
   };
 
   const datosGrafico = obtenerDatosGrafico();
@@ -142,15 +150,16 @@ const BodyIndices = () => {
 
   return (
     <div style={{ padding: '20px' }}>
+
+
       <div style={{ padding: '20px', border: '2px solid #ddd', borderRadius: '8px' }}>
-        <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>Cotizaciones de Índices</h1>
-        <h2 style={{ textAlign: 'center' }}>Evolución de Índices</h2>
+      <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>{t('body_indices.title')}</h1>
       </div>
 
       {/* Selector de tipo de gráfico */}
       <GraficoSelector tipoGrafico={tipoGrafico} setTipoGrafico={setTipoGrafico} />
 
-      {/* Botones para seleccionar las empresas */}
+      {/* Botones para seleccionar los índices */}
       <div style={{ margin: '10px 0' }}>
         {indices.map(indice => (
           <button
@@ -169,34 +178,33 @@ const BodyIndices = () => {
         ))}
       </div>
 
-
       {/* Navegación para el gráfico diario */}
       {tipoGrafico === 'diario' && (
         <div>
-          <button onClick={() => cambiarDia(-1)}>Día Anterior</button>
-          <button onClick={() => cambiarDia(1)}>Día Siguiente</button>
-          <p>Fecha Seleccionada: {fechaSeleccionada}</p>
+          <button onClick={() => cambiarDia(-1)}>{t('buttons.previous_day')}</button>
+          <button onClick={() => cambiarDia(1)}>{t('buttons.next_day')}</button>
+          <p>{t('selected_date')}: {fechaSeleccionada}</p>
         </div>
       )}
 
       {/* Navegación para el gráfico mensual */}
       {tipoGrafico === 'mensual' && (
         <div>
-          <button onClick={() => cambiarMes(-1)}>Mes Anterior</button>
-          <button onClick={() => cambiarMes(1)}>Mes Siguiente</button>
-          <p>Mes Seleccionado: {mesSeleccionado}</p>
+          <button onClick={() => cambiarMes(-1)}>{t('buttons.previous_month')}</button>
+          <button onClick={() => cambiarMes(1)}>{t('buttons.next_month')}</button>
+          <p>{t('selected_month')}: {mesSeleccionado}</p>
         </div>
       )}
 
       {/* Mostrar errores o estado de carga */}
-      {cargando && <p>Cargando datos...</p>}
+      {cargando && <p>{t('loading')}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {/* Mostrar el gráfico si hay datos */}
       {datosGrafico.length > 0 ? (
         <GraficoCotizacionesIndices datos={datosGrafico} tipoGrafico={tipoGrafico} />
       ) : (
-        !cargando && <p>No hay datos para mostrar.</p>
+        !cargando && <p>{t('no_data')}</p>
       )}
     </div>
   );

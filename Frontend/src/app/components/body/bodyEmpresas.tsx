@@ -4,11 +4,17 @@ import { iCotizacion } from '@/app/models/interfaz';
 import '../../../styles/styles.css';
 import GraficoSelector from '../graficoSelector/graficoSelector';
 import GraficoCotizaciones from '../graficoCotizaciones/graficoCotizaciones';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
+
+
 
 const BodyEmpresas = () => {
+  const { t, i18n } = useTranslation();
+
   const [empresas, setEmpresas] = useState<string[]>([]);
-  const [selectedEmpresas, setSelectedEmpresas] = useState<string[]>([]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacion[]>([]);
+  const [selectedEmpresas, setSelectedEmpresas] = useState<string[]>([]);
   const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('mensual');
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
   const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));
@@ -32,7 +38,7 @@ const BodyEmpresas = () => {
       setEmpresas(datos);
     } catch (error) {
       console.error('Error al cargar las empresas:', error);
-      setError('No se pudieron cargar las empresas.');
+      setError(t('error'));
     }
   };
 
@@ -42,11 +48,11 @@ const BodyEmpresas = () => {
     try {
       const promises = selectedEmpresas.map(empresa => obtenerCotizaciones(empresa));
       const resultados = await Promise.all(promises);
-      const todasCotizaciones = resultados.flat(); // Combina las cotizaciones de todas las empresas seleccionadas
+      const todasCotizaciones = resultados.flat();
       setCotizaciones(todasCotizaciones);
     } catch (error) {
       console.error('Error al cargar las cotizaciones:', error);
-      setError('No se pudieron cargar las cotizaciones.');
+      setError(t('error'));
     } finally {
       setCargando(false);
     }
@@ -60,15 +66,14 @@ const BodyEmpresas = () => {
     if (selectedEmpresas.length > 0) {
       cargarDatos();
     }
-  }, [selectedEmpresas, fechaSeleccionada]);
+  }, [selectedEmpresas, fechaSeleccionada, mesSeleccionado]);
 
   const obtenerDatosGrafico = () => {
     const agrupadoPorEmpresa: { [key: string]: { labels: string[]; dataValues: number[] } } = {};
 
-    // Agrupar cotizaciones por empresa
     cotizaciones.forEach(cot => {
-      const empresa = cot.codEmpresaFK.codEmpresa; // Ajusta esto según la estructura de tu modelo
-      const fecha = cot.fecha.split('T')[0]; // Obtener solo la fecha
+      const empresa = cot.codEmpresaFK.codEmpresa;
+      const fecha = cot.fecha.split('T')[0];
 
       if (!agrupadoPorEmpresa[empresa]) {
         agrupadoPorEmpresa[empresa] = { labels: [], dataValues: [] };
@@ -82,7 +87,7 @@ const BodyEmpresas = () => {
           agrupadoPorEmpresa[empresa].dataValues.push(cot.cotizacion);
         } else {
           const index = agrupadoPorEmpresa[empresa].labels.indexOf(clave);
-          agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion; // Sumar si ya existe
+          agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion;
         }
       } else if (tipoGrafico === 'mensual') {
         if (fecha.startsWith(mesSeleccionado)) {
@@ -91,28 +96,27 @@ const BodyEmpresas = () => {
             agrupadoPorEmpresa[empresa].dataValues.push(cot.cotizacion);
           } else {
             const index = agrupadoPorEmpresa[empresa].labels.indexOf(fecha);
-            agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion; // Sumar si ya existe
+            agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion;
           }
         }
       } else if (tipoGrafico === 'anual') {
-        const añoMes = fecha.slice(0, 7); // "YYYY-MM"
+        const añoMes = fecha.slice(0, 7);
         if (!agrupadoPorEmpresa[empresa].labels.includes(añoMes)) {
           agrupadoPorEmpresa[empresa].labels.push(añoMes);
           agrupadoPorEmpresa[empresa].dataValues.push(cot.cotizacion);
         } else {
           const index = agrupadoPorEmpresa[empresa].labels.indexOf(añoMes);
-          agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion; // Sumar si ya existe
+          agrupadoPorEmpresa[empresa].dataValues[index] += cot.cotizacion;
         }
       }
     });
 
-    // Convertir el objeto agrupado en un formato adecuado para el gráfico
     const datasets = Object.keys(agrupadoPorEmpresa).map(empresa => ({
       label: empresa,
       data: agrupadoPorEmpresa[empresa].dataValues,
       labels: agrupadoPorEmpresa[empresa].labels,
-      borderColor: colorMap[empresa], // Asignar color de línea
-      backgroundColor: `${colorMap[empresa]}33`, // Color de fondo semi-transparente
+      borderColor: colorMap[empresa],
+      backgroundColor: `${colorMap[empresa]}33`,
       fill: true
     }));
 
@@ -129,6 +133,7 @@ const BodyEmpresas = () => {
     const nuevaFecha = new Date(mesSeleccionado + '-01');
     nuevaFecha.setMonth(nuevaFecha.getMonth() + incremento);
     setMesSeleccionado(nuevaFecha.toISOString().split('T')[0].slice(0, 7));
+    cargarDatos();
   };
 
   const datosGrafico = obtenerDatosGrafico();
@@ -141,11 +146,12 @@ const BodyEmpresas = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <div style={{ padding: '20px', border: '2px solid #ddd', borderRadius: '8px' }}>
-        <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>Cotizaciones de Empresas</h1>
-        <h2 style={{ textAlign: 'center' }}>Evolución de Cotizaciones</h2>
-      </div>
+      {/* <LanguageSwitcher />  */}
 
+      <div style={{ padding: '20px', border: '2px solid #ddd', borderRadius: '8px' }}>
+      <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>{t('body_empresas.title')}</h1>
+
+      </div>
 
       {/* Selector de tipo de gráfico */}
       <GraficoSelector tipoGrafico={tipoGrafico} setTipoGrafico={setTipoGrafico} />
@@ -172,30 +178,30 @@ const BodyEmpresas = () => {
       {/* Navegación para el gráfico diario */}
       {tipoGrafico === 'diario' && (
         <div>
-          <button onClick={() => cambiarDia(-1)}>Día Anterior</button>
-          <button onClick={() => cambiarDia(1)}>Día Siguiente</button>
-          <p>Fecha Seleccionada: {fechaSeleccionada}</p>
+          <button onClick={() => cambiarDia(-1)}>{t('buttons.previous_day')}</button>
+          <button onClick={() => cambiarDia(1)}>{t('buttons.next_day')}</button>
+          <p>{t('selected_date')}: {fechaSeleccionada}</p>
         </div>
       )}
 
       {/* Navegación para el gráfico mensual */}
       {tipoGrafico === 'mensual' && (
         <div>
-          <button onClick={() => cambiarMes(-1)}>Mes Anterior</button>
-          <button onClick={() => cambiarMes(1)}>Mes Siguiente</button>
-          <p>Mes Seleccionado: {mesSeleccionado}</p>
+          <button onClick={() => cambiarMes(-1)}>{t('buttons.previous_month')}</button>
+          <button onClick={() => cambiarMes(1)}>{t('buttons.next_month')}</button>
+          <p>{t('Mes Seleccionado')}: {mesSeleccionado}</p>
         </div>
       )}
 
       {/* Mostrar errores o estado de carga */}
-      {cargando && <p>Cargando datos...</p>}
+      {cargando && <p>{t('loading')}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {/* Mostrar el gráfico si hay datos */}
       {datosGrafico.length > 0 ? (
         <GraficoCotizaciones datos={datosGrafico} tipoGrafico={tipoGrafico} />
       ) : (
-        !cargando && <p>No hay datos para mostrar.</p>
+        !cargando && <p>{t('no_data')}</p>
       )}
     </div>
   );

@@ -1,29 +1,32 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { useTranslation } from 'react-i18next'; 
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 interface GraficoProps {
   datos: Array<{
-    label: string; // Nombre de la empresa
-    data: number[]; // Valores de cotización
-    labels: string[]; // Etiquetas (fechas o horas)
-    borderColor: string; // Color de la línea
-    backgroundColor: string; // Color del fondo
-    fill: boolean; // Rellenar área debajo de la línea
+    label: string;
+    data: number[]; 
+    labels: string[]; 
+    borderColor: string; 
+    backgroundColor: string; 
+    fill: boolean; 
   }>;
   tipoGrafico: 'diario' | 'mensual' | 'anual';
 }
 
 const GraficoCotizaciones: React.FC<GraficoProps> = ({ datos, tipoGrafico }) => {
+  const { t } = useTranslation(); 
+
   const data = {
-    labels: datos[0]?.labels || [], // Usamos las etiquetas de la primera empresa
+    labels: datos[0]?.labels || [], 
     datasets: datos.map(dataset => ({
       label: dataset.label,
       data: dataset.data,
-      borderColor: dataset.borderColor, // Usar el color de línea personalizado
-      backgroundColor: dataset.backgroundColor, // Usar el color de fondo personalizado
+      borderColor: dataset.borderColor, 
+      backgroundColor: dataset.backgroundColor,
       fill: dataset.fill,
     })),
   };
@@ -33,34 +36,31 @@ const GraficoCotizaciones: React.FC<GraficoProps> = ({ datos, tipoGrafico }) => 
       x: {
         title: {
           display: true,
-          text: tipoGrafico === 'diario' ? 'Hora' : 'Fecha'
+          text: tipoGrafico === 'diario' ? t('buttons.hora') : t('buttons.fecha') 
         }
       },
       y: {
         title: {
           display: true,
-          text: 'Cotización'
+          text: t('buttons.cotizacion') 
         }
       }
     },
     responsive: true,
     plugins: {
       legend: {
-        position: 'top' as const, // Asegurar que sea compatible con los valores esperados
+        position: 'top' as const,
       },
-      title: {
-        display: true,
-        text: 'Evolución de Cotizaciones'
-      }
     }
   };
 
+
   return (
     <div style={{ marginTop: '20px' }}>
-      <h2>{tipoGrafico.charAt(0).toUpperCase() + tipoGrafico.slice(1)} Cotizaciones</h2>
       <Line data={data} options={options} />
     </div>
   );
 };
 
 export default GraficoCotizaciones;
+

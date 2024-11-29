@@ -46,18 +46,13 @@ const GraficoCotizacionesIndices: React.FC<GraficoProps> = ({ datos, tipoGrafico
     responsive: true,
     plugins: {
       legend: {
-        position: 'top' as const, // Asegurar que sea compatible con los valores esperados
+        position: 'top' as const, 
       },
-      title: {
-        display: true,
-        text: 'Evolución de Cotizaciones'
-      }
     }
   };
 
   return (
     <div style={{ marginTop: '20px' }}>
-      <h2>{tipoGrafico.charAt(0).toUpperCase() + tipoGrafico.slice(1)} Cotizaciones</h2>
       <Line data={data} options={options} />
     </div>
   );

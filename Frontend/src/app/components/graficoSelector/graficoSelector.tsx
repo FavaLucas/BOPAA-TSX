@@ -1,5 +1,5 @@
-// src/app/components/empresaChart/GraficoSelector.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface GraficoSelectorProps {
   tipoGrafico: 'diario' | 'mensual' | 'anual';
@@ -7,16 +7,27 @@ interface GraficoSelectorProps {
 }
 
 const GraficoSelector: React.FC<GraficoSelectorProps> = ({ tipoGrafico, setTipoGrafico }) => {
+  const { t } = useTranslation(); // Usar useTranslation
+
   return (
-    <div style={{ marginBottom: '20px' }}>
-      <button onClick={() => setTipoGrafico('diario')} style={{ margin: '5px' }}>
-        Gráfico Diario
+    <div className="flex justify-center mb-4">
+      <button
+        className={`p-2 border rounded-l-md ${tipoGrafico === 'diario' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+        onClick={() => setTipoGrafico('diario')}
+      >
+        {t('buttons.daily_chart')}
       </button>
-      <button onClick={() => setTipoGrafico('mensual')} style={{ margin: '5px' }}>
-        Gráfico Mensual
+      <button
+        className={`p-2 border-t border-b ${tipoGrafico === 'mensual' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+        onClick={() => setTipoGrafico('mensual')}
+      >
+        {t('buttons.monthly_chart')}
       </button>
-      <button onClick={() => setTipoGrafico('anual')} style={{ margin: '5px' }}>
-        Gráfico Anual
+      <button
+        className={`p-2 border rounded-r-md ${tipoGrafico === 'anual' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+        onClick={() => setTipoGrafico('anual')}
+      >
+        {t('buttons.annual_chart')}
       </button>
     </div>
   );

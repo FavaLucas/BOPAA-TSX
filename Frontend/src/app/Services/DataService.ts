@@ -1,5 +1,4 @@
 'use client';
-
 import { AxiosResponse } from "axios";
 import { iCotizacion, iEmpresa, iCotizacionIndice, iIndice } from "../models/interfaz";
 import clienteAxios from "./Axios";
@@ -10,9 +9,6 @@ const manejarError = (error: any, mensaje: string): [] => {
   return []; // Retorna un array vacío en caso de error
 };
 
-/**
- * Obtiene todas las cotizaciones de la base de datos local.
- */
 export const obtenerCotizaciones = async (codEmpresa: string): Promise<iCotizacion[]> => {
   try {
     // Ruta dinámica utilizando el parámetro codEmpresa
@@ -40,10 +36,6 @@ export const traerCodigosDeEmpresas = async (): Promise<string[]> => {
   }
 }
 
-/**
- * Obtiene las cotizaciones de una empresa específica por su código.
- * @param codEmpresa - Código de la empresa (por ejemplo, "V" para Visa).
- */
 export const obtenerCotizacionesPorEmpresa = async (codEmpresa: string): Promise<iCotizacion[]> => {
   try {
     const response: AxiosResponse<iCotizacion[]> = await clienteAxios.get(`cotizaciones/filtrarCotdemiDB/${codEmpresa}`);
