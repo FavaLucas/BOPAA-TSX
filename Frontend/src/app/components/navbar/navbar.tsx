@@ -13,7 +13,7 @@ export function Navbar({ botonRedireccion }: any) {
     <div className="navbar bg-gray-400 text-white shadow-lg h-24 shadow-gray-800" >
       <div className="navbar-start">
         <a className='pl-2'>
-          <img src="./images/TSX.svg.png" alt="TSX Logo" className="w-16 h-16" />
+          <img src="./images/TSX.svg.png" alt="TSX Logo" className="w-20 h-20" />
         </a>
       </div>
 
