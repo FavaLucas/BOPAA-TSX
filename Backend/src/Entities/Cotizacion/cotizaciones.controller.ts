@@ -64,7 +64,7 @@ export class CotizacionesController {
     //El metodo no me esta trayendo todas las ultimas cotizaciones.
     @Get('/traerCotizacionesMisEmpresas')
     public async actualizarCotizacionesDesdeGempresa(): Promise<void> {
-        this.logger.log("CotizacionesController - Actualizando cotizaciones en DB Local");
+        // this.logger.log("CotizacionesController - Actualizando cotizaciones en DB Local");
         try {
             const arrCodigosEmpresas = await this.empresaService.buscarMisEmpresasDeDB();
             if (arrCodigosEmpresas && arrCodigosEmpresas.length > 0) {

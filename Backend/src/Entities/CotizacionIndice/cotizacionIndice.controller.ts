@@ -27,7 +27,7 @@ export class CotizacionIndiceController {
     @Get('/obtenerCotizaciones')
     async obtenerCotizaciones(): Promise<CotizacionIndice[]> {
         try {
-            this.logger.debug("ObetenerCotizaciones", this.cotizacionIndiceService.obtenerTodasLasCotizaciones())
+            // this.logger.debug("ObetenerCotizaciones", this.cotizacionIndiceService.obtenerTodasLasCotizaciones())
             return await this.cotizacionIndiceService.obtenerTodasLasCotizaciones();
         } catch (error) {
             this.logger.error(`Error al obtener cotizaciones de índices: ${error.message}`);
@@ -49,8 +49,8 @@ export class CotizacionIndiceController {
 
     @Get('/filtrarCotdemiDB/:codIndice')
     public async GetFiltrarCot(@Param('codIndice') codIndice: string): Promise<CotizacionIndice[]> {
-        console.log("Filtrado de cotizaciones de mi DB por codIndice")
-        console.log(this.cotizacionIndiceService.getFiltrarCotizaciones(codIndice))
+        // console.log("Filtrado de cotizaciones de mi DB por codIndice")
+        // console.log(this.cotizacionIndiceService.getFiltrarCotizaciones(codIndice))
         return await this.cotizacionIndiceService.getFiltrarCotizaciones(codIndice)
     }
 

@@ -91,7 +91,7 @@ export class CotizacionIndiceService {
 
     const cotizacionesFaltantes = await Promise.all(respuesta.data.map(async (cotizacion) => {
 
-      this.logger.log(`Procesando cotización: Fecha UTC=${cotizacion.fecha}, Hora UTC=${cotizacion.hora}`);
+      // this.logger.log(`Procesando cotización: Fecha UTC=${cotizacion.fecha}, Hora UTC=${cotizacion.hora}`);
 
       if (horarioDeBolsaUTC.includes(cotizacion.hora)) {
         const nuevaCotizacionIndice = new CotizacionIndice(
@@ -156,7 +156,7 @@ export class CotizacionIndiceService {
 
   async calcularIndice(): Promise<void> {
     const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones();
-    this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
+    // this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
 
     const cotizacionesPorDiaYHora = {};
 
@@ -247,10 +247,10 @@ export class CotizacionIndiceService {
           codigoIndice: {codigoIndice: codIndice},
         }
       });
-      console.log("Cotizacion Indice", cotizacionesIndice)
+      // console.log("Cotizacion Indice", cotizacionesIndice)
       return Promise.all(cotizacionesIndice)
     } catch (error) {
-      console.error("Error al filtrar cotizaciones por codIndice: ", error);
+      // console.error("Error al filtrar cotizaciones por codIndice: ", error);
       throw new Error("No se pudo obtener las cotizaciones del Indice");
     }
   }

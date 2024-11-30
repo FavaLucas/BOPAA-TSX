@@ -14,7 +14,7 @@ export class IndicesController {
   //Esto llevarlo a CRON para que automaticamente se busquen todos los indices de GEMPRESA y se guarden en mi DB Local
   @Get()
   public async actualizarIndicesDesdeGempresa(): Promise<void> {
-    this.logger.log("IC - Obteniendo todos los índices");
+    // this.logger.log("IC - Obteniendo todos los índices");
     return this.indicesService.actualizarIndicesDesdeGempresa();
   }
 
@@ -25,7 +25,7 @@ export class IndicesController {
 
   @Get("/traerCodigosDeIndices")
   public async buscarCodigosDeIndicesDeDB(): Promise<string[]> {
-    this.logger.log("IC - Buscando codigos de mis indices en la base de datos");
+    // this.logger.log("IC - Buscando codigos de mis indices en la base de datos");
     try {
       return await this.indicesService.buscarCodigosDeIndicesDeDB();
     } catch (error) {

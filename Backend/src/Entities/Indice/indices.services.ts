@@ -17,14 +17,14 @@ export class IndicesService {
 
   public async actualizarIndicesDesdeGempresa(): Promise<void> {
     const todosLosIndicesDeGempresa: AxiosResponse<any, any> = await axios.get(`${baseURL}/indices`);
-    this.logger.log("IS - Indices obtenidos de Gempresa", todosLosIndicesDeGempresa.data);
+    // this.logger.log("IS - Indices obtenidos de Gempresa", todosLosIndicesDeGempresa.data);
     const arregloDeIndices = todosLosIndicesDeGempresa.data.filter(aux => aux.code && aux.name).map(async (aux) => {
       const nuevoIndice = new Indice(
         aux.code,
         aux.name,
         aux.__v
       )
-      this.logger.log(`IS - Indice ${nuevoIndice.nombreIndice} guardado en DB Local`);
+      // this.logger.log(`IS - Indice ${nuevoIndice.nombreIndice} guardado en DB Local`);
       await this.guardarIndiceEnDB(nuevoIndice);
     })
     await Promise.all(arregloDeIndices);
@@ -51,7 +51,7 @@ export class IndicesService {
 
 
   public async buscarCodigosDeIndicesDeDB(): Promise<string[]> {
-    this.logger.log("ES - Obteniendo codEmpresas[] de mi DB Local");
+    // this.logger.log("ES - Obteniendo codEmpresas[] de mi DB Local");
     const indices = await this.indicesRepository.find({ select: ["codigoIndice"] });
     return indices.map(indice => indice.codigoIndice);
   };
