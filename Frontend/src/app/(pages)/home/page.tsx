@@ -2,14 +2,16 @@
 import React from 'react';
 
 import { Navbar } from '@/app/components/navbar/navbar';
-import BodyEmpresas from '@/app/components/body/bodyEmpresas';
 import BodyIndices from '@/app/components/bodyIndices/bodyIndices';
-import { useTranslation } from 'react-i18next';
+import BodyEmpresas from '@/app/components/body/bodyEmpresasLineal';
+
 import '../../i18n';
+import GraficoTortaConTabla from '@/app/components/bodyEmpresas/bodyEmpresasTorta';
+
 
 
 const Home = () => {
-  const { t,i18n } = useTranslation();
+
 
   return (
     <div className="min-h-screen border bg-gray-0">
@@ -23,6 +25,9 @@ const Home = () => {
           <BodyIndices />
         </div>
       </div>
+        <div className="w-full  bg-zinc-50 p-4 rounded-lg shadow-gray-500 shadow-lg">
+          <GraficoTortaConTabla />
+        </div>
     </div>
   );
 }

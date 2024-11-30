@@ -149,10 +149,10 @@ const BodyIndices = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '14px' }}>
 
 
-      <div style={{ padding: '20px', border: '2px solid #ddd', borderRadius: '8px' }}>
+      <div style={{ padding: '14px', border: '2px solid #ddd', borderRadius: '8px' }}>
       <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>{t('body_indices.title')}</h1>
       </div>
 
@@ -160,14 +160,14 @@ const BodyIndices = () => {
       <GraficoSelector tipoGrafico={tipoGrafico} setTipoGrafico={setTipoGrafico} />
 
       {/* Botones para seleccionar los índices */}
-      <div style={{ margin: '10px 0' }}>
+      <div style={{ margin: '8px 0' }}>
         {indices.map(indice => (
           <button
             key={indice}
             onClick={() => toggleIndice(indice)}
             style={{
-              margin: '5px',
-              padding: '10px',
+              margin: '4px',
+              padding: '6px',
               backgroundColor: selectedIndices.includes(indice) ? colorMap[indice] : 'lightgray',
               color: 'white',
               border: `2px solid ${colorMap[indice]}`,
@@ -180,18 +180,18 @@ const BodyIndices = () => {
 
       {/* Navegación para el gráfico diario */}
       {tipoGrafico === 'diario' && (
-        <div>
-          <button onClick={() => cambiarDia(-1)}>{t('buttons.previous_day')}</button>
-          <button onClick={() => cambiarDia(1)}>{t('buttons.next_day')}</button>
-          <p>{t('selected_date')}: {fechaSeleccionada}</p>
+        <div className="flex items-center space-x-2">
+          <button className="p-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => cambiarDia(-1)}>{t('buttons.previous_day')}</button>
+          <button className="p-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => cambiarDia(1)}>{t('buttons.next_day')}</button>
+          <p className="text-sm">{t('selected_date')}: {fechaSeleccionada}</p>
         </div>
       )}
 
       {/* Navegación para el gráfico mensual */}
       {tipoGrafico === 'mensual' && (
-        <div>
-          <button onClick={() => cambiarMes(-1)}>{t('buttons.previous_month')}</button>
-          <button onClick={() => cambiarMes(1)}>{t('buttons.next_month')}</button>
+        <div className="flex items-center space-x-2">
+          <button className="p-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => cambiarMes(-1)}>{t('buttons.previous_month')}</button>
+          <button className="p-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => cambiarMes(1)}>{t('buttons.next_month')}</button>
           <p>{t('selected_month')}: {mesSeleccionado}</p>
         </div>
       )}

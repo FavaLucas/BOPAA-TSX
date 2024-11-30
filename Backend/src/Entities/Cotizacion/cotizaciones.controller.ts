@@ -33,7 +33,7 @@ export class CotizacionesController {
         @Query('fechaDesde') fechaDesde: string,
         @Query('fechaHasta') fechaHasta: string
     ): Promise<Cotizacion[]> {
-        this.logger.log(`CC - Obteniendo cotizaciones desde la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
+        // this.logger.log(`CC - Obteniendo cotizaciones desde la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
         try {
             return await this.cotizacionesService.getCotizacionesEntreFechas(codEmpresa, fechaDesde, fechaHasta);
         } catch (error) {
@@ -51,7 +51,7 @@ export class CotizacionesController {
         @Query('fecha') fecha: string,
         @Query('hora') hora: string
     ): Promise<Cotizacion[]> {
-        this.logger.log(`CC - Obteniendo cotización de la empresa ${codEmpresa} el día ${fecha} a la hora ${hora}`);
+        // this.logger.log(`CC - Obteniendo cotización de la empresa ${codEmpresa} el día ${fecha} a la hora ${hora}`);
         try {
             return await this.cotizacionesService.getCotizacionesFechaYHora(codEmpresa, fecha, hora);
         } catch (error) {
@@ -86,8 +86,8 @@ export class CotizacionesController {
 
     @Get('/filtrarCotdemiDB/:codEmpresa')
     public async GetFiltrarCot(@Param('codEmpresa') codEmpresa: string): Promise<Cotizacion[]> {
-        console.log("Filtrado de cotizaciones de mi DB por codEmpresa")
-        console.log(this.cotizacionesService.getFiltrarCotizaciones(codEmpresa))
+        // console.log("Filtrado de cotizaciones de mi DB por codEmpresa")
+        // console.log(this.cotizacionesService.getFiltrarCotizaciones(codEmpresa))
         return await this.cotizacionesService.getFiltrarCotizaciones(codEmpresa)
     }
 

@@ -56,8 +56,8 @@ const GraficoCotizaciones: React.FC<GraficoProps> = ({ datos, tipoGrafico }) => 
 
 
   return (
-    <div style={{ marginTop: '20px' }}>
-      <Line data={data} options={options} />
+    <div style={{ marginTop: '10px' }}>
+      <Line data={data} options={options}  />
     </div>
   );
 };

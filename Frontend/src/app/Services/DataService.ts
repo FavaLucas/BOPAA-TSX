@@ -6,12 +6,22 @@ import clienteAxios from "./Axios";
 // Función genérica para manejar errores
 const manejarError = (error: any, mensaje: string): [] => {
   console.error(`API: ${mensaje}`, error);
-  return []; // Retorna un array vacío en caso de error
+  return [];
 };
+
+export const obtenerEmpresasDeDBLocal = async (): Promise<iEmpresa[]> => {
+  try {
+    const response: AxiosResponse<iEmpresa[]> = await clienteAxios.get('/empresas/traerDatos/DBLocalEmpresas');
+    console.log("API: Empresas obtenidas desde la base de datos local:", response.data);
+    return response.data;
+  } catch (error) {
+    return manejarError(error, "Error al obtener las empresas de la base de datos local.");
+  }
+};
+
 
 export const obtenerCotizaciones = async (codEmpresa: string): Promise<iCotizacion[]> => {
   try {
-    // Ruta dinámica utilizando el parámetro codEmpresa
     const response: AxiosResponse<iCotizacion[]> = await clienteAxios.get(`cotizaciones/filtrarCotdemiDB/${codEmpresa}`);
 
     // Convertir la cotización a número
@@ -41,7 +51,7 @@ export const obtenerCotizacionesPorEmpresa = async (codEmpresa: string): Promise
     const response: AxiosResponse<iCotizacion[]> = await clienteAxios.get(`cotizaciones/filtrarCotdemiDB/${codEmpresa}`);
     const datosConvertidos = response.data.map(cot => ({
       ...cot,
-      cotizacion: Number(cot.cotizacion), // Convertir la cotización a número
+      cotizacion: Number(cot.cotizacion),
     }));
     console.log(`API: Cotizaciones para la empresa ${codEmpresa}:`, datosConvertidos);
     return datosConvertidos;
@@ -61,10 +71,9 @@ export const traerCodigosDeIndice = async (): Promise<string[]> => {
 
 export const obtenerCotizacionesIndices = async (codIndice: string): Promise<iCotizacionIndice[]> => {
   try {
-    // Ruta dinámica utilizando el parámetro codEmpresa
+
     const response: AxiosResponse<iCotizacionIndice[]> = await clienteAxios.get(`cotizacionIndice/filtrarCotdemiDB/${codIndice}`);
 
-    // Convertir la cotización a número
     const datosConvertidos = response.data.map(cot => ({
       ...cot,
       cotizacion: Number(cot.valorCotizacionIndice),

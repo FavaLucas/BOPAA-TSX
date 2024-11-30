@@ -2,6 +2,8 @@ export interface iEmpresa {
   id: number;
   codEmpresa: string;
   empresaNombre: string;
+  cotizacionInicial: number;
+  cantidadAcciones: number;
 }
 
 export interface iCotizacion {
