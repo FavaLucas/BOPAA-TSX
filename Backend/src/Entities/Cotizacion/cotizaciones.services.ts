@@ -144,7 +144,7 @@ export class CotizacionesService {
       if (!hayCotizacion) {
         return this.cotizacionRepository.save(cotizacion);
       } else {
-        this.logger.log("La cotización ya existe en la base de datos");
+        // this.logger.log("La cotización ya existe en la base de datos");
       }
     } catch (error) {
       this.logger.error("Error guardando la cotización:", error);
@@ -197,7 +197,7 @@ export class CotizacionesService {
         // this.logger.debug(`Guardando cotización: ${JSON.stringify(nuevaCotizacion)}`);
         await this.guardarCotizacionEnDB(nuevaCotizacion);
       } else {
-        this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
+        // this.logger.warn(`Cotización fuera de horario: ${JSON.stringify(fechaUTC)}`);
       }
     }));
 

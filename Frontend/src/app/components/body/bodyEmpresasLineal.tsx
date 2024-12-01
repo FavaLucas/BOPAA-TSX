@@ -1,3 +1,5 @@
+"use cliente"
+
 import { obtenerCotizaciones, traerCodigosDeEmpresas } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';
 import { iCotizacion } from '@/app/models/interfaz';
@@ -14,7 +16,7 @@ const BodyEmpresas = () => {
 
   const [empresas, setEmpresas] = useState<string[]>([]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacion[]>([]);
-  const [selectedEmpresas, setSelectedEmpresas] = useState<string[]>([]);
+  const [selectedEmpresas, setSelectedEmpresas] = useState<string[]>(["KO"]);
   const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('mensual');
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
   const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));

@@ -15,6 +15,9 @@ interface Props {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF5733', '#C70039', '#900C3F'];
 
 const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
+
+  const totalValue = datos.reduce((acc, curr) => acc + curr.value, 0);
+
   return (
     <div className="flex flex-wrap">
       <div className="w-full md:w-1/2 p-2">
@@ -23,12 +26,12 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
           <Pie
             data={datos}
             dataKey="value"
-            nameKey="name"
+            nameKey="codEmp"
             cx="50%"
             cy="50%"
             outerRadius={100}
             fill="#8884d8"
-            label
+            label={({ value }) => `${((value / totalValue) * 100).toFixed(2)}%`}
           >
             {datos.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -46,6 +49,7 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
               <th className="border border-gray-300 p-2">Empresa</th>
               <th className="border border-gray-300 p-2">Codigo</th>
               <th className="border border-gray-300 p-2">Val. Inicial</th>
+              <th className="border border-gray-300 p-2">Porcentaje (%)</th>
               <th className="border border-gray-300 p-2">Participación</th>
             </tr>
           </thead>
@@ -55,7 +59,8 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
                 <td className="border border-gray-300 p-2">{dato.name}</td>
                 <td className="border border-gray-300 p-2 text-center">{dato.codEmp}</td>
                 <td className="border border-gray-300 p-2 text-center">{dato.initValue}</td>
-                <td className="border border-gray-300 p-2 text-center">{dato.value}</td>
+                <td className="border border-gray-300 p-2 text-center">{((dato.value / totalValue) * 100).toFixed(2)}%</td>
+                <td className="border border-gray-300 p-2 text-center">{dato.value.toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

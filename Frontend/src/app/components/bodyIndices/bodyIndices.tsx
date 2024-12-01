@@ -12,7 +12,7 @@ const BodyIndices = () => {
   const { t, i18n } = useTranslation();
 
   const [indices, setIndices] = useState<string[]>([]);
-  const [selectedIndices, setSelectedIndices] = useState<string[]>([]);
+  const [selectedIndices, setSelectedIndices] = useState<string[]>(["TSX"]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacionIndice[]>([]);
   const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('mensual');
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
