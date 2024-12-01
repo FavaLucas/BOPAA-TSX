@@ -26,6 +26,7 @@ i18next
                         fecha: "Date",
                         cotizacion: "Quote"
                     },
+                    idioma: "Language",
                     selected_date: "Selected Date",
                     selected_month: "Selected Month",
                     loading: "Loading data...",
@@ -60,6 +61,7 @@ i18next
                         fecha: "Fecha",
                         cotizacion: "Cotización"
                     },
+                    idioma: "Idioma",
                     selected_date: "Fecha Seleccionada",
                     selected_month: "Mes Seleccionado",
                     loading: "Cargando datos...",

@@ -4,14 +4,10 @@ import React from 'react';
 import { Navbar } from '@/app/components/navbar/navbar';
 import BodyIndices from '@/app/components/bodyIndices/bodyIndices';
 import BodyEmpresas from '@/app/components/body/bodyEmpresasLineal';
-
 import '../../i18n';
 import GraficoTortaConTabla from '@/app/components/bodyEmpresas/bodyEmpresasTorta';
 
-
-
 const Home = () => {
-
 
   return (
     <div className="min-h-screen border bg-gray-0">
@@ -25,9 +21,10 @@ const Home = () => {
           <BodyIndices />
         </div>
       </div>
-        <div className="w-full  bg-zinc-50 p-4 rounded-lg shadow-gray-500 shadow-lg">
-          <GraficoTortaConTabla />
-        </div>
+      <div className="w-[96.5%] m-auto bg-zinc-50 p-4 rounded-lg shadow-gray-500 shadow-lg mb-8">
+        <GraficoTortaConTabla />
+      </div>
+
     </div>
   );
 }

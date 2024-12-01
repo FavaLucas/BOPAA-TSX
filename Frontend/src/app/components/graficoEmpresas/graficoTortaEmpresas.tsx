@@ -12,7 +12,30 @@ interface Props {
   datos: DatosGrafico[];
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF5733', '#C70039', '#900C3F'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF5733', '#EC4899', '#A855F7'];
+
+const tailwindColors = [
+  'text-blue-500', 
+  'text-green-500', 
+  'text-yellow-500',
+  'text-orange-500',
+  'text-red-500',   
+  'text-pink-500',  
+  'text-purple-500',
+];
+
+const CustomTooltip = ({ active, payload, totalValue }: any) => {
+  if (active && payload && payload.length) {
+    const value = payload[0].value;
+    return (
+      <div className="bg-white border border-gray-300 p-2">
+        <p className="label">{`Código: ${payload[0].payload.codEmp}`}</p>
+        <p className="label">{`Valor: ${value}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
 
@@ -21,7 +44,7 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
   return (
     <div className="flex flex-wrap">
       <div className="w-full md:w-1/2 p-2">
-        <h2 className="text-center text-xl font-bold mb-4">Gráfico de Torta</h2>
+
         <PieChart width={600} height={400}>
           <Pie
             data={datos}
@@ -37,7 +60,7 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
         </PieChart>
       </div>
@@ -54,9 +77,9 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
             </tr>
           </thead>
           <tbody>
-            {datos.map((dato, index) => (
+            {datos.map((dato, index, COLORS) => (
               <tr key={index}>
-                <td className="border border-gray-300 p-2">{dato.name}</td>
+                <td className={`border font-bold border-gray-300 p-2 ${tailwindColors[index % tailwindColors.length]}`}>{dato.name}</td>
                 <td className="border border-gray-300 p-2 text-center">{dato.codEmp}</td>
                 <td className="border border-gray-300 p-2 text-center">{dato.initValue}</td>
                 <td className="border border-gray-300 p-2 text-center">{((dato.value / totalValue) * 100).toFixed(2)}%</td>
