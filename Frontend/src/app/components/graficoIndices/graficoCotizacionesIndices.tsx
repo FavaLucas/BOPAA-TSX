@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { useTranslation } from 'react-i18next';
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -17,13 +18,15 @@ interface GraficoProps {
 }
 
 const GraficoCotizacionesIndices: React.FC<GraficoProps> = ({ datos, tipoGrafico }) => {
+  const { t } = useTranslation();
+  
   const data = {
-    labels: datos[0]?.labels || [], // Usamos las etiquetas del primer índice
+    labels: datos[0]?.labels || [], 
     datasets: datos.map(dataset => ({
       label: dataset.label,
       data: dataset.data,
-      borderColor: dataset.borderColor, // Usar el color de línea personalizado
-      backgroundColor: dataset.backgroundColor, // Usar el color de fondo personalizado
+      borderColor: dataset.borderColor, 
+      backgroundColor: dataset.backgroundColor, 
       fill: dataset.fill,
     })),
   };
@@ -33,13 +36,13 @@ const GraficoCotizacionesIndices: React.FC<GraficoProps> = ({ datos, tipoGrafico
       x: {
         title: {
           display: true,
-          text: tipoGrafico === 'diario' ? 'Hora' : 'Fecha'
+          text: tipoGrafico === 'diario' ? t('buttons.hora') : t('buttons.fecha'),
         }
       },
       y: {
         title: {
           display: true,
-          text: 'Cotización'
+          text: t('buttons.cotizacion'),
         }
       }
     },
