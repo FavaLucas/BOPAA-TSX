@@ -45,8 +45,9 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
   const totalValue = datos.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <div className="flex flex-wrap">
-      <div className="w-full md:w-1/2 p-2">
+    <div className="flex flex-wrap items-center">
+      <div className="w-full md:w-1/2 p-2 flex justify-center">
+
         <PieChart width={600} height={400}>
           <Pie
             data={datos}
@@ -67,7 +68,7 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
         </PieChart>
       </div>
       <div className="w-full md:w-1/2 p-2">
-        <h3 className="text-center text-lg font-semibold">{t('grafico.tabla.empresa')}</h3>
+        {/* <h3 className="text-center text-lg font-semibold">{t('grafico.tabla.empresa')}</h3> */}
         <table className="min-w-full border-collapse border border-gray-200">
           <thead>
             <tr>
@@ -82,10 +83,10 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
             {datos.map((dato, index) => (
               <tr key={index}>
                 <td className={`border font-bold border-gray-300 p-2 ${tailwindColors[index % tailwindColors.length]}`}>{dato.name}</td>
-                <td className="border border-gray-300 p-2">{dato.codEmp}</td>
-                <td className="border border-gray-300 p-2">{dato.initValue}</td>
-                <td className="border border-gray-300 p-2">{((dato.value / totalValue) * 100).toFixed(2)}%</td>
-                <td className="border border-gray-300 p-2">{dato.value.toLocaleString()}</td>
+                <td className="border font-bold text-center border-gray-300 p-2">{dato.codEmp}</td>
+                <td className="border text-center border-gray-300 p-2">{dato.initValue}</td>
+                <td className="border text-center border-gray-300 p-2">{((dato.value / totalValue) * 100).toFixed(2)}%</td>
+                <td className="border text-center border-gray-300 p-2">{dato.value.toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
