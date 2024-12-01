@@ -57,7 +57,9 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
             cy="50%"
             outerRadius={100}
             fill="#8884d8"
-            label={({ value }) => `${((value / totalValue) * 100).toFixed(2)}%`}
+            label={({ value, payload }) => 
+              `${payload.codEmp} - ${((value / totalValue) * 100).toFixed(2)}%`
+            }
           >
             {datos.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

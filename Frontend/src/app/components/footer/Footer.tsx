@@ -5,7 +5,7 @@ const Footer = () => {
   const { t } = useTranslation();
 
   return (
-    <footer className="w-full bg-gray-800 text-black py-6">
+    <footer className="w-full bg-gray-800 text-black py-6 ">
       <div className="container min-w-[1600px] px-4 w-2/3">
         <div className="flex flex-wrap justify-between items-center">
           {/* Sección del logo */}
@@ -21,7 +21,7 @@ const Footer = () => {
         </div>
 
         {/* Logos de empresas */}
-        <div className="flex flex-wrap justify-center items-center gap-4 mt-3">
+        <div className="flex flex-wrap justify-center items-center gap-4 mt-3 ">
           {[
             "./images/visa.png",
             "./images/cocacola.png",
