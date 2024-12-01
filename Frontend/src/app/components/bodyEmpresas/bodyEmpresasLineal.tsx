@@ -1,4 +1,4 @@
-"use cliente"
+"use client"
 
 import { obtenerCotizaciones, traerCodigosDeEmpresas } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';

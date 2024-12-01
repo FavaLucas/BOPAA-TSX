@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +47,7 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
   const totalValue = datos.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <div className="flex flex-wrap items-center">
+    <div className="flex flex-wrap min-h-[800] items-center">
       <div className="w-full md:w-1/2 p-2 flex justify-center">
 
         <PieChart width={600} height={400}>

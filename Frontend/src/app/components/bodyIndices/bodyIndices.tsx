@@ -1,3 +1,5 @@
+"use client"
+
 import { obtenerCotizacionesIndices, traerCodigosDeIndice } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';
 import { iCotizacionIndice } from '@/app/models/interfaz';
