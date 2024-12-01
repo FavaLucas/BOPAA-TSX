@@ -4,7 +4,7 @@ import { iEmpresa } from '@/app/models/interfaz';
 import '../../../styles/styles.css';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
-import GraficoTortaConTabla from '../graficoEmpresas/graficoTortaEmpresas';
+import GraficoTortaConTabla from '../graficoTortaEmpresas/graficoTortaEmpresas';
 
 const BodyEmpresasTorta: React.FC = () => {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ const BodyEmpresasTorta: React.FC = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1 style={{ textAlign: 'center', fontWeight: 'bold' }}>{t('Participación de Empresas')}</h1>
+      <h1 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '2.5rem' }}>{t('Participación_de_Empresas')}</h1>
       
       {cargando && <p>{t('loading')}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}

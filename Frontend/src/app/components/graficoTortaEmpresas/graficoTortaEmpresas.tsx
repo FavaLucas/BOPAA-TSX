@@ -1,5 +1,6 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 interface DatosGrafico {
   name: string;
@@ -24,13 +25,15 @@ const tailwindColors = [
   'text-purple-500',
 ];
 
-const CustomTooltip = ({ active, payload, totalValue }: any) => {
+const CustomTooltip = ({ active, payload }: any) => {
+  const { t } = useTranslation();
+
   if (active && payload && payload.length) {
     const value = payload[0].value;
     return (
       <div className="bg-white border border-gray-300 p-2">
-        <p className="label">{`Código: ${payload[0].payload.codEmp}`}</p>
-        <p className="label">{`Valor: ${value}`}</p>
+        <p className="label">{`${t('grafico.tooltip.codigo')}: ${payload[0].payload.codEmp}`}</p>
+        <p className="label">{`${t('grafico.tooltip.valor')}: ${value}`}</p>
       </div>
     );
   }
@@ -38,13 +41,12 @@ const CustomTooltip = ({ active, payload, totalValue }: any) => {
 };
 
 const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
-
+  const { t } = useTranslation();
   const totalValue = datos.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
     <div className="flex flex-wrap">
       <div className="w-full md:w-1/2 p-2">
-
         <PieChart width={600} height={400}>
           <Pie
             data={datos}
@@ -65,25 +67,25 @@ const GraficoTortaConTabla: React.FC<Props> = ({ datos }) => {
         </PieChart>
       </div>
       <div className="w-full md:w-1/2 p-2">
-        <h3 className="text-center text-lg font-semibold">Tabla de Datos</h3>
+        <h3 className="text-center text-lg font-semibold">{t('grafico.tabla.empresa')}</h3>
         <table className="min-w-full border-collapse border border-gray-200">
           <thead>
             <tr>
-              <th className="border border-gray-300 p-2">Empresa</th>
-              <th className="border border-gray-300 p-2">Codigo</th>
-              <th className="border border-gray-300 p-2">Val. Inicial</th>
-              <th className="border border-gray-300 p-2">Porcentaje (%)</th>
-              <th className="border border-gray-300 p-2">Participación</th>
+              <th className="border border-gray-300 p-2" >{t('grafico.tabla.empresa')}</th>
+              <th className="border border-gray-300 p-2">{t('grafico.tabla.codigo')}</th>
+              <th className="border border-gray-300 p-2">{t('grafico.tabla.valor_inicial')}</th>
+              <th className="border border-gray-300 p-2">{t('grafico.tabla.porcentaje')}</th>
+              <th className="border border-gray-300 p-2">{t('grafico.tabla.participacion')}</th>
             </tr>
           </thead>
           <tbody>
-            {datos.map((dato, index, COLORS) => (
+            {datos.map((dato, index) => (
               <tr key={index}>
                 <td className={`border font-bold border-gray-300 p-2 ${tailwindColors[index % tailwindColors.length]}`}>{dato.name}</td>
-                <td className="border border-gray-300 p-2 text-center">{dato.codEmp}</td>
-                <td className="border border-gray-300 p-2 text-center">{dato.initValue}</td>
-                <td className="border border-gray-300 p-2 text-center">{((dato.value / totalValue) * 100).toFixed(2)}%</td>
-                <td className="border border-gray-300 p-2 text-center">{dato.value.toLocaleString()}</td>
+                <td className="border border-gray-300 p-2">{dato.codEmp}</td>
+                <td className="border border-gray-300 p-2">{dato.initValue}</td>
+                <td className="border border-gray-300 p-2">{((dato.value / totalValue) * 100).toFixed(2)}%</td>
+                <td className="border border-gray-300 p-2">{dato.value.toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

@@ -3,10 +3,14 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 i18next
-    .use(initReactI18next)
     .use(LanguageDetector)
+    .use(initReactI18next)
     .init({
         fallbackLng: "en",
+        debug: true,
+        interpolation: {
+            escapeValue: false,
+        },
         resources: {
             en: {
                 translation: {
@@ -24,8 +28,9 @@ i18next
                         annual_chart: "Annual Chart",
                         hora: "Hour",
                         fecha: "Date",
-                        cotizacion: "Quote"
+                        cotizacion: "Quote",
                     },
+                    Participación_de_Empresas: "Business Participation",
                     idioma: "Language",
                     selected_date: "Selected Date",
                     selected_month: "Selected Month",
@@ -33,13 +38,32 @@ i18next
                     no_data: "No data to display.",
                     error: "Error loading data.",
                     navbar: {
-                        title: "TORONTO STOCK EXCHANGE - TSX VENTURE EXCHANGE"
+                        title: "TORONTO STOCK EXCHANGE - TSX VENTURE EXCHANGE",
                     },
-                    body_indices: { 
-                        title: "Stock Index Quotes" 
-                    }, 
-                    body_empresas: { 
-                        title: "TSX Listed Companies" 
+                    footer: {
+                        languages: "Supported Languages",
+                        countries:
+                            "Exchanges from: Canada, USA, Turkey, Argentina, Brazil, Japan, China, England, Netherlands, France, Germany, Australia, Italy, Norway, Russia",
+                    },
+                    body_indices: {
+                        title: "Stock Index Quotes",
+                    },
+                    body_empresas: {
+                        title: "TSX Listed Companies",
+                    },
+                    grafico: {
+                        tooltip: {
+                            codigo: "Code",
+                            valor: "Value",
+                        },
+                        tabla: {
+                            empresa: "Company",
+                            codigo: "Code",
+                            valor_inicial: "Initial Value",
+                            porcentaje: "Percentage (%)",
+                            participacion: "Market Part."
+                        },
+                        
                     },
                 },
             },
@@ -59,8 +83,9 @@ i18next
                         annual_chart: "Gráfico Anual",
                         hora: "Hora",
                         fecha: "Fecha",
-                        cotizacion: "Cotización"
+                        cotizacion: "Cotización",
                     },
+                    Participación_de_Empresas: "Participación de Empresas",
                     idioma: "Idioma",
                     selected_date: "Fecha Seleccionada",
                     selected_month: "Mes Seleccionado",
@@ -68,14 +93,33 @@ i18next
                     no_data: "No hay datos para mostrar.",
                     error: "Error al cargar los datos.",
                     navbar: {
-                        title: "BOLSA DE VALORES DE TORONTO - INTERCAMBIO DE EMPRESAS"
+                        title: "BOLSA DE VALORES DE TORONTO - INTERCAMBIO DE EMPRESAS",
                     },
-                    body_indices: { 
-                        title: "Cotizaciones de los Índices Bursátiles" 
-                    }, 
-                    body_empresas: { 
-                        title: "TSX - Empresas Cotizando" 
-                    }
+                    footer: {
+                        languages: "Idiomas soportados",
+                        countries:
+                            "Intercambios desde: Canadá, EE.UU., Turquía, Argentina, Brasil, Japón, China, Inglaterra, Países Bajos, Francia, Alemania, Australia, Italia, Noruega, Rusia",
+                    },
+                    body_indices: {
+                        title: "Cotizaciones de los Índices Bursátiles",
+                    },
+                    body_empresas: {
+                        title: "TSX - Empresas Cotizando",
+                    },
+                    grafico: {
+                        tooltip: {
+                            codigo: "Código",
+                            valor: "Valor",
+                        },
+                        tabla: {
+                            empresa: "Empresa",
+                            codigo: "Código",
+                            valor_inicial: "Valor Inicial",
+                            porcentaje: "Porcentaje (%)",
+                            participacion: "Part. del Mercado"
+                        },
+                        
+                    },
                 },
             },
         },

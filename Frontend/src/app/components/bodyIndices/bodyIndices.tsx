@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { iCotizacionIndice } from '@/app/models/interfaz';
 import '../../../styles/styles.css';
 import GraficoSelector from '../graficoSelector/graficoSelector';
-import GraficoCotizacionesIndices from '../graficoCotizacionesIndices/graficoCotizacionesIndices';
+import GraficoCotizacionesIndices from '../graficoIndices/graficoCotizacionesIndices';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
 

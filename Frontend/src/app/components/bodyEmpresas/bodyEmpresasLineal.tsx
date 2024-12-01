@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { iCotizacion } from '@/app/models/interfaz';
 import '../../../styles/styles.css';
 import GraficoSelector from '../graficoSelector/graficoSelector';
-import GraficoCotizaciones from '../graficoCotizaciones/graficoCotizaciones';
+import GraficoCotizaciones from '../graficoEmpresas/graficoCotizaciones';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
 
