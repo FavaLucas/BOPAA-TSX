@@ -1,11 +1,16 @@
 'use client';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import "./../styles/globals.css"
 
-const HomePage = () => {
+const Home = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/home");
+  }, [])
   return (
-    <div>
-      <h1>Bienvenido a Empresas y Cotizaciones</h1>
-    </div>
+    <></>
   );
 };
 
-export default HomePage;
+export default Home;

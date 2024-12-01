@@ -17,13 +17,14 @@ export class EmpresasService {
   //Retorna un arreglo con todos los codigos de las empresas de mi DB local
   //Postman: http://localhost:8080/empresas
   public async buscarMisEmpresasDeDB(): Promise<string[]> {
-    this.logger.log("ES - Obteniendo codEmpresas[] de mi DB Local");
+    // this.logger.log("ES - Obteniendo codEmpresas[] de mi DB Local");
     const empresas = await this.empresaRepository.find({ select: ["codEmpresa"] });
     return empresas.map(empresa => empresa.codEmpresa);
   };
 
-  public async traerDatosDBLocalEmpresas(): Promise<Empresa[]>{
-    return this.empresaRepository.find()
+  public async traerDatosDeEmpresasDeDBLocal(): Promise<Empresa[]> {
+    const empresas = await this.empresaRepository.find();
+    return  empresas
   }
 
   //Trae el detalle de la empresa desde Gempresa segun el codEmpresa que se indica
@@ -32,7 +33,7 @@ export class EmpresasService {
   public async getDetalleSegunCodEmpresaDesdeGempresa(codEmpresa: string): Promise<Empresa> {
     try {
       const respuestaGempresa: AxiosResponse<any, any> = await clienteAxios.get(`${baseURL}/empresas/${codEmpresa}/details`);
-      this.logger.log(`ES - Detalle: ${respuestaGempresa.data.codempresa}`);
+      // this.logger.log(`ES - Detalle: ${respuestaGempresa.data.codempresa}`);
       return respuestaGempresa.data;
     } catch (error) {
       this.logger.error("ES - El codigo de empresa indicado no existe. Intente con otro.");

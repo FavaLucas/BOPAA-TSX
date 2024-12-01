@@ -11,7 +11,7 @@ export class EmpresasController {
   //Postman: http://localhost:8080/empresas
   @Get()
   public async buscarMisEmpresasDeDB(): Promise<string[]> {
-    this.logger.log("EC - Buscando empresas en la base de datos");
+    // this.logger.log("EC - Buscando empresas en la base de datos");
     try {
       return await this.empresasService.buscarMisEmpresasDeDB();
     } catch (error) {
@@ -25,7 +25,7 @@ export class EmpresasController {
   //Postman: http://localhost:8080/empresas/XOM
   @Get('/:codEmpresa')
   public getDetalleSegunCodEmpresaDesdeGempresa(@Param('codEmpresa') codEmpresa: string): Promise<Empresa> {
-    this.logger.log(`EC - Retorna el detalle de la empresa desde Gempresa correspondiente al codigo ${codEmpresa}`);
+    // this.logger.log(`EC - Retorna el detalle de la empresa desde Gempresa correspondiente al codigo ${codEmpresa}`);
     return this.empresasService.getDetalleSegunCodEmpresaDesdeGempresa(codEmpresa);
   }
 
@@ -35,7 +35,7 @@ export class EmpresasController {
   //Postman: http://localhost:8080/empresas/guardar/TM
   @Post('/guardar/:codEmp')
   async guardarEmpresaEnDBLocal(@Param('codEmp') codEmpresa: string): Promise<Empresa> {
-    this.logger.log("EC - Guardar empresa en DB Local");
+    // this.logger.log("EC - Guardar empresa en DB Local");
     return this.empresasService.guardarEmpresaEnDBLocal(codEmpresa);
   };
 
@@ -56,14 +56,8 @@ export class EmpresasController {
     }
   }
 
-  
-  @Get('/traerDatosDBLocalEmpresas') 
-  async traerDatosDBLocalEmpresas(): Promise<Empresa[]>  {
-      return this.empresasService.traerDatosDBLocalEmpresas();   
+  @Get('/traerDatos/DBLocalEmpresas')
+  async traerDatosDeEmpresasDeDBLocal(): Promise<Empresa[]> {
+    return await this.empresasService.traerDatosDeEmpresasDeDBLocal()
   }
-
-
 }
-
-
-

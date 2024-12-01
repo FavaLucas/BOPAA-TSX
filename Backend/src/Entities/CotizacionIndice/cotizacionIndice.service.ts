@@ -1,14 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CotizacionIndice } from './cotizacionIndice.entity';
-import { Index, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Indice } from '../Indice/indice.entity';
 import DateMomentsUtils from 'src/utils/DateMomentsUtils';
 import { IFecha } from 'src/Models/fecha.model';
-import axios from 'axios';
-import clienteAxios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { baseURL } from 'src/Services/AxiosAGempresa';
-import { Cotizacion } from '../Cotizacion/cotizacion.entity';
 import { CotizacionesService } from '../Cotizacion/cotizaciones.services';
 
 @Injectable()
@@ -32,7 +30,6 @@ export class CotizacionIndiceService {
     const IndiceBursatil = await this.indiceRepository.find({ select: ["codigoIndice"] });
     return IndiceBursatil.map(Indice => Indice.codigoIndice);
   }
-
 
   public async guardarTodasLasCotizaciones(codigoIndice: string): Promise<void> {
     const ultimaFechaEnMiDB = await this.ultimaFechaDeCotizacionEnMiDB(codigoIndice);
@@ -94,7 +91,7 @@ export class CotizacionIndiceService {
 
     const cotizacionesFaltantes = await Promise.all(respuesta.data.map(async (cotizacion) => {
 
-      this.logger.log(`Procesando cotización: Fecha UTC=${cotizacion.fecha}, Hora UTC=${cotizacion.hora}`);
+      // this.logger.log(`Procesando cotización: Fecha UTC=${cotizacion.fecha}, Hora UTC=${cotizacion.hora}`);
 
       if (horarioDeBolsaUTC.includes(cotizacion.hora)) {
         const nuevaCotizacionIndice = new CotizacionIndice(
@@ -159,7 +156,7 @@ export class CotizacionIndiceService {
 
   async calcularIndice(): Promise<void> {
     const cotizaciones = await this.cotizacionesService.obtenerTodasLasCotizaciones();
-    this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
+    // this.logger.log(`Número de cotizaciones obtenidas: ${cotizaciones.length}`);
 
     const cotizacionesPorDiaYHora = {};
 
@@ -197,7 +194,7 @@ export class CotizacionIndiceService {
         await this.cotizacionIndiceRepository.save(cotizacionIndice)
         await this.publicarIndiceEnGempresa(grupo.fecha, grupo.hora, "TSX", valorLimitado);
       } else {
-        this.logger.warn(`El índice TSX ya existe para la fecha ${grupo.fecha} y hora ${grupo.hora}, no se guardará ni publicará de nuevo.`);
+        // this.logger.warn(`El índice TSX ya existe para la fecha ${grupo.fecha} y hora ${grupo.hora}, no se guardará ni publicará de nuevo.`);
       }
     }
   }
@@ -226,7 +223,7 @@ export class CotizacionIndiceService {
       const response = await axios.get(url);
       return response.data.length > 0; 
     } catch (error) { 
-      this.logger.error(`Error al verificar el índice ${codigoIndice} en Gempresa: ${error.message}`);
+      // this.logger.error(`Error al verificar el índice ${codigoIndice} en Gempresa: ${error.message}`);
       return false; 
     }
   }
@@ -240,6 +237,22 @@ export class CotizacionIndiceService {
       }
     });
     return cotizacionExistente !== null; 
+  }
+
+  public async getFiltrarCotizaciones(codIndice: string): Promise<CotizacionIndice[]> {
+    try {
+      const cotizacionesIndice = await this.cotizacionIndiceRepository.find({
+        relations: ['codigoIndice'], 
+        where: {
+          codigoIndice: {codigoIndice: codIndice},
+        }
+      });
+      // console.log("Cotizacion Indice", cotizacionesIndice)
+      return Promise.all(cotizacionesIndice)
+    } catch (error) {
+      // console.error("Error al filtrar cotizaciones por codIndice: ", error);
+      throw new Error("No se pudo obtener las cotizaciones del Indice");
+    }
   }
 }
 

@@ -44,7 +44,7 @@ class DateMomentsUtils {
     };
 
     // Log para verificar la transformación
-    console.log(`TransformarFechaAGMT - Input: ${fecha} ${hora}, Output: ${JSON.stringify(fechaTransformada)}`);
+    // console.log(`TransformarFechaAGMT - Input: ${fecha} ${hora}, Output: ${JSON.stringify(fechaTransformada)}`);
     return fechaTransformada;
   }
 }

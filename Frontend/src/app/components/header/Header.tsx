@@ -2,9 +2,7 @@
 
 const Header = () => {
   return (
-    <header>
-      <h1>Empresas y Cotizaciones</h1>
-    </header>
+    <header className="header"></header>
   );
 };
 

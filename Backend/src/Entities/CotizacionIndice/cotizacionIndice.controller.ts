@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Logger, Param } from '@nestjs/common';
 import { CotizacionIndiceService } from './cotizacionIndice.service';
 import { IndicesService } from '../Indice/indices.services';
 import { CotizacionIndice } from './cotizacionIndice.entity';
@@ -27,7 +27,7 @@ export class CotizacionIndiceController {
     @Get('/obtenerCotizaciones')
     async obtenerCotizaciones(): Promise<CotizacionIndice[]> {
         try {
-            this.logger.debug("ObetenerCotizaciones", this.cotizacionIndiceService.obtenerTodasLasCotizaciones())
+            // this.logger.debug("ObetenerCotizaciones", this.cotizacionIndiceService.obtenerTodasLasCotizaciones())
             return await this.cotizacionIndiceService.obtenerTodasLasCotizaciones();
         } catch (error) {
             this.logger.error(`Error al obtener cotizaciones de índices: ${error.message}`);
@@ -41,9 +41,17 @@ export class CotizacionIndiceController {
         return data
     }
 
-    @Get('/traerDatosDBLocalCotizacionIndice') 
+    @Get('/traerDatosDB/LocalCotizacionIndice') 
     async traerDatosDBLocalCotizacionIndice(): Promise<CotizacionIndice[]>  {
         return this.cotizacionIndiceService.traerDatosDBLocalCotizacionIndice();   
+    }
+
+
+    @Get('/filtrarCotdemiDB/:codIndice')
+    public async GetFiltrarCot(@Param('codIndice') codIndice: string): Promise<CotizacionIndice[]> {
+        // console.log("Filtrado de cotizaciones de mi DB por codIndice")
+        // console.log(this.cotizacionIndiceService.getFiltrarCotizaciones(codIndice))
+        return await this.cotizacionIndiceService.getFiltrarCotizaciones(codIndice)
     }
 
 }

@@ -2,7 +2,7 @@
 import '../styles/globals.css';
 import Header from '../app/components/header/Header';
 import Footer from '../app/components/footer/Footer';
-import Main from '../app/components/main/Main';
+
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -13,9 +13,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </head>
       <body>
         <Header />
-        <Main />
+
         {children}
-        <Footer />
+  
       </body>
     </html>
   );

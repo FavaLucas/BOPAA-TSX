@@ -33,7 +33,7 @@ export class CotizacionesController {
         @Query('fechaDesde') fechaDesde: string,
         @Query('fechaHasta') fechaHasta: string
     ): Promise<Cotizacion[]> {
-        this.logger.log(`CC - Obteniendo cotizaciones desde la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
+        // this.logger.log(`CC - Obteniendo cotizaciones desde la empresa ${codEmpresa} entre ${fechaDesde} y ${fechaHasta}`);
         try {
             return await this.cotizacionesService.getCotizacionesEntreFechas(codEmpresa, fechaDesde, fechaHasta);
         } catch (error) {
@@ -51,7 +51,7 @@ export class CotizacionesController {
         @Query('fecha') fecha: string,
         @Query('hora') hora: string
     ): Promise<Cotizacion[]> {
-        this.logger.log(`CC - Obteniendo cotización de la empresa ${codEmpresa} el día ${fecha} a la hora ${hora}`);
+        // this.logger.log(`CC - Obteniendo cotización de la empresa ${codEmpresa} el día ${fecha} a la hora ${hora}`);
         try {
             return await this.cotizacionesService.getCotizacionesFechaYHora(codEmpresa, fecha, hora);
         } catch (error) {
@@ -64,7 +64,7 @@ export class CotizacionesController {
     //El metodo no me esta trayendo todas las ultimas cotizaciones.
     @Get('/traerCotizacionesMisEmpresas')
     public async actualizarCotizacionesDesdeGempresa(): Promise<void> {
-        this.logger.log("CotizacionesController - Actualizando cotizaciones en DB Local");
+        // this.logger.log("CotizacionesController - Actualizando cotizaciones en DB Local");
         try {
             const arrCodigosEmpresas = await this.empresaService.buscarMisEmpresasDeDB();
             if (arrCodigosEmpresas && arrCodigosEmpresas.length > 0) {
@@ -86,13 +86,13 @@ export class CotizacionesController {
 
     @Get('/filtrarCotdemiDB/:codEmpresa')
     public async GetFiltrarCot(@Param('codEmpresa') codEmpresa: string): Promise<Cotizacion[]> {
-        console.log("Filtrado de cotizaciones de mi DB por codEmpresa")
-        console.log(this.cotizacionesService.getFiltrarCotizaciones(codEmpresa))
+        // console.log("Filtrado de cotizaciones de mi DB por codEmpresa")
+        // console.log(this.cotizacionesService.getFiltrarCotizaciones(codEmpresa))
         return await this.cotizacionesService.getFiltrarCotizaciones(codEmpresa)
     }
 
 
-    @Get('/traerDatosDBLocalCotizacion') 
+    @Get('/traerDatos/DBLocalCotizaciones') 
     async traerDatosDBLocalCotizacion(): Promise<Cotizacion[]>  {
         return this.cotizacionesService.traerDatosDBLocalCotizacion();   
     }

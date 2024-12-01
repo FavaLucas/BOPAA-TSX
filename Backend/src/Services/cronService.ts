@@ -38,7 +38,7 @@ export class CronService {
 
   @Cron('0 8 * * * *')
   async actualizarIndicesDesdeGempresa() {
-    this.logger.log("Cron - Obteniendo todos los índices");
+    this.logger.log("Cron - Obteniendo todos los índices de Gempresa");
     await this.indicesService.actualizarIndicesDesdeGempresa();
   }
 
@@ -62,6 +62,7 @@ export class CronService {
 
   @Cron('0 5 * * * *')
   async calcularPublicarYGuardarMiIndice() {
+    this.logger.log("Cron - Publicando indice en Gempresa y guardando en DB Local");
     await this.cotizacionIndiceService.calcularIndice();
 
   }
