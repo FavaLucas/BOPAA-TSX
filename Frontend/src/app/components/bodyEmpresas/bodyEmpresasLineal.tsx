@@ -1,4 +1,4 @@
-"use cliente"
+"use client"
 
 import { obtenerCotizaciones, traerCodigosDeEmpresas } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';
@@ -18,8 +18,8 @@ const BodyEmpresas = () => {
   const [cotizaciones, setCotizaciones] = useState<iCotizacion[]>([]);
   const [selectedEmpresas, setSelectedEmpresas] = useState<string[]>(["KO"]);
   const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('mensual');
-  const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<string>("");
+  const [mesSeleccionado, setMesSeleccionado] = useState<string>("");
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,6 +69,12 @@ const BodyEmpresas = () => {
       cargarDatos();
     }
   }, [selectedEmpresas, fechaSeleccionada, mesSeleccionado]);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    setFechaSeleccionada(today);
+    setMesSeleccionado(today.slice(0, 7));
+  }, []);
 
   const obtenerDatosGrafico = () => {
     const agrupadoPorEmpresa: { [key: string]: { labels: string[]; dataValues: number[] } } = {};
@@ -132,11 +138,11 @@ const BodyEmpresas = () => {
   };
 
   const cambiarMes = (incremento: number) => {
-    const nuevaFecha = new Date(mesSeleccionado + '-01');
-    nuevaFecha.setMonth(nuevaFecha.getMonth() + incremento);
-    setMesSeleccionado(nuevaFecha.toISOString().split('T')[0].slice(0, 7));
-    cargarDatos();
-  };
+    const [year, month] = mesSeleccionado.split('-').map(Number);
+    const nuevaFecha = new Date(year, month - 1 + incremento); 
+    const nuevoMes = nuevaFecha.toISOString().slice(0, 7); 
+    setMesSeleccionado(nuevoMes);
+};
 
   const datosGrafico = obtenerDatosGrafico();
 

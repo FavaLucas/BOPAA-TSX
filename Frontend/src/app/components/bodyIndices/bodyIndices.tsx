@@ -1,3 +1,5 @@
+"use client"
+
 import { obtenerCotizacionesIndices, traerCodigosDeIndice } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';
 import { iCotizacionIndice } from '@/app/models/interfaz';
@@ -15,8 +17,8 @@ const BodyIndices = () => {
   const [selectedIndices, setSelectedIndices] = useState<string[]>(["TSX"]);
   const [cotizaciones, setCotizaciones] = useState<iCotizacionIndice[]>([]);
   const [tipoGrafico, setTipoGrafico] = useState<'diario' | 'mensual' | 'anual'>('mensual');
-  const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [mesSeleccionado, setMesSeleccionado] = useState<string>(new Date().toISOString().split('T')[0].slice(0, 7));
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<string>("");
+  const [mesSeleccionado, setMesSeleccionado] = useState<string>("");
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,6 +71,12 @@ const BodyIndices = () => {
       cargarDatos();
     }
   }, [selectedIndices, fechaSeleccionada, mesSeleccionado]);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    setFechaSeleccionada(today);
+    setMesSeleccionado(today.slice(0, 7));
+  }, []);
 
   const obtenerDatosGrafico = () => {
     const agrupadoPorIndice: { [key: string]: { labels: string[]; dataValues: number[] } } = {};

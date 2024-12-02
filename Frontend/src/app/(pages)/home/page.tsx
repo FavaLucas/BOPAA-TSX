@@ -26,7 +26,9 @@ const Home = () => {
         <GraficoTortaConTabla />
       </div>
     
+      <div>
       <Footer />
+      </div>
 
     </div>
   );

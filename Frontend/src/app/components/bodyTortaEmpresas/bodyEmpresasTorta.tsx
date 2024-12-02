@@ -1,3 +1,5 @@
+"use client"
+
 import { obtenerEmpresasDeDBLocal } from '@/app/Services/DataService';
 import React, { useState, useEffect } from 'react';
 import { iEmpresa } from '@/app/models/interfaz';

@@ -1,3 +1,5 @@
+"use client"
+
 import { i18n } from 'next-i18next';
 import React, { useEffect } from 'react'
 import LanguageSwitcher from '../languageSwitcher/LanguageSwitcher';
