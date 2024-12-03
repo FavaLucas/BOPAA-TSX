@@ -24,7 +24,7 @@ import { CotizacionIndiceModule } from './Entities/CotizacionIndice/cotizacionIn
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DB,
-      synchronize: false,
+      synchronize: true,
       entities: ["dist/**/**.entity{.ts,.js}"],
       logging: 'all',
     }),
@@ -39,5 +39,3 @@ import { CotizacionIndiceModule } from './Entities/CotizacionIndice/cotizacionIn
   providers: [CronService, CotizacionesService, CotizacionIndiceService, EmpresasService, DatabaseService],
 })
 export class AppModule { }
-
-

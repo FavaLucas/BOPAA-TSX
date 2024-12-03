@@ -139,8 +139,8 @@ const BodyEmpresas = () => {
 
   const cambiarMes = (incremento: number) => {
     const [year, month] = mesSeleccionado.split('-').map(Number);
-    const nuevaFecha = new Date(year, month - 1 + incremento); 
-    const nuevoMes = nuevaFecha.toISOString().slice(0, 7); 
+    const nuevaFecha = new Date(year, month - 1 + incremento); // Manipula directamente mes y año
+    const nuevoMes = nuevaFecha.toISOString().slice(0, 7); // Asegura el formato 'YYYY-MM'
     setMesSeleccionado(nuevoMes);
 };
 
