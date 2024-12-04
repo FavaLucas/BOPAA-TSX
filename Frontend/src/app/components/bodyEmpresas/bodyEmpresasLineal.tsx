@@ -23,7 +23,7 @@ const BodyEmpresas = () => {
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Paleta de colores asignada a cada empresa
+  
   const colorMap: { [key: string]: string } = {
     'KO': '#FF5733',
     'NVDA': '#33FF57',
@@ -197,7 +197,7 @@ const BodyEmpresas = () => {
         <div className="flex items-center space-x-2">
           <button className="p-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => cambiarMes(-1)}>{t('buttons.previous_month')}</button>
           <button className="p-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => cambiarMes(1)}>{t('buttons.next_month')}</button>
-          <p>{t('Mes Seleccionado')}: {mesSeleccionado}</p>
+          <p>{t('selected_month')}: {mesSeleccionado}</p>
         </div>
       )}
 

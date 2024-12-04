@@ -94,11 +94,7 @@ export class CotizacionesService {
     // this.logger.log(`String última fecha en Gempresa: ${stringUltimaFechaDeGempresa}`);
 
     try {
-      const cotizaciones = await this.getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(
-        codEmpresa,
-        stringUltimaFechaEnMiDB,
-        stringUltimaFechaDeGempresa,
-      );
+      const cotizaciones = await this.getCotizacionesDeGempresaConCodEmpresaYFechasEnGMT(codEmpresa,stringUltimaFechaEnMiDB,stringUltimaFechaDeGempresa,);
 
       // this.logger.log(`Cotizaciones procesadas para ${codEmpresa}: ${cotizaciones.length}`);
     } catch (error) {
@@ -180,6 +176,7 @@ export class CotizacionesService {
       // this.logger.debug(`Procesando cotización: Fecha UTC=${fechaUTC.fecha}, Hora UTC=${fechaUTC.hora}`);
 
       const valorCotizacion = Number(cotizacion.cotization);
+      
       if (isNaN(valorCotizacion)) {
         this.logger.error(`Valor de cotización no válido: ${cotizacion.cotization}`);
         return;

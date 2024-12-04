@@ -57,11 +57,12 @@ export class EmpresasService {
         );
 
         const guardarEmpresa = await this.empresaRepository.save(nuevaEmpresa);
+    
 
         return guardarEmpresa;
       }
       else {
-        this.logger.log("EmpresaService - La empresa ya existe en la DB - 1111");
+        this.logger.log("EmpresaService - La empresa ya existe en la DB");
       }
     } catch (error) {
       this.logger.error("EmpresaService - Error al guardar la empresa, no existe el codigo indicado");
