@@ -15,7 +15,7 @@ const Home = () => {
       <Navbar botonRedireccion={"Indices Bursatiles"} url={"./indiceBursatil"} />
 
       <div className="flex flex-col md:flex-row justify-center items-center gap-12 p-8">
-        <div className="w-full md:w-1/2 bg-zinc-50 p-4 rounded-lg shadow-gray-500 shadow-lg">
+        <div className="w-full md:w-1/2 bg-zinc-50 p-4 rounded-lg shadow-gray-500 shadow-lg backgr" >
           <BodyEmpresas />
         </div>
         <div className="w-full md:w-1/2 bg-white p-4 rounded-lg shadow-gray-500 shadow-lg">
@@ -26,7 +26,7 @@ const Home = () => {
         <GraficoTortaConTabla />
       </div>
     
-      <div>
+      <div> 
       <Footer />
       </div>
 

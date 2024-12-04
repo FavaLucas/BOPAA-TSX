@@ -23,7 +23,7 @@ const BodyEmpresas = () => {
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  
+
   const colorMap: { [key: string]: string } = {
     'KO': '#FF5733',
     'NVDA': '#33FF57',
